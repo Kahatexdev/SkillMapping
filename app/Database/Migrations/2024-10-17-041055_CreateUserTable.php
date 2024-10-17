@@ -22,11 +22,11 @@ class CreateUserTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'email' => [
-                'type' => 'VARCHAR',
-                'constraint' => 100,
-                'null' => true,
-            ],
+           'role' => [
+                'type' => 'ENUM',
+                'constraint' => ['monitoring', 'mandor'],
+                'default' => 'mandor',
+           ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,

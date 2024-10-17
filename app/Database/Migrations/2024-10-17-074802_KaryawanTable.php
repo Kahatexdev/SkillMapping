@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateKaryawanTable extends Migration
+class KaryawanTable extends Migration
 {
     public function up()
     {
@@ -14,29 +14,33 @@ class CreateKaryawanTable extends Migration
                 'constraint' => 11,
                 'auto_increment' => true,
             ],
+            'kode_kartu' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+            ],
             'nama_karyawan' => [
                 'type' => 'VARCHAR',
-                'constraint' => 100,
+                'constraint' => 50,
             ],
-            'job_role_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-            ],
-            'batch_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-            ],
+           
             'tanggal_masuk' => [
                 'type' => 'DATE',
             ],
-            'keterangan' => [
-                'type' => 'TEXT',
-                'null' => true,
+            'jenis_kelamin' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+            ],
+            'shift' => [
+                'type' => 'varchar',
+                'constraint' => 50,
+            ],
+            'id_bagian' => [
+                'type' => 'INT',
+                'constraint' => 11,
             ],
         ]);
         $this->forge->addKey('id_karyawan', true);
-        $this->forge->addForeignKey('job_role_id', 'job_role', 'id_job_role', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('batch_id', 'batch', 'id_batch', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_bagian', 'bagian', 'id_bagian', 'CASCADE', 'CASCADE');
         $this->forge->createTable('karyawan');
     }
 

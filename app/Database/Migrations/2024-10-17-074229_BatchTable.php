@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateBatchTable extends Migration
+class BatchTable extends Migration
 {
     public function up()
     {
@@ -12,26 +12,35 @@ class CreateBatchTable extends Migration
             'id_batch' => [
                 'type' => 'INT',
                 'constraint' => 11,
+                'unsigned' => true, // Tambah 'unsigned' untuk mendukung auto_increment
                 'auto_increment' => true,
             ],
-            'nama_batch' => [
+            'shift' => [
                 'type' => 'VARCHAR',
-                'constraint' => 50,
+                'constraint' => 10,
+            ],
+            'bulan' => [
+                'type' => 'DATE', // Untuk menyimpan tanggal
             ],
             'tahun' => [
                 'type' => 'YEAR',
             ],
-            'keterangan' => [
-                'type' => 'TEXT',
+            'created_at' => [
+                'type' => 'DATETIME', // Ganti 'date_time' dengan 'DATETIME'
                 'null' => true,
             ],
         ]);
+
+        // Tambah Primary Key
         $this->forge->addKey('id_batch', true);
+
+        // Buat tabel 'batch'
         $this->forge->createTable('batch');
     }
 
     public function down()
     {
+        // Drop tabel jika dihapus
         $this->forge->dropTable('batch');
     }
 }
