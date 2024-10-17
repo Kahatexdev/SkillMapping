@@ -29,7 +29,6 @@ class MonitoringController extends BaseController
 
         ];
         return view(session()->get('role') . '/index', $data);
-
     }
     public function karyawan()
     {
@@ -43,7 +42,22 @@ class MonitoringController extends BaseController
 
         ];
         return view(session()->get('role') . '/karyawan', $data);
-
+    }
+    public function user()
+    {
+        echo "Data User";
+    }
+    public function bagian()
+    {
+        echo "Data Bagian";
+    }
+    public function absen()
+    {
+        echo "Data Absen";
+    }
+    public function job()
+    {
+        echo "Data Job Roles";
     }
     // public function inputbagian()
     // {
@@ -62,7 +76,7 @@ class MonitoringController extends BaseController
     //     } else {
     //         return redirect()->to(base_url(session()->get('role') . '/datakaryawan'))->withInput()->with('error', 'Data Gagal di Input');
     //     }
-        
+
 
     // }
     // public function importkaryawan()
@@ -116,7 +130,7 @@ class MonitoringController extends BaseController
     //                 'shift' => $shift,
     //                 'id_bagian' => $id_bagian
     //             ];
-                
+
     //             $check = $this->karyawanmodel->cek_karyawan($nik);
     //             // if (!$check) {
     //             //     // Insert jika karyawan belum ada
