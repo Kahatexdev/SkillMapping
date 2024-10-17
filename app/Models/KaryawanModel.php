@@ -7,12 +7,12 @@ use CodeIgniter\Model;
 class KaryawanModel extends Model
 {
     protected $table            = 'karyawan';
-    protected $primaryKey       = 'nik';
+    protected $primaryKey       = 'id_karyawan';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['nik','kode_kartu','nama_karyawan','jenis_kelamin', 'tgl_masuk', 'shift','id_bagian', 'status'];
+    protected $allowedFields    = ['id_karyawan', 'kode_kartu', 'nama_karyawan', 'jenis_kelamin', 'tanggal_masuk', 'shift', 'id_bagian', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -44,7 +44,7 @@ class KaryawanModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-   
+
     public function cek_karyawan($nik)
     {
         return $this->select('nik')
@@ -53,7 +53,7 @@ class KaryawanModel extends Model
     }
     public function getdata()
     {
-        return $this->select('karyawan.nik, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, karyawan.shift, karyawan.id_bagian, bagian.nama_bagian')
+        return $this->select('*, bagian.nama_bagian')
             ->join('bagian', 'bagian.id_bagian=bagian.id_bagian')
             ->findAll();
     }

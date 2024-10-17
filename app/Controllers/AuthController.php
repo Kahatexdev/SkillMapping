@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UserModel;
@@ -12,7 +13,8 @@ class AuthController extends BaseController
         return view('Auth/index');
     }
 
-    public function login(){
+    public function login()
+    {
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
         $UserModel = new UserModel;
@@ -27,8 +29,7 @@ class AuthController extends BaseController
         // dd($userData['role']);
         switch ($userData['role']) {
             case 'monitoring':
-                return redirect()->to(base_url('/Monitoring'));
-                break;
+                return redirect()->to(base_url('/monitoring'));
 
             default:
                 return redirect()->to(base_url('/login'))->withInput()->with('error', 'Invalid username or password');

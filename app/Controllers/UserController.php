@@ -14,6 +14,7 @@ class UserController extends BaseController
 
         $users = $usermodels->findAll();
 
-        dd($users);
+        // dd($users);
+        return view('pengguna/index', ['users' => $users]);
     }
 }

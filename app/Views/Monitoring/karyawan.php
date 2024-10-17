@@ -2,27 +2,27 @@
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '<?= session()->getFlashdata('success') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '<?= session()->getFlashdata('success') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: '<?= session()->getFlashdata('error') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '<?= session()->getFlashdata('error') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
 
@@ -53,14 +53,13 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($karyawan as $karyawan) : ?>
-                                <tr>
-                                    <td><?= $karyawan['nik'] ?></td>
-                                    <td><?= $karyawan['kode_kartu'] ?></td>
-                                    <td><?= $karyawan['nama_karyawan'] ?></td>
-                                    <td><?= $karyawan['tgl_masuk'] ?></td>
-                                    <td><?= $karyawan['jenis_kelamin'] ?></td>
-                                    <td><?= $karyawan['id_bagian'] ?></td>
-                                </tr>
+                                    <tr>
+                                        <td><?= $karyawan['kode_kartu'] ?></td>
+                                        <td><?= $karyawan['nama_karyawan'] ?></td>
+                                        <td><?= $karyawan['tgl_masuk'] ?></td>
+                                        <td><?= $karyawan['jenis_kelamin'] ?></td>
+                                        <td><?= $karyawan['id_bagian'] ?></td>
+                                    </tr>
                                 <?php endforeach ?>
                             </tbody>
                         </table>
@@ -129,58 +128,58 @@
 </div>
 <script src="<?= base_url('assets/js/plugins/chartjs.min.js') ?>"></script>
 <script type="text/javascript">
-$(document).ready(function() {
-    // Trigger import modal when import button is clicked
-    $('.import-btn').click(function() {
+    $(document).ready(function() {
+        // Trigger import modal when import button is clicked
+        $('.import-btn').click(function() {
 
-        $('#importModal').modal('show'); // Show the modal
-    });
+            $('#importModal').modal('show'); // Show the modal
+        });
 
-    new DataTable('#example', {
-        layout: {
-            top1Start: {
-                buttons: [{
-                    extend: 'excel',
-                    text: 'Export To Excel',
-                    className: 'btn btn-success btn-sm'
-                }]
-            },
-            top1End: {
-                buttons: [{
-                    text: 'Import Data',
-                    className: 'btn btn-success btn-sm btn_import'
-                }]
+        new DataTable('#example', {
+            layout: {
+                top1Start: {
+                    buttons: [{
+                        extend: 'excel',
+                        text: 'Export To Excel',
+                        className: 'btn btn-success btn-sm'
+                    }]
+                },
+                top1End: {
+                    buttons: [{
+                        text: 'Import Data',
+                        className: 'btn btn-success btn-sm btn_import'
+                    }]
+                }
             }
-        }
+        });
+
+        $('.btn_import').click(async (e) => {
+            e.preventDefault();
+            $('#importInput')[0].click();
+        })
     });
 
-    $('.btn_import').click(async (e) => {
-        e.preventDefault();
-        $('#importInput')[0].click();
-    })
-});
+    $('#importInput').change(() => {
+        $('#form-import').submit();
+    });
 
-$('#importInput').change(() => {
-    $('#form-import').submit();
-});
-
-$('#productType').change(() => {
-    $.ajax({
-        url: 'getInitialByModel',
-        method: 'post',
-        dataType: 'json',
-        data: {
-            id_order: $('#productType').val()
-        },
-        success: (data) => {
-            $('#id_inisial').html('')
-            var html = ""
-            data.map((item) => {
-                html += `<option value="${item.id_inisial}">${item.inisial}</option>`
-            })
-            $('#id_inisial').html(html)
-        }
+    $('#productType').change(() => {
+        $.ajax({
+            url: 'getInitialByModel',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                id_order: $('#productType').val()
+            },
+            success: (data) => {
+                $('#id_inisial').html('')
+                var html = ""
+                data.map((item) => {
+                    html += `<option value="${item.id_inisial}">${item.inisial}</option>`
+                })
+                $('#id_inisial').html(html)
+            }
+        })
     })
-})
 </script>
 <?php $this->endSection(); ?>
