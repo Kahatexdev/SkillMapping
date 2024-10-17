@@ -24,8 +24,9 @@ class AuthController extends BaseController
         session()->set('id_user', $userData['id_user']);
         session()->set('username', $userData['username']);
         session()->set('role', $userData['role']);
+        // dd($userData['role']);
         switch ($userData['role']) {
-            case 'Monitoring':
+            case 'monitoring':
                 return redirect()->to(base_url('/Monitoring'));
                 break;
 
