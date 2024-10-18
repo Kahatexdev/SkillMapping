@@ -33,7 +33,11 @@ class JobroleController extends BaseController
             'jobdesc' => $this->request->getPost('jobdesc')
         ];
 
-        $jobrolemodel->insert($data);
+        if($jobrolemodel->insert($data)){
+            session()->setFlashdata('success', 'Data berhasil ditambahkan');    
+        } else {
+            session()->setFlashdata('error', 'Data gagal ditambahkan');
+        }
 
         return redirect()->to('/monitoring/dataJob');
     }
@@ -59,7 +63,11 @@ class JobroleController extends BaseController
             'jobdesc' => $this->request->getPost('jobdesc')
         ];
 
-        $jobrolemodel->update($id, $data);
+        if($jobrolemodel->update($id, $data)){
+            session()->setFlashdata('success', 'Data berhasil diubah');    
+        } else {
+            session()->setFlashdata('error', 'Data gagal diubah');
+        }
 
         return redirect()->to('/monitoring/dataJob');
     }
@@ -68,7 +76,11 @@ class JobroleController extends BaseController
     {
         $jobrolemodel = new JobroleModel();
 
-        $jobrolemodel->delete($id);
+        if($jobrolemodel->delete($id)){
+            session()->setFlashdata('success', 'Data berhasil dihapus');    
+        } else {
+            session()->setFlashdata('error', 'Data gagal dihapus');
+        }
 
         return redirect()->to('/monitoring/dataJob');
     }

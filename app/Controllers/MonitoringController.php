@@ -57,7 +57,7 @@ class MonitoringController extends BaseController
 
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Data User',
+            'title' => 'User',
             'active1' => '',
             'active2' => 'active',
             'users' => $users
@@ -80,7 +80,7 @@ class MonitoringController extends BaseController
         $jobrole = $this->jobrole->getJobRolesWithBagian();
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Data Job Role',
+            'title' => 'Job Role',
             'active1' => '',
             'active2' => 'active',
             'jobrole' => $jobrole

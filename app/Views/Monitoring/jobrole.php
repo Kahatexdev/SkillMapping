@@ -47,6 +47,7 @@
                                 <th>Aksi</th>
                             </thead>
                             <tbody>
+                                <?php if (!empty($jobrole)) : ?>
                                 <?php foreach ($jobrole as $jobrole) : ?>
                                 <tr>
                                     <td><?= $jobrole['id_jobrole'] ?></td>
@@ -56,11 +57,16 @@
                                     <td>
                                         <a href="<?= base_url('monitoring/jobroleEdit/' . $jobrole['id_jobrole']) ?>"
                                             class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="<?= base_url('monitoring/jobroleDelete/' . $jobrole['id_jobrole']) ?>"
-                                            class="btn btn-danger btn-sm">Delete</a>
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete('<?= $jobrole['id_jobrole'] ?>')">Delete</button>
                                     </td>
                                 </tr>
                                 <?php endforeach ?>
+                                <?php else : ?>
+                                <tr>
+                                    <td colspan="5" class="text-center">No users found</td>
+                                </tr>
+                                <?php endif ?>
                             </tbody>
                         </table>
                     </div>
@@ -69,4 +75,22 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "<?= base_url('monitoring/jobroleDelete//') ?>" + id;
+        }
+    })
+}
+</script>
 <?php $this->endSection(); ?>

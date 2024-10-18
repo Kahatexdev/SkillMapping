@@ -45,7 +45,8 @@
         <div class="collapse navbar-collapse  w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link  active" href="<?= base_url('monitoring') ?>">
+                    <a class="nav-link  <?= $title == 'Dashboard' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 40" version="1.1"
@@ -80,7 +81,8 @@
                 </li>
                 <!-- User -->
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('monitoring/dataUser') ?>">
+                    <a class="nav-link <?= $title == 'User' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataUser') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 42" version="1.1"
@@ -111,7 +113,8 @@
                 </li>
                 <!-- Bagian -->
                 <li class="nav-item">
-                    <a class="nav-link  " href="<?= base_url('monitoring/dataBagian') ?>">
+                    <a class="nav-link  <?= $title == 'Bagian' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataBagian') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
@@ -139,7 +142,8 @@
                 </li>
                 <!-- Karyawan -->
                 <li class="nav-item">
-                    <a class="nav-link  " href="<?= base_url('monitoring/dataKaryawan') ?>">
+                    <a class="nav-link  <?= $title == 'Karyawan' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataKaryawan') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 42" version="1.1"
@@ -170,7 +174,8 @@
                 </li>
                 <!-- Absen -->
                 <li class="nav-item">
-                    <a class="nav-link  " href="<?= base_url('monitoring/dataAbsen') ?>">
+                    <a class="nav-link  <?= $title == 'Absen' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataAbsen') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
@@ -198,7 +203,8 @@
                 </li>
                 <!-- Job Role -->
                 <li class="nav-item">
-                    <a class="nav-link  " href="<?= base_url('monitoring/dataJob') ?>">
+                    <a class="nav-link  <?= $title == 'Job Role' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataJob') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
@@ -357,6 +363,8 @@
     </main>
 
     <!--   Core JS Files   -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('assets/js/select2.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/popper.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/bootstrap.min.js') ?>"></script>

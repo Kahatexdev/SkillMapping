@@ -34,7 +34,12 @@ class UserController extends BaseController
         ];
 
         // dd($data);
-        $usermodels->insert($data);
+        if($usermodels->insert($data)){
+            // set session flashdata
+            session()->setFlashdata('success', 'Data berhasil ditambahkan');    
+        } else {
+            session()->setFlashdata('error', 'Data gagal ditambahkan');
+        }
 
         return redirect()->to('/monitoring/dataUser');
     }
@@ -58,7 +63,12 @@ class UserController extends BaseController
             'role' => $this->request->getPost('role')
         ];
 
-        $usermodels->update($id, $data);
+        if($usermodels->update($id, $data)){
+            // set session flashdata
+            session()->setFlashdata('success', 'Data berhasil diubah');    
+        } else {
+            session()->setFlashdata('error', 'Data gagal diubah');
+        }
 
         return redirect()->to('/monitoring/dataUser');
     }
@@ -67,7 +77,12 @@ class UserController extends BaseController
     {
         $usermodels = new UserModel();
 
-        $usermodels->delete($id);
+        if($usermodels->delete($id)){
+            // set session flashdata
+            session()->setFlashdata('success', 'Data berhasil dihapus');    
+        } else {
+            session()->setFlashdata('error', 'Data gagal dihapus');
+        }
 
         return redirect()->to('/monitoring/dataUser');
     }

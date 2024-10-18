@@ -1,5 +1,6 @@
 <?php $this->extend('Monitoring/layout'); ?>
 <?php $this->section('content'); ?>
+
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
     <script>
@@ -25,28 +26,27 @@
     </script>
     <?php endif; ?>
 
-
-
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-header">
-                    <h5>
-                        Data User
-                    </h5>
+                    <h5>Data User</h5>
                 </div>
                 <div class="card-body">
                     <a href="<?= base_url('monitoring/userCreate') ?>" class="btn btn-primary btn-sm">Tambah User</a>
                     <div class="table-responsive">
                         <table class="table align-items-center mb-0">
                             <thead>
-                                <th>No</th>
-                                <th>Username</th>
-                                <th>Password</th>
-                                <th>Role</th>
-                                <th>Aksi</th>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Username</th>
+                                    <th>Password</th>
+                                    <th>Role</th>
+                                    <th>Aksi</th>
+                                </tr>
                             </thead>
                             <tbody>
+                                <?php if (!empty($users)) : ?>
                                 <?php foreach ($users as $user) : ?>
                                 <tr>
                                     <td><?= $user['id_user'] ?></td>
@@ -56,11 +56,16 @@
                                     <td>
                                         <a href="<?= base_url('monitoring/userEdit/' . $user['id_user']) ?>"
                                             class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="<?= base_url('monitoring/userDelete/' . $user['id_user']) ?>"
-                                            class="btn btn-danger btn-sm">Delete</a>
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete('<?= $user['id_user'] ?>')">Delete</button>
                                     </td>
                                 </tr>
                                 <?php endforeach ?>
+                                <?php else : ?>
+                                <tr>
+                                    <td colspan="5" class="text-center">No users found</td>
+                                </tr>
+                                <?php endif ?>
                             </tbody>
                         </table>
                     </div>
@@ -69,4 +74,24 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "<?= base_url('monitoring/userDelete/') ?>" + id;
+        }
+    })
+}
+</script>
+
 <?php $this->endSection(); ?>
