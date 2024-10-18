@@ -6,18 +6,24 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\KaryawanModel;
 use App\Models\BagianModel;
+use App\Models\UserModel;
+use App\Models\JobroleModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class MonitoringController extends BaseController
 {
     protected $karyawanmodel;
     protected $bagianmodel;
+    protected $usermodel;
+    protected $jobrole;
 
     public function __construct()
     {
 
         $this->karyawanmodel = new KaryawanModel();
         $this->bagianmodel = new BagianModel();
+        $this->usermodel = new UserModel();
+        $this->jobrole = new JobroleModel();
     }
     public function index()
     {
@@ -45,7 +51,21 @@ class MonitoringController extends BaseController
     }
     public function user()
     {
-        echo "Data User";
+        $usermodels = new UserModel();
+
+        $users = $usermodels->findAll();
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Data User',
+            'active1' => '',
+            'active2' => 'active',
+            'users' => $users
+        ];
+        
+
+        // dd($users);
+        return view(session()->get('role') . '/user', $data);
     }
     public function bagian()
     {
@@ -57,7 +77,15 @@ class MonitoringController extends BaseController
     }
     public function job()
     {
-        echo "Data Job Roles";
+        $jobrole = $this->jobrole->getJobRolesWithBagian();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Data Job Role',
+            'active1' => '',
+            'active2' => 'active',
+            'jobrole' => $jobrole
+        ];
+        return view(session()->get('role') . '/jobrole', $data);
     }
     // public function inputbagian()
     // {
