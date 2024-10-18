@@ -30,4 +30,9 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('jobroleEdit/(:num)', 'JobroleController::edit/$1');
     $routes->post('jobroleUpdate/(:num)', 'JobroleController::update/$1');
     $routes->get('jobroleDelete/(:num)', 'JobroleController::delete/$1');
+    $routes->get('absenCreate', 'AbsenController::create');
+    $routes->post('absenStore', 'AbsenController::store');
+    $routes->get('absenEdit/(:num)', 'AbsenController::edit/$1');
+    $routes->post('absenUpdate/(:num)', 'AbsenController::update/$1');
+    $routes->get('absenDelete/(:num)', 'AbsenController::delete/$1');
 });

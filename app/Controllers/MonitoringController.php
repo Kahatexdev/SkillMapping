@@ -8,6 +8,7 @@ use App\Models\KaryawanModel;
 use App\Models\BagianModel;
 use App\Models\UserModel;
 use App\Models\JobroleModel;
+use App\Models\AbsenModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class MonitoringController extends BaseController
@@ -16,6 +17,7 @@ class MonitoringController extends BaseController
     protected $bagianmodel;
     protected $usermodel;
     protected $jobrole;
+    protected $absenmodel;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class MonitoringController extends BaseController
         $this->bagianmodel = new BagianModel();
         $this->usermodel = new UserModel();
         $this->jobrole = new JobroleModel();
+        $this->absenmodel = new AbsenModel();
     }
     public function index()
     {
@@ -73,7 +76,21 @@ class MonitoringController extends BaseController
     }
     public function absen()
     {
-        echo "Data Absen";
+        $absen = $this->absenmodel->getAbsenWithKaryawan();
+
+        $usermodel = new UserModel();
+
+        $users = $usermodel->findAll();
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Absen',
+            'active1' => '',
+            'active2' => 'active',
+            'absen' => $absen
+        ];
+        // dd($absen);
+        return view(session()->get('role') . '/absen', $data, $users);
     }
     public function job()
     {
