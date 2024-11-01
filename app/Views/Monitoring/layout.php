@@ -26,7 +26,8 @@
     <script src="<?= base_url('assets/js/dataTables.min.js') ?>"></script>
     <link href="<?= base_url('assets/css/select2.min.css') ?>" rel="stylesheet" />
     <link href="<?= base_url('assets/css/sweetalert2.css') ?>" rel="stylesheet">
-    <script type="text/javascript" src="<?= base_url('assets/js/dataTables.buttons.js') ?>"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css">
 </head>
 
 <body class="g-sidenav-show  bg-gray-100 bg-opacity-50">
@@ -293,13 +294,17 @@
 
 
     <!--   Core JS Files   -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('assets/js/select2.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/popper.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/bootstrap.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/perfect-scrollbar.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/smooth-scrollbar.min.js') ?>"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script>
     var ctx = document.getElementById("chart-bars").getContext("2d");
 
