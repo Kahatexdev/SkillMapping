@@ -29,8 +29,9 @@
     <script type="text/javascript" src="<?= base_url('assets/js/dataTables.buttons.js') ?>"></script>
 </head>
 
-<body class="g-sidenav-show  bg-gray-100">
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 "
+<body class="g-sidenav-show  bg-gray-100 bg-opacity-50">
+    <aside
+        class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-white shadow-lg"
         id="sidenav-main">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
@@ -45,7 +46,8 @@
         <div class="collapse navbar-collapse  w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url('monitoring') ?>">
+                    <a class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 40" version="1.1"
@@ -80,7 +82,8 @@
                 </li>
                 <!-- User -->
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url('monitoring/dataUser') ?>">
+                    <a class="nav-link <?= $title == 'User' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataUser') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 42" version="1.1"
@@ -111,7 +114,8 @@
                 </li>
                 <!-- Bagian -->
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url('monitoring/dataBagian') ?>">
+                    <a class="nav-link <?= $title == 'Bagian' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataBagian') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
@@ -139,7 +143,8 @@
                 </li>
                 <!-- Karyawan -->
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url('monitoring/dataKaryawan') ?>">
+                    <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/datakaryawan') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 42" version="1.1"
@@ -170,7 +175,8 @@
                 </li>
                 <!-- Absen -->
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url('monitoring/dataAbsen') ?>">
+                    <a class="nav-link <?= $title == 'Absen' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataAbsen') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
@@ -198,7 +204,8 @@
                 </li>
                 <!-- Job Role -->
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url('monitoring/dataJob') ?>">
+                    <a class="nav-link <?= $title == 'Job Role' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataJob') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
@@ -232,24 +239,41 @@
     </aside>
     <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
         <!-- Navbar -->
-        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 mb-5 shadow-none border-radius-xl" id="navbarBlur"
             navbar-scroll="true">
             <div class="container-fluid py-1 px-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
                         </li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page"><?= $title ?> </li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+                    <h6 class="font-weight-bolder mb-0"><?= $title ?></h6>
                 </nav>
 
-                <ul class="navbar-nav  justify-content-end">
-                    <li class="nav-item d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                            <i class="fa fa-user me-sm-1"></i>
-                            <span class="d-sm-inline d-none">Log Out</span>
+                <ul class="navbar-nav justify-content-end">
+                    <!-- li dropdown -->
+                    <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                        <a href="javascript:;" class="nav-link text-body font-weight-bold px-0" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-sm-1"></i>
+                            <span class="d-sm-inline d-none"><?php echo session()->get('username'); ?></span>
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
+                            aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <a class="dropdown-item border-radius-md" href="<?= base_url('logout') ?>">
+                                    <div class="d-flex py-1">
+                                        <div class="my-auto">
+                                            <i class="fas fa-sign-out-alt me-3"></i>
+                                        </div>
+                                        <div class="d-inline-block">
+                                            <h6 class="mb-0">Logout</h6>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                         <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -262,11 +286,11 @@
                     </li>
                 </ul>
             </div>
-            </div>
         </nav>
         <?= $this->renderSection('content'); ?>
         <!-- End Navbar -->
     </main>
+
 
     <!--   Core JS Files   -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

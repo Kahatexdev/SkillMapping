@@ -20,7 +20,18 @@ class UserController extends BaseController
 
     public function create()
     {
-        return view('pengguna/create');
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'User',
+            'active1' => '',
+            'active2' => 'active',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => ''
+        ];
+
+        return view('pengguna/create', $data);
     }
 
     public function store()
@@ -50,7 +61,19 @@ class UserController extends BaseController
 
         $user = $usermodels->find($id);
 
-        return view('pengguna/edit', ['user' => $user]);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'User',
+            'active1' => '',
+            'active2' => 'active',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'user' => $user
+        ];
+
+        return view('pengguna/edit', $data);
     }
 
     public function update($id)

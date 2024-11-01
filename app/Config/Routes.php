@@ -8,6 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'AuthController::index');
 $routes->get('/login', 'AuthController::index');
 $routes->post('authverify', 'AuthController::login');
+$routes->get('logout', 'AuthController::logout');
 // $routes->get('/pengguna', 'UserController::index');
 
 
@@ -15,7 +16,9 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('', 'MonitoringController::index');
     // $routes->post('inputbagian', 'MonitoringController::inputbagian');
     $routes->get('datakaryawan', 'MonitoringController::karyawan');
-    // $routes->post('importkaryawan', 'MonitoringController::importkaryawan');
+    $routes->get('karyawanImport', 'KaryawanController::import');
+    $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
+    $routes->post('karyawanStoreImport', 'KaryawanController::upload');
     $routes->get('dataUser', 'MonitoringController::user');
     $routes->get('userCreate', 'UserController::create');
     $routes->post('userStore', 'UserController::store');
@@ -23,6 +26,10 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->post('userUpdate/(:num)', 'UserController::update/$1');
     $routes->get('userDelete/(:num)', 'UserController::delete/$1');
     $routes->get('dataBagian', 'MonitoringController::bagian');
+    $routes->get('bagianCreate', 'BagianController::create');
+    $routes->post('bagianStore', 'BagianController::store');
+    $routes->get('bagianEdit/(:num)', 'BagianController::edit/$1');
+    $routes->post('bagianUpdate/(:num)', 'BagianController::update/$1');
     $routes->get('dataAbsen', 'MonitoringController::absen');
     $routes->get('dataJob', 'MonitoringController::job');
     $routes->get('jobroleCreate', 'JobroleController::create');
@@ -35,4 +42,5 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('absenEdit/(:num)', 'AbsenController::edit/$1');
     $routes->post('absenUpdate/(:num)', 'AbsenController::update/$1');
     $routes->get('absenDelete/(:num)', 'AbsenController::delete/$1');
+    
 });

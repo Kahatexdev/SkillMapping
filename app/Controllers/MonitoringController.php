@@ -34,7 +34,11 @@ class MonitoringController extends BaseController
             'role' => session()->get('role'),
             'title' => 'Dashboard',
             'active1' => 'active',
-            'active2' => ''
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => ''
 
         ];
         return view(session()->get('role') . '/index', $data);
@@ -44,9 +48,13 @@ class MonitoringController extends BaseController
         $karyawan = $this->karyawanmodel->getdata();
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Data Karyawan',
+            'title' => 'Karyawan',
             'active1' => '',
-            'active2' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'active4' => 'active',
+            'active5' => '',
+            'active6' => '',
             'karyawan' => $karyawan
 
         ];
@@ -63,6 +71,10 @@ class MonitoringController extends BaseController
             'title' => 'User',
             'active1' => '',
             'active2' => 'active',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
             'users' => $users
         ];
         
@@ -72,7 +84,19 @@ class MonitoringController extends BaseController
     }
     public function bagian()
     {
-        echo "Data Bagian";
+        $bagian = $this->bagianmodel->findAll();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Bagian',
+            'active1' => '',
+            'active2' => '',
+            'active3' => 'active',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'bagian' => $bagian
+        ];
+        return view(session()->get('role') . '/bagian', $data);
     }
     public function absen()
     {
@@ -86,7 +110,11 @@ class MonitoringController extends BaseController
             'role' => session()->get('role'),
             'title' => 'Absen',
             'active1' => '',
-            'active2' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => 'active',
+            'active6' => '',
             'absen' => $absen
         ];
         // dd($absen);
@@ -99,7 +127,11 @@ class MonitoringController extends BaseController
             'role' => session()->get('role'),
             'title' => 'Job Role',
             'active1' => '',
-            'active2' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => 'active',
             'jobrole' => $jobrole
         ];
         return view(session()->get('role') . '/jobrole', $data);

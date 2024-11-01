@@ -25,7 +25,20 @@ class AbsenController extends BaseController
         $usermodel = new UserModel();
         $users = $usermodel->findAll();
 
-        return view('absen/create', ['datas' => $datas, 'users' => $users]);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Absen',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => 'active',
+            'active6' => '',
+            'datas' => $datas,
+            'users' => $users
+        ];
+
+        return view('absen/create', $data);
     }
 
     public function store(){
@@ -57,7 +70,20 @@ class AbsenController extends BaseController
         $users = $usermodel->findAll();
         $data = $absen->find($id);
 
-        return view('absen/edit', ['data' => $data, 'datajoin' => $datajoin, 'users' => $users]);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Absen',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => 'active',
+            'active6' => '',
+            'data' => $data,
+            'datajoin' => $datajoin,
+            'users' => $users
+        ];
+        return view('absen/edit', $data);
     }
 
     public function update($id)
@@ -91,5 +117,20 @@ class AbsenController extends BaseController
         }
 
         return redirect()->to('/monitoring/dataAbsen');
+    }
+
+    public function import()
+    {
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Absen',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => 'active',
+            'active6' => ''
+        ];
+        return view('absen/import', $data);
     }
 }

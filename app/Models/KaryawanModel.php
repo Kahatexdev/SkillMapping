@@ -12,7 +12,7 @@ class KaryawanModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_karyawan', 'kode_kartu', 'nama_karyawan', 'jenis_kelamin', 'tanggal_masuk', 'shift', 'id_bagian', 'status'];
+    protected $allowedFields    = ['id_karyawan', 'kode_kartu', 'nama_karyawan', 'jenis_kelamin', 'tanggal_masuk', 'shift', 'id_bagian'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -53,8 +53,8 @@ class KaryawanModel extends Model
     }
     public function getdata()
     {
-        return $this->select('*, bagian.nama_bagian')
-            ->join('bagian', 'bagian.id_bagian=bagian.id_bagian')
+        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.tanggal_masuk, karyawan.jenis_kelamin, karyawan.shift, bagian.nama_bagian')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             ->findAll();
     }
 }

@@ -36,4 +36,10 @@ class AuthController extends BaseController
                 break;
         }
     }
+
+    public function logout()
+    {
+        session()->destroy();
+        return redirect()->to(base_url('/login'));
+    }
 }

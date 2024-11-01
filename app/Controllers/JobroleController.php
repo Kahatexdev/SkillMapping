@@ -20,7 +20,19 @@ class JobroleController extends BaseController
 
         $bagians = $bagianmodel->findAll();
 
-        return view('jobrole/create', ['bagians' => $bagians]);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Job Role',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => 'active',
+            'bagians' => $bagians
+        ];
+        
+        return view('jobrole/create', $data);
     }
 
     public function store()
@@ -50,7 +62,20 @@ class JobroleController extends BaseController
         $jobrole = $jobrolemodel->find($id);
         $bagians = $bagianmodel->findAll();
 
-        return view('jobrole/edit', ['jobrole' => $jobrole, 'bagians' => $bagians]);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Job Role',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => 'active',
+            'jobrole' => $jobrole,
+            'bagians' => $bagians
+        ];
+        
+        return view('jobrole/edit', $data);
     }
 
     public function update($id)
