@@ -59,4 +59,11 @@ class UserModel extends Model
             'username' => $user['username']
         ];
     }
+
+    public function getdata()
+    {
+        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.tanggal_masuk, karyawan.jenis_kelamin, karyawan.shift, bagian.nama_bagian')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->findAll();
+    }
 }

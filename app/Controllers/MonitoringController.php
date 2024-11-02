@@ -77,7 +77,7 @@ class MonitoringController extends BaseController
             'active6' => '',
             'users' => $users
         ];
-        
+
 
         // dd($users);
         return view(session()->get('role') . '/user', $data);
@@ -100,7 +100,7 @@ class MonitoringController extends BaseController
     }
     public function absen()
     {
-        $absen = $this->absenmodel->getAbsenWithKaryawan();
+        $absen = $this->absenmodel->getdata();
 
         $usermodel = new UserModel();
 

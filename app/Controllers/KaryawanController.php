@@ -17,12 +17,8 @@ class KaryawanController extends BaseController
     public function __construct()
     {
         $this->request = \Config\Services::request();
-        
     }
-    public function index()
-    {
-
-    }
+    public function index() {}
 
     public function import()
     {
@@ -75,7 +71,7 @@ class KaryawanController extends BaseController
         $sheet->setCellValue('E2', 'A');
         $sheet->setCellValue('F2', 'KNITTER');
 
-        
+
         // Menentukan nama file
         $fileName = 'Template_Data_Karyawan.xlsx';
 
@@ -121,7 +117,7 @@ class KaryawanController extends BaseController
                 $jenisKelamin = $dataSheet->getCell('D' . $row)->getValue();
                 $shift = $dataSheet->getCell('E' . $row)->getValue();
                 $namaBagian = $dataSheet->getCell('F' . $row)->getValue();
-                
+
 
                 // Validasi data per kolom
                 if (empty($kodeKartu)) {
@@ -148,7 +144,7 @@ class KaryawanController extends BaseController
                     $isValid = false;
                     $errorMessage .= "Nama Bagian is required. ";
                 }
-                
+
 
                 if ($isValid) {
                     $bagian = $bagianModel->where('nama_bagian', $namaBagian)->first();
@@ -161,8 +157,22 @@ class KaryawanController extends BaseController
                             'shift' => $shift,
                             'id_bagian' => $bagian['id_bagian']
                         ];
-                        $karyawanModel->save($data);
-                        $successCount++;
+                        // Check if kode_kartu already exists in the database
+                        $existingKaryawan = $karyawanModel->where('kode_kartu', $kodeKartu)->first();
+                        // dd($existingKaryawan);   
+                        if ($existingKaryawan) {
+                            $isValid = false;
+                            $errorMessage .= "Kode kartu already exists. ";
+                        }
+
+                        // Only save if valid
+                        if (!$isValid) {
+                            $isValid = false;
+                            $errorMessage .= "Kode kartu already exists. ";
+                        } else {
+                            $karyawanModel->save($data);
+                            $successCount++;
+                        }
                     } else {
                         $isValid = false;
                         $errorMessage .= "Bagian not found. ";
@@ -173,20 +183,23 @@ class KaryawanController extends BaseController
                 }
             }
 
-            if ($errorCount > 0) {
-                $message = "Imported {$successCount} data successfully. {$errorCount} data failed to import.";
-                foreach ($errorMessages as $error) {
-                    $message .= "<br>{$error}";
-                }
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', $message);
+            // kalau ada kartu yang sama maka tidak akan di save
+            if ($isValid) {
+                return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diimport.');
             } else {
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('success', "Imported {$successCount} data successfully.");
+                return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', 'Data karyawan gagal diimport.');
             }
-        } else {
-            // dd ($file);
-            return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'File upload failed');  
-        }
 
-        
+            return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diimport.');
+        } else {
+            return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'Invalid file.');
+        }
+    }
+
+    public function empty()
+    {
+        $karyawanModel = new \App\Models\KaryawanModel();
+        $karyawanModel->truncate();
+        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dikosongkan.');
     }
 }

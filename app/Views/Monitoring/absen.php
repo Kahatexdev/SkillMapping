@@ -16,6 +16,9 @@
                     <a href="<?= base_url('monitoring/absenCreate') ?>" class="btn btn-primary btn-sm">Tambah Absen</a>
                     <a href="<?= base_url('monitoring/absenImport') ?>" class="btn btn-success btn-sm import-btn">Import
                         Absen</a>
+                    <!-- kosongkan data absen -->
+                    <a href="<?= base_url('monitoring/absenEmpty') ?>" class="btn btn-danger btn-sm">Kosongkan Data
+                        Absen</a>
                     <div class="table-responsive">
                         <table id="absenTable" class="table align-items-center mb-0">
                             <thead>
@@ -32,7 +35,7 @@
                                 <?php foreach ($absen as $absen) : ?>
                                 <tr>
                                     <td><?= $absen['id_absen'] ?></td>
-                                    <td><?= $absen['id_karyawan'] ?></td>
+                                    <td><?= $absen['nama_karyawan'] ?></td>
                                     <td><?= $absen['tanggal'] ?></td>
                                     <td><?= $absen['ket_absen'] ?></td>
                                     <td><?= $absen['id_user'] ?></td>

@@ -13,12 +13,13 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <a href="<?= base_url('monitoring/karyawanCreate') ?>" class="btn btn-primary btn-sm">Tambah Data
-                        Karyawan</a>
                     <!-- import data karyawan -->
                     <a href="<?= base_url('monitoring/karyawanImport') ?>"
                         class="btn btn-success btn-sm import-btn">Import
                         Data Karyawan</a>
+                    <!-- kosongkan data karyawan -->
+                    <a href="<?= base_url('monitoring/karyawanEmpty') ?>" class="btn btn-danger btn-sm">Kosongkan
+                        Data</a>
                     <div class="table-responsive">
                         <table id="karyawanTable" class="table align-items-center mb-0">
                             <thead>
@@ -31,6 +32,7 @@
                                 <th>Bagian</th>
                             </thead>
                             <tbody>
+                                <?php if (!empty($karyawan)) : ?>
                                 <?php foreach ($karyawan as $karyawan) : ?>
                                 <tr>
                                     <td><?= $karyawan['id_karyawan'] ?></td>
@@ -42,6 +44,11 @@
                                     <td><?= $karyawan['nama_bagian'] ?></td>
                                 </tr>
                                 <?php endforeach ?>
+                                <?php else : ?>
+                                <tr>
+                                    <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

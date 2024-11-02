@@ -2,27 +2,27 @@
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '<?= session()->getFlashdata('success') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '<?= session()->getFlashdata('success') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: '<?= session()->getFlashdata('error') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '<?= session()->getFlashdata('error') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
 
@@ -43,8 +43,8 @@
                             <select name="id_karyawan" id="id_karyawan" class="form-control" required>
                                 <option value="">Pilih Karyawan</option>
                                 <?php foreach ($datas as $karyawan) : ?>
-                                <option value="<?= $karyawan['id_karyawan'] ?>"><?= $karyawan['id_karyawan'] ?> -
-                                    <?= $karyawan['nama_karyawan'] ?></option>
+                                    <option value="<?= $karyawan['id_karyawan'] ?>"><?= $karyawan['id_karyawan'] ?> -
+                                        <?= $karyawan['nama_karyawan'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -67,8 +67,8 @@
                             <select name="id_user" id="id_user" class="form-control" required>
                                 <option value="">Pilih User</option>
                                 <?php foreach ($users as $user) : ?>
-                                <option value="<?= $user['id_user'] ?>"><?= $user['id_user'] ?> -
-                                    <?= $user['username'] ?></option>
+                                    <option value="<?= $user['id_user'] ?>"><?= $user['id_user'] ?> -
+                                        <?= $user['username'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                             <button type="submit" class="btn btn-primary btn-sm">Simpan</button>

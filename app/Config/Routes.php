@@ -19,6 +19,7 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('karyawanImport', 'KaryawanController::import');
     $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
     $routes->post('karyawanStoreImport', 'KaryawanController::upload');
+    $routes->get('karyawanEmpty', 'KaryawanController::empty');
     $routes->get('dataUser', 'MonitoringController::user');
     $routes->get('userCreate', 'UserController::create');
     $routes->post('userStore', 'UserController::store');
@@ -42,5 +43,8 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('absenEdit/(:num)', 'AbsenController::edit/$1');
     $routes->post('absenUpdate/(:num)', 'AbsenController::update/$1');
     $routes->get('absenDelete/(:num)', 'AbsenController::delete/$1');
-    
+    $routes->get('absenImport', 'AbsenController::import');
+    $routes->get('downloadTemplateAbsen', 'AbsenController::downloadTemplate');
+    $routes->post('absenStoreImport', 'AbsenController::upload');
+    $routes->get('absenEmpty', 'AbsenController::empty');
 });

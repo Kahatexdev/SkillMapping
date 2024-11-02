@@ -44,13 +44,18 @@ class AbsenModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getAbsenWithKaryawan()
+    // public function getAbsenWithKaryawan()
+    // {
+    //     return $this->db->table('absen')
+    //         ->select('absen.*, karyawan.nama_karyawan')
+    //         ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
+    //         ->get()->getResultArray();
+    // }
+
+    public function getdata()
     {
-        return $this->db->table('absen')
-            ->select('absen.*, karyawan.nama_karyawan')
+        return $this->select('absen.*, karyawan.nama_karyawan')
             ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
-            ->get()->getResultArray();
+            ->findAll();
     }
-    
-    
 }
