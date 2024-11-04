@@ -22,7 +22,7 @@ class KaryawanTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 50,
             ],
-           
+
             'tanggal_masuk' => [
                 'type' => 'DATE',
             ],
@@ -38,6 +38,10 @@ class KaryawanTable extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
+            'status' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+            ]
         ]);
         $this->forge->addKey('id_karyawan', true);
         $this->forge->addForeignKey('id_bagian', 'bagian', 'id_bagian', 'CASCADE', 'CASCADE');

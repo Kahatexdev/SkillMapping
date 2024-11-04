@@ -2,27 +2,27 @@
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '<?= session()->getFlashdata('success') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '<?= session()->getFlashdata('success') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: '<?= session()->getFlashdata('error') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '<?= session()->getFlashdata('error') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
 
@@ -32,7 +32,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>
-                        Import Absen
+                        Import Karyawan
                     </h5>
                 </div>
                 <div class="card-body">

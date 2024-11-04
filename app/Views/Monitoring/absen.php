@@ -25,7 +25,10 @@
                                 <th>No</th>
                                 <th>ID Karyawan</th>
                                 <th>Tanggal</th>
-                                <th>Keterangan Absen</th>
+                                <th>SI(Sakit)</th>
+                                <th>MI(Izin)</th>
+                                <th>M(Mangkir )</th>
+                                <th>T(Cuti)</th>
                                 <th>ID User</th>
                                 <th>Aksi</th>
                             </thead>
@@ -37,7 +40,10 @@
                                     <td><?= $absen['id_absen'] ?></td>
                                     <td><?= $absen['nama_karyawan'] ?></td>
                                     <td><?= $absen['tanggal'] ?></td>
-                                    <td><?= $absen['ket_absen'] ?></td>
+                                    <td><?= $absen['sakit'] ?></td>
+                                    <td><?= $absen['izin'] ?></td>
+                                    <td><?= $absen['mangkir'] ?></td>
+                                    <td><?= $absen['cuti'] ?></td>
                                     <td><?= $absen['id_user'] ?></td>
                                     <td>
                                         <a href="<?= base_url('monitoring/absenEdit/' . $absen['id_absen']) ?>"
@@ -48,7 +54,7 @@
                                 <?php endforeach; ?>
                                 <?php else : ?>
                                 <tr>
-                                    <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                    <td colspan="9" class="text-center">Data tidak ditemukan</td>
                                 </tr>
                                 <?php endif; ?>
                             </tbody>

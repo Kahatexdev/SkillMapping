@@ -48,6 +48,7 @@ class KaryawanController extends BaseController
         $sheet->setCellValue('D1', 'Jenis Kelamin');
         $sheet->setCellValue('E1', 'Shift');
         $sheet->setCellValue('F1', 'Nama Bagian');
+        $sheet->setCellValue('G1', 'Status');
 
         // Mengatur lebar kolom
         $sheet->getColumnDimension('A')->setWidth(20);
@@ -56,12 +57,13 @@ class KaryawanController extends BaseController
         $sheet->getColumnDimension('D')->setWidth(15);
         $sheet->getColumnDimension('E')->setWidth(15);
         $sheet->getColumnDimension('F')->setWidth(30);
+        $sheet->getColumnDimension('G')->setWidth(30);
 
 
         // Mengatur style header
-        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:F1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
-        $sheet->getStyle('A1:F1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:G1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
+        $sheet->getStyle('A1:G1')->getAlignment()->setHorizontal('center');
 
         // isi data
         $sheet->setCellValue('A2', 'KK001');
@@ -70,6 +72,7 @@ class KaryawanController extends BaseController
         $sheet->setCellValue('D2', 'L');
         $sheet->setCellValue('E2', 'A');
         $sheet->setCellValue('F2', 'KNITTER');
+        $sheet->setCellValue('G2', 'Aktif');
 
 
         // Menentukan nama file
@@ -117,6 +120,8 @@ class KaryawanController extends BaseController
                 $jenisKelamin = $dataSheet->getCell('D' . $row)->getValue();
                 $shift = $dataSheet->getCell('E' . $row)->getValue();
                 $namaBagian = $dataSheet->getCell('F' . $row)->getValue();
+                $status = $dataSheet->getCell('G' . $row)->getValue();
+                // dd($status);
 
 
                 // Validasi data per kolom
@@ -144,6 +149,10 @@ class KaryawanController extends BaseController
                     $isValid = false;
                     $errorMessage .= "Nama Bagian is required. ";
                 }
+                if (empty($status)) {
+                    $isValid = false;
+                    $errorMessage .= "Status is required. ";
+                }
 
 
                 if ($isValid) {
@@ -155,7 +164,8 @@ class KaryawanController extends BaseController
                             'tanggal_masuk' => $tanggalMasuk,
                             'jenis_kelamin' => $jenisKelamin,
                             'shift' => $shift,
-                            'id_bagian' => $bagian['id_bagian']
+                            'id_bagian' => $bagian['id_bagian'],
+                            'status' => $status
                         ];
                         // Check if kode_kartu already exists in the database
                         $existingKaryawan = $karyawanModel->where('kode_kartu', $kodeKartu)->first();

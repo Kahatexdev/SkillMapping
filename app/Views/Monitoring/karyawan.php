@@ -30,24 +30,26 @@
                                 <th>Jenis Kelamin</th>
                                 <th>Shift</th>
                                 <th>Bagian</th>
+                                <th>Status</th>
                             </thead>
                             <tbody>
                                 <?php if (!empty($karyawan)) : ?>
-                                <?php foreach ($karyawan as $karyawan) : ?>
-                                <tr>
-                                    <td><?= $karyawan['id_karyawan'] ?></td>
-                                    <td><?= $karyawan['kode_kartu'] ?></td>
-                                    <td><?= $karyawan['nama_karyawan'] ?></td>
-                                    <td><?= $karyawan['tanggal_masuk'] ?></td>
-                                    <td><?= $karyawan['jenis_kelamin'] ?></td>
-                                    <td><?= $karyawan['shift'] ?></td>
-                                    <td><?= $karyawan['nama_bagian'] ?></td>
-                                </tr>
-                                <?php endforeach ?>
+                                    <?php foreach ($karyawan as $karyawan) : ?>
+                                        <tr>
+                                            <td><?= $karyawan['id_karyawan'] ?></td>
+                                            <td><?= $karyawan['kode_kartu'] ?></td>
+                                            <td><?= $karyawan['nama_karyawan'] ?></td>
+                                            <td><?= $karyawan['tanggal_masuk'] ?></td>
+                                            <td><?= $karyawan['jenis_kelamin'] ?></td>
+                                            <td><?= $karyawan['shift'] ?></td>
+                                            <td><?= $karyawan['nama_bagian'] ?></td>
+                                            <td><?= $karyawan['status'] ?></td>
+                                        </tr>
+                                    <?php endforeach ?>
                                 <?php else : ?>
-                                <tr>
-                                    <td colspan="5" class="text-center">Data tidak ditemukan</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="8" class="text-center">Data tidak ditemukan</td>
+                                    </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -58,27 +60,27 @@
     </div>
 </div>
 <script>
-$(document).ready(function() {
-    // Initialize DataTable with export options
-    $('#karyawanTable').DataTable({});
+    $(document).ready(function() {
+        // Initialize DataTable with export options
+        $('#karyawanTable').DataTable({});
 
-    // Flash message SweetAlerts
-    <?php if (session()->getFlashdata('success')) : ?>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: '<?= session()->getFlashdata('success') ?>',
-    });
-    <?php endif; ?>
+        // Flash message SweetAlerts
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '<?= session()->getFlashdata('success') ?>',
+            });
+        <?php endif; ?>
 
-    <?php if (session()->getFlashdata('error')) : ?>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: '<?= session()->getFlashdata('error') ?>',
+        <?php if (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '<?= session()->getFlashdata('error') ?>',
+            });
+        <?php endif; ?>
     });
-    <?php endif; ?>
-});
 </script>
 
 
