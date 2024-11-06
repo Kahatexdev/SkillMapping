@@ -32,82 +32,109 @@
             <div class="card">
                 <div class="card-header">
                     <h5>
-                        Form Tambah Data Karyawan
+                        Form Edit Data Karyawan
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form action="<?= base_url('monitoring/karyawanStore') ?>" method="post">
+                    <form action="<?= base_url('monitoring/karyawanUpdate/' . $karyawan['id_karyawan']) ?>"
+                        method="post">
                         <div class="form-group mb-2">
                             <label for="kode_kartu">Kode Kartu</label>
-                            <input type="text" class="form-control" name="kode_kartu" id="kode_kartu" required>
+                            <input type="text" class="form-control" name="kode_kartu" id="kode_kartu"
+                                value="<?= $karyawan['kode_kartu'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="nama_karyawan">Nama Karyawan</label>
-                            <input type="text" class="form-control" name="nama_karyawan" id="nama_karyawan" required>
+                            <input type="text" class="form-control" name="nama_karyawan" id="nama_karyawan"
+                                value="<?= $karyawan['nama_karyawan'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="shift">Shift</label>
                             <select name="shift" id="shift" class="form-control" required>
                                 <option value="">Pilih Shift</option>
-                                <option value="A">Pagi</option>
-                                <option value="B">Siang</option>
-                                <option value="C">Malam</option>
-                                <option value="Non Shift">Non Shift</option>
+                                <option value="A" <?= $karyawan['shift'] == 'A' ? 'selected' : '' ?>>Pagi</option>
+                                <option value="B" <?= $karyawan['shift'] == 'B' ? 'selected' : '' ?>>Siang</option>
+                                <option value="C" <?= $karyawan['shift'] == 'C' ? 'selected' : '' ?>>Malam</option>
+                                <option value="Non Shift" <?= $karyawan['shift'] == 'Non Shift' ? 'selected' : '' ?>>Non
+                                    Shift</option>
                             </select>
                         </div>
                         <div class="form-group mb-2">
                             <label for="jenis_kelamin">Jenis Kelamin</label>
                             <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
                                 <option value="">Pilih Jenis Kelamin</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
+                                <option value="L" <?= $karyawan['jenis_kelamin'] == 'L' ? 'selected' : '' ?>>Laki-laki
+                                </option>
+                                <option value="P" <?= $karyawan['jenis_kelamin'] == 'P' ? 'selected' : '' ?>>Perempuan
+                                </option>
                             </select>
                         </div>
                         <div class="form-group mb-2">
                             <label for="libur">Libur</label>
-                            <input type="text" class="form-control" name="libur" id="libur" required>
+                            <input type="text" class="form-control" name="libur" id="libur"
+                                value="<?= $karyawan['libur'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="libur_tambahan">Libur Tambahan</label>
-                            <input type="text" class="form-control" name="libur_tambahan" id="libur_tambahan" required>
+                            <input type="text" class="form-control" name="libur_tambahan" id="libur_tambahan"
+                                value="<?= $karyawan['libur_tambahan'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="warna_baju">Warna Baju</label>
                             <select name="warna_baju" id="warna_baju" class="form-control" required>
                                 <option value="">Pilih Warna Baju</option>
-                                <option value="Merah">Merah</option>
-                                <option value="Biru">Biru</option>
-                                <option value="Hijau">Hijau</option>
-                                <option value="Kuning">Kuning</option>
-                                <option value="Putih">Putih</option>
-                                <option value="Hitam">Hitam</option>
+                                <option value="Merah" <?= $karyawan['warna_baju'] == 'Merah' ? 'selected' : '' ?>>Merah
+                                </option>
+                                <option value="Biru" <?= $karyawan['warna_baju'] == 'Biru' ? 'selected' : '' ?>>Biru
+                                </option>
+                                <option value="Hijau" <?= $karyawan['warna_baju'] == 'Hijau' ? 'selected' : '' ?>>Hijau
+                                </option>
+                                <option value="Kuning" <?= $karyawan['warna_baju'] == 'Kuning' ? 'selected' : '' ?>>
+                                    Kuning
+                                </option>
+                                <option value="Putih" <?= $karyawan['warna_baju'] == 'Putih' ? 'selected' : '' ?>>Putih
+                                </option>
+                                <option value="Hitam" <?= $karyawan['warna_baju'] == 'Hitam' ? 'selected' : '' ?>>Hitam
+                                </option>
                             </select>
                         </div>
                         <div class="form-group mb-2">
                             <label for="status_baju">Status Baju</label>
                             <select name="status_baju" id="status_baju" class="form-control" required>
                                 <option value="">Pilih Status Baju</option>
-                                <option value="Harian">Harian</option>
-                                <option value="Training">Training</option>
-                                <option value="Magang">Magang</option>
-                                <option value="Karyawan">Karyawan</option>
-                                <option value="Staff">Staff</option>
+                                <option value="Harian" <?= $karyawan['status_baju'] == 'Harian' ? 'selected' : '' ?>>
+                                    Harian
+                                </option>
+                                <option value="Training"
+                                    <?= $karyawan['status_baju'] == 'Training' ? 'selected' : '' ?>>
+                                    Training</option>
+                                <option value="Magang" <?= $karyawan['status_baju'] == 'Magang' ? 'selected' : '' ?>>
+                                    Magang
+                                </option>
+                                <option value="Karyawan"
+                                    <?= $karyawan['status_baju'] == 'Karyawan' ? 'selected' : '' ?>>
+                                    Karyawan</option>
+                                <option value="Staff" <?= $karyawan['status_baju'] == 'Staff' ? 'selected' : '' ?>>Staff
+                                </option>
                             </select>
                         </div>
                         <div class="form-group mb-2">
                             <label for="tgl_lahir">Tanggal Lahir</label>
-                            <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir" required>
+                            <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir"
+                                value="<?= $karyawan['tgl_lahir'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="tgl_masuk">Tanggal Masuk</label>
-                            <input type="date" class="form-control" name="tgl_masuk" id="tgl_masuk" required>
+                            <input type="date" class="form-control" name="tgl_masuk" id="tgl_masuk"
+                                value="<?= $karyawan['tgl_masuk'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="bagian">Bagian</label>
                             <select name="bagian" id="bagian" class="form-control" required>
                                 <option value="">Pilih Bagian</option>
                                 <?php foreach ($bagian as $bagian) : ?>
-                                    <option value="<?= $bagian['id_bagian'] ?>">
+                                    <option value="<?= $bagian['id_bagian'] ?>"
+                                        <?= $karyawan['id_bagian'] == $bagian['id_bagian'] ? 'selected' : '' ?>>
                                         <?= $bagian['nama_bagian'] . ' - ' . $bagian['area'] ?></option>
                                 <?php endforeach ?>
                             </select>
@@ -116,10 +143,15 @@
                             <label for="status_aktif">Status Aktif</label>
                             <select name="status_aktif" id="status_aktif" class="form-control" required>
                                 <option value="">Pilih Status Aktif</option>
-                                <option value="Aktif">Aktif</option>
-                                <option value="Tidak Aktif">Tidak Aktif</option>
+                                <option value="Aktif" <?= $karyawan['status_aktif'] == 'Aktif' ? 'selected' : '' ?>>
+                                    Aktif
+                                </option>
+                                <option value="Tidak Aktif"
+                                    <?= $karyawan['status_aktif'] == 'Tidak Aktif' ? 'selected' : '' ?>>Tidak Aktif
+                                </option>
                             </select>
                         </div>
+
                         <a href="<?= base_url('monitoring/datakaryawan') ?>"
                             class="btn btn-secondary btn-sm">Kembali</a>
                         <a href="<?= base_url('monitoring/karyawanImport') ?>" class="btn btn-success btn-sm">Import

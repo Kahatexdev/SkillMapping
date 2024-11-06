@@ -2,29 +2,30 @@
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
+        <!-- using tag pre -->
         <script>
             $(document).ready(function() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: '<?= session()->getFlashdata('success') ?>',
+                    html: '<?= session()->getFlashdata('success') ?>',
                 });
             });
         </script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')) : ?>
+        <!-- using tag pre -->
         <script>
             $(document).ready(function() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: '<?= session()->getFlashdata('error') ?>',
+                    html: '<?= session()->getFlashdata('error') ?>',
                 });
             });
         </script>
     <?php endif; ?>
-
 
 
     <div class="row mt-4">

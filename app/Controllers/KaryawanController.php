@@ -95,7 +95,7 @@ class KaryawanController extends BaseController
         $sheet->setCellValue('M2', 'KK1A');
         $sheet->setCellValue('N2', 'Aktif');
 
-// 
+        // 
         // Menentukan nama file
         $fileName = 'Template_Data_Karyawan.xlsx';
 
@@ -137,100 +137,252 @@ class KaryawanController extends BaseController
                 $errorMessage = "Row {$row}: ";
                 $kodeKartu = $dataSheet->getCell('A' . $row)->getValue();
                 $namaKaryawan = $dataSheet->getCell('B' . $row)->getValue();
-                $tanggalMasuk = $dataSheet->getCell('C' . $row)->getValue();
+                $shift = $dataSheet->getCell('C' . $row)->getValue();
                 $jenisKelamin = $dataSheet->getCell('D' . $row)->getValue();
-                $shift = $dataSheet->getCell('E' . $row)->getValue();
-                $namaBagian = $dataSheet->getCell('F' . $row)->getValue();
-                $status = $dataSheet->getCell('G' . $row)->getValue();
-                // dd($status);
+                $libur = $dataSheet->getCell('E' . $row)->getValue();
+                $liburTambahan = $dataSheet->getCell('F' . $row)->getValue();
+                $warnaBaju = $dataSheet->getCell('G' . $row)->getValue();
+                $statusBaju = $dataSheet->getCell('H' . $row)->getValue();
+                $tanggalLahir = $dataSheet->getCell('I' . $row)->getValue();
+                $tanggalMasuk = $dataSheet->getCell('J' . $row)->getValue();
+                $namaBagian = $dataSheet->getCell('K' . $row)->getValue();
+                $areaUtama = $dataSheet->getCell('L' . $row)->getValue();
+                $area = $dataSheet->getCell('M' . $row)->getValue();
+                $statusAktif = $dataSheet->getCell('N' . $row)->getValue();
+                // dd($statusAktif);
 
-
-                // Validasi data per kolom
+                // Validasi kode kartu
                 if (empty($kodeKartu)) {
                     $isValid = false;
-                    $errorMessage .= "Kode Kartu is required. ";
+                    $errorMessage .= "Kode Kartu harus diisi. ";
+                } else {
+                    $karyawan = $karyawanModel->where('kode_kartu', $kodeKartu)->first();
+                    if ($karyawan) {
+                        $isValid = false;
+                        $errorMessage .= "Kode Kartu sudah ada. ";
+                    }
                 }
+
+                // Validasi nama karyawan
                 if (empty($namaKaryawan)) {
                     $isValid = false;
-                    $errorMessage .= "Nama Karyawan is required. ";
+                    $errorMessage .= "Nama Karyawan harus diisi. ";
+                } else {
+                    $karyawan = $karyawanModel->where('nama_karyawan', $namaKaryawan)->first();
+                    if ($karyawan) {
+                        $isValid = false;
+                        $errorMessage .= "Nama Karyawan sudah ada. ";
+                    }
                 }
+
+                // Validasi tangal lahir
+                if (empty($tanggalLahir)) {
+                    $isValid = false;
+                    $errorMessage .= "Tanggal Lahir harus diisi. ";
+                } else {
+                    $tanggalLahir = date_create_from_format('Y/m/d', $tanggalLahir);
+                    if (!$tanggalLahir) {
+                        $isValid = false;
+                        $errorMessage .= "Format Tanggal Lahir salah. ";
+                    }
+                }
+
+                // Validasi tanggal masuk
                 if (empty($tanggalMasuk)) {
                     $isValid = false;
-                    $errorMessage .= "Tanggal Masuk is required. ";
+                    $errorMessage .= "Tanggal Masuk harus diisi. ";
+                } else {
+                    $tanggalMasuk = date_create_from_format('Y/m/d', $tanggalMasuk);
+                    // dd($tanggalMasuk);
+                    if (!$tanggalMasuk) {
+                        $isValid = false;
+                        $errorMessage .= "Format Tanggal Masuk salah. ";
+                    }
                 }
-                if (empty($jenisKelamin)) {
-                    $isValid = false;
-                    $errorMessage .= "Jenis Kelamin is required. ";
-                }
-                if (empty($shift)) {
-                    $isValid = false;
-                    $errorMessage .= "Shift is required. ";
-                }
+
+                // validasi nama bagian ketika area utama dan area cocok dengan table bagian maka data di save
                 if (empty($namaBagian)) {
                     $isValid = false;
-                    $errorMessage .= "Nama Bagian is required. ";
-                }
-                if (empty($status)) {
-                    $isValid = false;
-                    $errorMessage .= "Status is required. ";
-                }
-
-
-                if ($isValid) {
-                    $bagian = $bagianModel->where('nama_bagian', $namaBagian)->first();
-                    if ($bagian) {
-                        $data = [
-                            'kode_kartu' => $kodeKartu,
-                            'nama_karyawan' => $namaKaryawan,
-                            'tanggal_masuk' => $tanggalMasuk,
-                            'jenis_kelamin' => $jenisKelamin,
-                            'shift' => $shift,
-                            'id_bagian' => $bagian['id_bagian'],
-                            'status' => $status
-                        ];
-                        // Check if kode_kartu already exists in the database
-                        $existingKaryawan = $karyawanModel->where('kode_kartu', $kodeKartu)->first();
-                        // dd($existingKaryawan);   
-                        if ($existingKaryawan) {
-                            $isValid = false;
-                            $errorMessage .= "Kode kartu already exists. ";
-                        }
-
-                        // Only save if valid
-                        if (!$isValid) {
-                            $isValid = false;
-                            $errorMessage .= "Kode kartu already exists. ";
-                        } else {
-                            $karyawanModel->save($data);
-                            $successCount++;
-                        }
-                    } else {
-                        $isValid = false;
-                        $errorMessage .= "Bagian not found. ";
-                    }
+                    $errorMessage .= "Nama Bagian harus diisi. ";
                 } else {
-                    $errorCount++;
+                    $bagian = $bagianModel->where('nama_bagian', $namaBagian)->where('area_utama', $areaUtama)->where('area', $area)->first();
+                    if (!$bagian) {
+                        $isValid = false;
+                        $errorMessage .= "Nama Bagian tidak ditemukan. ";
+                    }
+                }
+
+                // kalau ada kartu yang sama maka tidak akan di save
+                if ($isValid) {
+                    $data = [
+                        'kode_kartu' => $kodeKartu,
+                        'nama_karyawan' => $namaKaryawan,
+                        'shift' => $shift,
+                        'jenis_kelamin' => $jenisKelamin,
+                        'libur' => $libur,
+                        'libur_tambahan' => $liburTambahan,
+                        'warna_baju' => $warnaBaju,
+                        'status_baju' => $statusBaju,
+                        'tgl_lahir' => $tanggalLahir->format('Y-m-d'),
+                        'tgl_masuk' => $tanggalMasuk->format('Y-m-d'),
+                        'id_bagian' => $bagian['id_bagian'],
+                        'status_aktif' => $statusAktif,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                    // dd($data);
+
+                    $karyawanModel->insert($data);
+                    $successMessage = "Data karyawan berhasil disimpan.";
+                    $successCount++;
+                } else {
                     $errorMessages[] = $errorMessage;
+                    $errorCount++;
                 }
             }
 
-            // kalau ada kartu yang sama maka tidak akan di save
-            if ($isValid) {
-                return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diimport.');
+            // Jika ada data yang gagal disimpan
+            if ($errorCount > 0) {
+                $errorMessages = implode("<br>", $errorMessages);
+                return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
             } else {
-                return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', 'Data karyawan gagal diimport.');
+                return redirect()->to(base_url('monitoring/karyawanImport'))->with('success', "{$successCount} data berhasil disimpan.");
             }
-
-            return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diimport.');
         } else {
             return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'Invalid file.');
         }
     }
 
-    public function empty()
+    public function create()
+    {
+        $bagianModel = new \App\Models\BagianModel();
+        $bagian = $bagianModel->findAll();
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Karyawan',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => 'active',
+            'active5' => '',
+            'active6' => '',
+            'bagian' => $bagian
+        ];
+        return view('Karyawan/create', $data);
+    }
+
+    public function store()
     {
         $karyawanModel = new \App\Models\KaryawanModel();
-        $karyawanModel->truncate();
-        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dikosongkan.');
+        $bagianModel = new \App\Models\BagianModel();
+
+        $kodeKartu = $this->request->getPost('kode_kartu');
+        $namaKaryawan = $this->request->getPost('nama_karyawan');
+        $shift = $this->request->getPost('shift');
+        $jenisKelamin = $this->request->getPost('jenis_kelamin');
+        $libur = $this->request->getPost('libur');
+        $liburTambahan = $this->request->getPost('libur_tambahan');
+        $warnaBaju = $this->request->getPost('warna_baju');
+        $statusBaju = $this->request->getPost('status_baju');
+        $tanggalLahir = $this->request->getPost('tgl_lahir');
+        $tanggalMasuk = $this->request->getPost('tgl_masuk');
+        $bagian = $this->request->getPost('bagian');
+        $statusAktif = $this->request->getPost('status_aktif');
+
+        $bagian = $bagianModel->find($bagian);
+        // dd($bagian);
+
+        $data = [
+            'kode_kartu' => $kodeKartu,
+            'nama_karyawan' => $namaKaryawan,
+            'shift' => $shift,
+            'jenis_kelamin' => $jenisKelamin,
+            'libur' => $libur,
+            'libur_tambahan' => $liburTambahan,
+            'warna_baju' => $warnaBaju,
+            'status_baju' => $statusBaju,
+            'tgl_lahir' => $tanggalLahir,
+            'tgl_masuk' => $tanggalMasuk,
+            'id_bagian' => $bagian['id_bagian'],
+            'status_aktif' => $statusAktif,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        $karyawanModel->insert($data);
+
+        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil disimpan.');
+    }
+
+    public function edit($id)
+    {
+        $karyawanModel = new \App\Models\KaryawanModel();
+        $bagianModel = new \App\Models\BagianModel();
+        $karyawan = $karyawanModel->find($id);
+        $bagian = $bagianModel->findAll();
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Karyawan',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => 'active',
+            'active5' => '',
+            'active6' => '',
+            'karyawan' => $karyawan,
+            'bagian' => $bagian
+        ];
+        return view('Karyawan/edit', $data);
+    }
+
+    public function update($id)
+    {
+        $karyawanModel = new \App\Models\KaryawanModel();
+        $bagianModel = new \App\Models\BagianModel();
+
+        $kodeKartu = $this->request->getPost('kode_kartu');
+        $namaKaryawan = $this->request->getPost('nama_karyawan');
+        $shift = $this->request->getPost('shift');
+        $jenisKelamin = $this->request->getPost('jenis_kelamin');
+        $libur = $this->request->getPost('libur');
+        $liburTambahan = $this->request->getPost('libur_tambahan');
+        $warnaBaju = $this->request->getPost('warna_baju');
+        $statusBaju = $this->request->getPost('status_baju');
+        $tanggalLahir = $this->request->getPost('tgl_lahir');
+        $tanggalMasuk = $this->request->getPost('tgl_masuk');
+        $bagian = $this->request->getPost('bagian');
+        $statusAktif = $this->request->getPost('status_aktif');
+
+        $bagian = $bagianModel->find($bagian);
+
+        $data = [
+            'kode_kartu' => $kodeKartu,
+            'nama_karyawan' => $namaKaryawan,
+            'shift' => $shift,
+            'jenis_kelamin' => $jenisKelamin,
+            'libur' => $libur,
+            'libur_tambahan' => $liburTambahan,
+            'warna_baju' => $warnaBaju,
+            'status_baju' => $statusBaju,
+            'tgl_lahir' => $tanggalLahir,
+            'tgl_masuk' => $tanggalMasuk,
+            'id_bagian' => $bagian['id_bagian'],
+            'status_aktif' => $statusAktif,
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        $karyawanModel->update($id, $data);
+
+        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');
+    }
+
+    public function delete($id)
+    {
+        $karyawanModel = new \App\Models\KaryawanModel();
+        $karyawanModel->delete($id);
+
+        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dihapus.');
     }
 }

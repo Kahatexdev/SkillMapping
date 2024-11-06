@@ -19,7 +19,11 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('karyawanImport', 'KaryawanController::import');
     $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
     $routes->post('karyawanStoreImport', 'KaryawanController::upload');
-    $routes->get('karyawanEmpty', 'KaryawanController::empty');
+    $routes->get('karyawanCreate', 'KaryawanController::create');
+    $routes->post('karyawanStore', 'KaryawanController::store');
+    $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
+    $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
+    $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
     $routes->get('dataUser', 'MonitoringController::user');
     $routes->get('userCreate', 'UserController::create');
     $routes->post('userStore', 'UserController::store');

@@ -12,7 +12,23 @@ class KaryawanModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_karyawan', 'kode_kartu', 'nama_karyawan', 'jenis_kelamin', 'tgl_masuk', 'shift', 'id_bagian', 'status'];
+    protected $allowedFields    = [
+        'id_karyawan',
+        'kode_kartu',
+        'nama_karyawan',
+        'shift',
+        'jenis_kelamin',
+        'libur',
+        'libur_tambahan',
+        'warna_baju',
+        'status_baju',
+        'tgl_lahir',
+        'tgl_masuk',
+        'id_bagian',
+        'status_aktif',
+        'created_at',
+        'updated_at'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +37,7 @@ class KaryawanModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -44,16 +60,9 @@ class KaryawanModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-
-    public function cek_karyawan($nik)
+    public function getBagian()
     {
-        return $this->select('nik')
-            ->where('nik', $nik)
-            ->first();
-    }
-    public function getdata()
-    {
-        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.tgl_masuk, karyawan.jenis_kelamin, karyawan.shift, karyawan.status_aktif, bagian.nama_bagian')
+        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, bagian.keterangan, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             ->findAll();
     }

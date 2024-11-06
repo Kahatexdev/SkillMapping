@@ -45,7 +45,8 @@ class MonitoringController extends BaseController
     }
     public function karyawan()
     {
-        $karyawan = $this->karyawanmodel->getdata();
+        $karyawan = $this->karyawanmodel->getBagian();
+        // dd($karyawan);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Karyawan',
@@ -56,7 +57,6 @@ class MonitoringController extends BaseController
             'active5' => '',
             'active6' => '',
             'karyawan' => $karyawan
-
         ];
         return view(session()->get('role') . '/karyawan', $data);
     }
