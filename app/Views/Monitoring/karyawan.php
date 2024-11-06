@@ -13,6 +13,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
+                    <a href="<?= base_url('monitoring/') ?>" class="btn btn-primary btn-sm">Tambah Data</a>
                     <!-- import data karyawan -->
                     <a href="<?= base_url('monitoring/karyawanImport') ?>"
                         class="btn btn-success btn-sm import-btn">Import
@@ -31,6 +32,7 @@
                                 <th>Shift</th>
                                 <th>Bagian</th>
                                 <th>Status</th>
+                                <th>Aksi</th>
                             </thead>
                             <tbody>
                                 <?php if (!empty($karyawan)) : ?>
@@ -39,11 +41,15 @@
                                             <td><?= $karyawan['id_karyawan'] ?></td>
                                             <td><?= $karyawan['kode_kartu'] ?></td>
                                             <td><?= $karyawan['nama_karyawan'] ?></td>
-                                            <td><?= $karyawan['tanggal_masuk'] ?></td>
+                                            <td><?= $karyawan['tgl_masuk'] ?></td>
                                             <td><?= $karyawan['jenis_kelamin'] ?></td>
                                             <td><?= $karyawan['shift'] ?></td>
                                             <td><?= $karyawan['nama_bagian'] ?></td>
                                             <td><?= $karyawan['status'] ?></td>
+                                            <td>
+                                                <a class="btn btn-warning btn-sm">Edit</a>
+                                                <a class="btn btn-danger btn-sm">Hapus</a>
+                                            </td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else : ?>

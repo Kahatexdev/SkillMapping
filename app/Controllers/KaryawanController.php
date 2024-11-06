@@ -44,35 +44,56 @@ class KaryawanController extends BaseController
         // Menyusun header kolom
         $sheet->setCellValue('A1', 'Kode Kartu');
         $sheet->setCellValue('B1', 'Nama Karyawan');
-        $sheet->setCellValue('C1', 'Tanggal Masuk');
+        $sheet->setCellValue('C1', 'Shift');
         $sheet->setCellValue('D1', 'Jenis Kelamin');
-        $sheet->setCellValue('E1', 'Shift');
-        $sheet->setCellValue('F1', 'Nama Bagian');
-        $sheet->setCellValue('G1', 'Status');
+        $sheet->setCellValue('E1', 'Libur');
+        $sheet->setCellValue('F1', 'Libur Tambahan');
+        $sheet->setCellValue('G1', 'Warna Baju');
+        $sheet->setCellValue('H1', 'Status Baju');
+        $sheet->setCellValue('I1', 'Tanggal Lahir');
+        $sheet->setCellValue('J1', 'Tanggal Masuk');
+        $sheet->setCellValue('K1', 'Nama Bagian');
+        $sheet->setCellValue('L1', 'Area Utama');
+        $sheet->setCellValue('M1', 'Area');
+        $sheet->setCellValue('N1', 'Status Aktif');
 
         // Mengatur lebar kolom
         $sheet->getColumnDimension('A')->setWidth(20);
-        $sheet->getColumnDimension('B')->setWidth(30);
-        $sheet->getColumnDimension('C')->setWidth(15);
-        $sheet->getColumnDimension('D')->setWidth(15);
-        $sheet->getColumnDimension('E')->setWidth(15);
-        $sheet->getColumnDimension('F')->setWidth(30);
-        $sheet->getColumnDimension('G')->setWidth(30);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(20);
+        $sheet->getColumnDimension('J')->setWidth(20);
+        $sheet->getColumnDimension('K')->setWidth(20);
+        $sheet->getColumnDimension('L')->setWidth(20);
+        $sheet->getColumnDimension('M')->setWidth(20);
+        $sheet->getColumnDimension('N')->setWidth(20);
 
 
         // Mengatur style header
-        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:G1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
-        $sheet->getStyle('A1:G1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:N1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
+        $sheet->getStyle('A1:N1')->getAlignment()->setHorizontal('center');
 
         // isi data
         $sheet->setCellValue('A2', 'KK001');
         $sheet->setCellValue('B2', 'John Doe');
-        $sheet->setCellValue('C2', '2021-01-01');
+        $sheet->setCellValue('C2', 'A');
         $sheet->setCellValue('D2', 'L');
-        $sheet->setCellValue('E2', 'A');
-        $sheet->setCellValue('F2', 'KNITTER');
-        $sheet->setCellValue('G2', 'Aktif');
+        $sheet->setCellValue('E2', '2');
+        $sheet->setCellValue('F2', '2');
+        $sheet->setCellValue('G2', 'PINK');
+        $sheet->setCellValue('H2', 'STAFF');
+        $sheet->setCellValue('I2', '2001/09/12');
+        $sheet->setCellValue('J2', '2024/09/12');
+        $sheet->setCellValue('K2', 'KNITTER');
+        $sheet->setCellValue('L2', 'KK1');
+        $sheet->setCellValue('M2', 'KK1A');
+        $sheet->setCellValue('N2', 'Aktif');
 
 
         // Menentukan nama file
