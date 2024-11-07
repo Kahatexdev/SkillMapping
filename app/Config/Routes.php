@@ -51,4 +51,6 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('downloadTemplateAbsen', 'AbsenController::downloadTemplate');
     $routes->post('absenStoreImport', 'AbsenController::upload');
     $routes->get('absenEmpty', 'AbsenController::empty');
+    // bsmc
+    $routes->get('dataBsmc', 'MonitoringController::bsmc');
 });
