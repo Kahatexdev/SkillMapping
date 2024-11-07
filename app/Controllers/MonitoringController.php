@@ -45,7 +45,7 @@ class MonitoringController extends BaseController
             'active6' => ''
 
         ];
-        return view(session()->get('role') . '/index', $data);
+        return view('Layout/index', $data);
     }
     public function karyawan()
     {

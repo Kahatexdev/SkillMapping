@@ -35,6 +35,7 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'Monitoring'    => \App\Filters\MonitoringFilter::class,
+        'Mandor'        => \App\Filters\MandorFilter::class,
     ];
 
     /**
