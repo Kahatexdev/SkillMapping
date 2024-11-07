@@ -11,7 +11,6 @@ $routes->post('authverify', 'AuthController::login');
 $routes->get('logout', 'AuthController::logout');
 // $routes->get('/pengguna', 'UserController::index');
 
-
 $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('', 'MonitoringController::index');
     // $routes->post('inputbagian', 'MonitoringController::inputbagian');
@@ -52,3 +51,29 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->post('absenStoreImport', 'AbsenController::upload');
     $routes->get('absenEmpty', 'AbsenController::empty');
 });
+
+$routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
+    $routes->get('', 'MandorController::index');
+    // $routes->post('inputbagian', 'MonitoringController::inputbagian');
+    $routes->get('datakaryawan', 'MonitoringController::karyawan');
+    $routes->get('karyawanImport', 'KaryawanController::import');
+    $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
+    $routes->post('karyawanStoreImport', 'KaryawanController::upload');
+    $routes->get('karyawanCreate', 'KaryawanController::create');
+    $routes->post('karyawanStore', 'KaryawanController::store');
+    $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
+    $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
+    $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
+
+    $routes->get('dataAbsen', 'MonitoringController::absen');
+    $routes->get('absenCreate', 'AbsenController::create');
+    $routes->post('absenStore', 'AbsenController::store');
+    $routes->get('absenEdit/(:num)', 'AbsenController::edit/$1');
+    $routes->post('absenUpdate/(:num)', 'AbsenController::update/$1');
+    $routes->get('absenDelete/(:num)', 'AbsenController::delete/$1');
+    $routes->get('absenImport', 'AbsenController::import');
+    $routes->get('downloadTemplateAbsen', 'AbsenController::downloadTemplate');
+    $routes->post('absenStoreImport', 'AbsenController::upload');
+    $routes->get('absenEmpty', 'AbsenController::empty');
+});
+

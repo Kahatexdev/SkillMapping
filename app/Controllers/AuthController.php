@@ -15,6 +15,7 @@ class AuthController extends BaseController
 
     public function login()
     {
+        //Password perlu di hash?
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
         $UserModel = new UserModel;
@@ -30,6 +31,8 @@ class AuthController extends BaseController
         switch ($userData['role']) {
             case 'monitoring':
                 return redirect()->to(base_url('/monitoring'));
+            case 'mandor':
+                return redirect()->to(base_url('/mandor'));
 
             default:
                 return redirect()->to(base_url('/login'))->withInput()->with('error', 'Invalid username or password');
