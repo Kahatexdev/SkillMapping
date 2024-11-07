@@ -32,8 +32,8 @@
 
 <body class="g-sidenav-show  bg-gray-100 bg-opacity-50">
     
-        <?= include('sidebar.php');?>
-        <?= include('navbar.php');?>
+        <?php include('sidebar.php');?>
+        <?php include('navbar.php');?>
 
     <!--   Core JS Files   -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
