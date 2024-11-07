@@ -1,28 +1,28 @@
-<?php $this->extend('Monitoring/layout'); ?>
+<?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            html: '<?= session()->getFlashdata('success') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    html: '<?= session()->getFlashdata('success') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            html: '<?= session()->getFlashdata('error') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    html: '<?= session()->getFlashdata('error') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
 
@@ -133,9 +133,9 @@
                             <select name="bagian" id="bagian" class="form-control" required>
                                 <option value="">Pilih Bagian</option>
                                 <?php foreach ($bagian as $bagian) : ?>
-                                <option value="<?= $bagian['id_bagian'] ?>"
-                                    <?= $karyawan['id_bagian'] == $bagian['id_bagian'] ? 'selected' : '' ?>>
-                                    <?= $bagian['nama_bagian'] . ' - ' . $bagian['area'] ?></option>
+                                    <option value="<?= $bagian['id_bagian'] ?>"
+                                        <?= $karyawan['id_bagian'] == $bagian['id_bagian'] ? 'selected' : '' ?>>
+                                        <?= $bagian['nama_bagian'] . ' - ' . $bagian['area'] ?></option>
                                 <?php endforeach ?>
                             </select>
                         </div>

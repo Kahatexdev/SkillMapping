@@ -50,10 +50,16 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('downloadTemplateAbsen', 'AbsenController::downloadTemplate');
     $routes->post('absenStoreImport', 'AbsenController::upload');
     $routes->get('absenEmpty', 'AbsenController::empty');
+    // bsmc
+    $routes->get('dataBsmc', 'MonitoringController::bsmc');
+    $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
+    $routes->post('bsmcStoreImport', 'BsMcController::upload');
+    $routes->get('bsmcCreate', 'BsMcController::create');
+    $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
 });
 
 $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
-    $routes->get('', 'MandorController::index');
+    $routes->get('', 'MandorController::karyawan');
     
     $routes->get('dataKaryawan', 'MandorController::karyawan');
     // $routes->get('karyawanImport', 'KaryawanController::import');
@@ -78,4 +84,3 @@ $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
 
     $routes->get('dataPenilaian', 'MandorController::penilaian');
 });
-

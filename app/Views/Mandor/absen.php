@@ -11,12 +11,11 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <a href="<?= base_url('mandor/absenCreate') ?>" class="btn btn-primary btn-sm">Tambah Absen</a>
+                    <!-- <a href="<?= base_url('mandor/absenCreate') ?>" class="btn btn-primary btn-sm">Tambah Absen</a>
                     <a href="<?= base_url('mandor/absenImport') ?>" class="btn btn-success btn-sm import-btn">Import
                         Absen</a>
-                    <!-- kosongkan data absen -->
                     <a href="<?= base_url('mandor/absenEmpty') ?>" class="btn btn-danger btn-sm">Kosongkan Data
-                        Absen</a>
+                        Absen</a> -->
                     <div class="table-responsive">
                         <table id="absenTable" class="table align-items-center mb-0">
                             <thead>

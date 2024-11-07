@@ -26,18 +26,6 @@ class MandorController extends BaseController
 
     public function index()
     {
-        $data = [
-            'role' => session()->get('role'),
-            'title' => 'Dashboard',
-            'active1' => 'active',
-            'active2' => '',
-            'active3' => '',
-            'active4' => '',
-            'active5' => '',
-            'active6' => ''
-
-        ];
-        return view('Layout/index', $data);
     }
 
     public function karyawan()
@@ -47,12 +35,9 @@ class MandorController extends BaseController
         $data = [
             'role' => session()->get('role'),
             'title' => 'Karyawan',
-            'active1' => '',
-            'active2' => 'active',
+            'active1' => 'active',
+            'active2' => '',
             'active3' => '',
-            'active4' => '',
-            'active5' => '',
-            'active6' => '',
             'karyawan' => $karyawan
         ];
         return view(session()->get('role') . '/karyawan', $data);
@@ -70,11 +55,8 @@ class MandorController extends BaseController
             'role' => session()->get('role'),
             'title' => 'Absen',
             'active1' => '',
-            'active2' => '',
-            'active3' => 'active',
-            'active4' => '',
-            'active5' => '',
-            'active6' => '',
+            'active2' => 'active',
+            'active3' => '',
             'absen' => $absen
         ];
         // dd($absen);
@@ -89,8 +71,8 @@ class MandorController extends BaseController
             'title' => 'Penilaian',
             'active1' => '',
             'active2' => '',
-            'active3' => '',
-            'active4' => 'active',
+            'active3' => 'active',
+            'active4' => '',
             'active5' => '',
             'active6' => ''
             // 'penilaian' => $penilaian

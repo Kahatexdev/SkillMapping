@@ -9,16 +9,16 @@
                     <h5 class="float-start">
                         Data Karyawan
                     </h5>
-                    <div class="col text-end">
+                    <!-- <div class="col text-end">
                         <a href="<?= base_url('mandor/downloadTemplateKaryawan') ?>"
                             class="btn bg-gradient-success btn-sm">Download Template Excel</a>
                         <a href="<?= base_url('mandor/karyawanCreate') ?>" class="btn bg-gradient-info btn-sm">Input
                             Data Karyawan</a>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="card-body">
                     <!-- form import  data karyawan -->
-                    <form action="<?= base_url('mandor/karyawanStoreImport') ?>" method="post"
+                    <!-- <form action="<?= base_url('mandor/karyawanStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="form-group mb-2">
                             <label for="file">File Excel</label>
@@ -37,7 +37,7 @@
                                 kosong</small>
                         </div>
                         <button type="submit" class="btn bg-gradient-info btn-lg w-100">Import</button>
-                    </form>
+                    </form> -->
 
                     <div class="table-responsive">
                         <table id="karyawanTable" class="table table-striped table-hover table-bordered">
@@ -55,7 +55,7 @@
                                 <th>Tanggal Masuk</th>
                                 <th>Bagian</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <!-- <th>Aksi</th> -->
                             </thead>
                             <tbody>
                                 <?php if (!empty($karyawan)) : ?>
@@ -74,12 +74,12 @@
                                     <td><?= $karyawan['tgl_masuk'] ?></td>
                                     <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area'] ?></td>
                                     <td><?= $karyawan['status_aktif'] ?></td>
-                                    <td>
+                                    <!-- <td>
                                         <a class="btn btn-warning btn-sm"
                                             href="<?= base_url('mandor/karyawanEdit/' . $karyawan['id_karyawan']) ?>">Edit</a>
                                         <button class="btn btn-danger btn-sm"
                                             onclick="confirmDelete('<?= $karyawan['id_karyawan'] ?>')">Delete</button>
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 <?php endforeach ?>
                                 <?php else : ?>

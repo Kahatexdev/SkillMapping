@@ -13,7 +13,7 @@
                     <a href="<?= base_url('monitoring/bagianCreate') ?>" class="btn btn-primary btn-sm">Tambah Data
                         Bagian</a>
                     <div class="table-responsive">
-                        <table id="bagianTable" class="table align-items-center justify-content-center">
+                        <table id="bagianTable" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th>No</th>

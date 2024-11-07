@@ -18,7 +18,7 @@
                     <a href="<?= base_url('monitoring/absenEmpty') ?>" class="btn btn-danger btn-sm">Kosongkan Data
                         Absen</a>
                     <div class="table-responsive">
-                        <table id="absenTable" class="table align-items-center mb-0">
+                        <table id="absenTable" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <th>No</th>
                                 <th>ID Karyawan</th>

@@ -2,23 +2,25 @@
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
 
+
+
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-header">
                     <h5 class="float-start">
-                        Data Karyawan
+                        Data Bs Mesin
                     </h5>
                     <div class="col text-end">
-                        <a href="<?= base_url('monitoring/downloadTemplateKaryawan') ?>"
+                        <a href="<?= base_url('monitoring/downloadTemplateBsmc') ?>"
                             class="btn bg-gradient-success btn-sm">Download Template Excel</a>
-                        <a href="<?= base_url('monitoring/karyawanCreate') ?>" class="btn bg-gradient-info btn-sm">Input
-                            Data Karyawan</a>
+                        <a href="<?= base_url('monitoring/bsmcCreate') ?>" class="btn bg-gradient-info btn-sm">Input
+                            Data Bs Mesin</a>
                     </div>
                 </div>
                 <div class="card-body">
                     <!-- form import  data karyawan -->
-                    <form action="<?= base_url('monitoring/karyawanStoreImport') ?>" method="post"
+                    <form action="<?= base_url('monitoring/bsmcStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="form-group mb-2">
                             <label for="file">File Excel</label>
@@ -45,46 +47,36 @@
                                 <th>No</th>
                                 <th>Kode Kartu</th>
                                 <th>Nama Karyawan</th>
-                                <th>Shift</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Libur</th>
-                                <th>Libur Tambahan</th>
-                                <th>Warna Baju</th>
-                                <th>Status Baju</th>
-                                <th>Tanggal Lahir</th>
-                                <th>Tanggal Masuk</th>
-                                <th>Bagian</th>
-                                <th>Status</th>
+                                <th>Tanggal</th>
+                                <th>Nomor Model</th>
+                                <th>Inisial</th>
+                                <th>Qty Prod Mc</th>
+                                <th>Qty Bs</th>
                                 <th>Aksi</th>
                             </thead>
                             <tbody>
-                                <?php if (!empty($karyawan)) : ?>
-                                    <?php foreach ($karyawan as $karyawan) : ?>
+                                <?php if (!empty($bsmc)) : ?>
+                                    <?php foreach ($bsmc as $bsmc) : ?>
                                         <tr>
-                                            <td><?= $karyawan['id_karyawan'] ?></td>
-                                            <td><?= $karyawan['kode_kartu'] ?></td>
-                                            <td><?= $karyawan['nama_karyawan'] ?></td>
-                                            <td><?= $karyawan['shift'] ?></td>
-                                            <td><?= $karyawan['jenis_kelamin'] ?></td>
-                                            <td><?= $karyawan['libur'] ?></td>
-                                            <td><?= $karyawan['libur_tambahan'] ?></td>
-                                            <td><?= $karyawan['warna_baju'] ?></td>
-                                            <td><?= $karyawan['status_baju'] ?></td>
-                                            <td><?= $karyawan['tgl_lahir'] ?></td>
-                                            <td><?= $karyawan['tgl_masuk'] ?></td>
-                                            <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area'] ?></td>
-                                            <td><?= $karyawan['status_aktif'] ?></td>
+                                            <td><?= $bsmc['id_bsmc'] ?></td>
+                                            <td><?= $bsmc['kode_kartu'] ?></td>
+                                            <td><?= $bsmc['nama_karyawan'] ?></td>
+                                            <td><?= $bsmc['tanggal'] ?></td>
+                                            <td><?= $bsmc['no_model'] ?></td>
+                                            <td><?= $bsmc['inisial'] ?></td>
+                                            <td><?= $bsmc['qty_prod_mc'] ?></td>
+                                            <td><?= $bsmc['qty_bs'] ?></td>
                                             <td>
                                                 <a class="btn btn-warning btn-sm"
-                                                    href="<?= base_url('monitoring/karyawanEdit/' . $karyawan['id_karyawan']) ?>">Edit</a>
+                                                    href="<?= base_url('monitoring/bsmcEdit/' . $bsmc['id_bsmc']) ?>">Edit</a>
                                                 <button class="btn bg-gradient-danger btn-sm"
-                                                    onclick="confirmDelete('<?= $karyawan['id_karyawan'] ?>')">Delete</button>
+                                                    onclick="confirmDelete('<?= $bsmc['id_bsmc'] ?>')">Delete</button>
                                             </td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="14" class="text-center">No Karyawan found</td>
+                                        <td colspan="9" class="text-center">No Bs Mesin found</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -108,7 +100,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/karyawanDelete/') ?>" + id;
+                window.location.href = "<?= base_url('monitoring/bsmcDelete/') ?>" + id;
             }
         })
     }

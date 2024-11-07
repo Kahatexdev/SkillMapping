@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <a href="<?= base_url('monitoring/userCreate') ?>" class="btn btn-primary btn-sm">Tambah User</a>
                     <div class="table-responsive">
-                        <table id="userTable" class="table align-items-center mb-0">
+                        <table id="userTable" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th>No</th>

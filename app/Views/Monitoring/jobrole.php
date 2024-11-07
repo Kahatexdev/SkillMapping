@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <a href="<?= base_url('monitoring/jobroleCreate') ?>" class="btn btn-primary btn-sm">Tambah Job</a>
                     <div class="table-responsive">
-                        <table id="jobroleTable" class="table align-items-center mb-0">
+                        <table id="jobroleTable" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <th>No</th>
                                 <th>ID Bagian</th>
