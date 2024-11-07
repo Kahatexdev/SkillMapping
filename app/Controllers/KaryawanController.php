@@ -244,12 +244,12 @@ class KaryawanController extends BaseController
             // Jika ada data yang gagal disimpan
             if ($errorCount > 0) {
                 $errorMessages = implode("<br>", $errorMessages);
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
             } else {
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('success', "{$successCount} data berhasil disimpan.");
+                return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', "{$successCount} data berhasil disimpan.");
             }
         } else {
-            return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'Invalid file.');
+            return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', 'Invalid file.');
         }
     }
 
