@@ -29,6 +29,10 @@ class BsMc extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 50,
             ],
+            'qty_prod_mc' => [
+                'type' => 'INT',
+                'constraint' => 11,
+            ],
             'qty_bs' => [
                 'type' => 'INT',
                 'constraint' => 11,

@@ -52,6 +52,10 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('absenEmpty', 'AbsenController::empty');
     // bsmc
     $routes->get('dataBsmc', 'MonitoringController::bsmc');
+    $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
+    $routes->post('bsmcStoreImport', 'BsMcController::upload');
+    $routes->get('bsmcCreate', 'BsMcController::create');
+    $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
 });
 
 $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -78,4 +82,3 @@ $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->post('absenStoreImport', 'AbsenController::upload');
     $routes->get('absenEmpty', 'AbsenController::empty');
 });
-

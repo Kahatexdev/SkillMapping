@@ -1,28 +1,28 @@
-<?php $this->extend('Monitoring/layout'); ?>
+<?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            html: '<?= session()->getFlashdata('success') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    html: '<?= session()->getFlashdata('success') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')) : ?>
-    <script>
-    $(document).ready(function() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            html: '<?= session()->getFlashdata('error') ?>',
-        });
-    });
-    </script>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    html: '<?= session()->getFlashdata('error') ?>',
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <div class="row mt-4">
@@ -62,15 +62,15 @@
     </div>
 </div>
 <script>
-document.getElementById('file').addEventListener('change', function() {
-    var fileLabel = document.getElementById('file-label');
-    var uploadIcon = document.getElementById('upload-icon');
+    document.getElementById('file').addEventListener('change', function() {
+        var fileLabel = document.getElementById('file-label');
+        var uploadIcon = document.getElementById('upload-icon');
 
-    // Menghapus ikon upload dan menampilkan nama file
-    uploadIcon.style.display = 'none';
-    fileLabel.innerHTML = this.files[0].name;
-    console.log(this.files[0].name);
-});
+        // Menghapus ikon upload dan menampilkan nama file
+        uploadIcon.style.display = 'none';
+        fileLabel.innerHTML = this.files[0].name;
+        console.log(this.files[0].name);
+    });
 </script>
 <?php $this->endSection(); ?>
 

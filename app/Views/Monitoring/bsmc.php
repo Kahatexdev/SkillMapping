@@ -1,4 +1,4 @@
-<?php $this->extend('Monitoring/layout'); ?>
+<?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
 
@@ -50,7 +50,8 @@
                                 <th>Tanggal</th>
                                 <th>Nomor Model</th>
                                 <th>Inisial</th>
-                                <th>Qty</th>
+                                <th>Qty Prod Mc</th>
+                                <th>Qty Bs</th>
                                 <th>Aksi</th>
                             </thead>
                             <tbody>
@@ -63,6 +64,7 @@
                                             <td><?= $bsmc['tanggal'] ?></td>
                                             <td><?= $bsmc['no_model'] ?></td>
                                             <td><?= $bsmc['inisial'] ?></td>
+                                            <td><?= $bsmc['qty_prod_mc'] ?></td>
                                             <td><?= $bsmc['qty_bs'] ?></td>
                                             <td>
                                                 <a class="btn btn-warning btn-sm"
@@ -74,7 +76,7 @@
                                     <?php endforeach ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="8" class="text-center">No users found</td>
+                                        <td colspan="9" class="text-center">No Bs Mesin found</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -98,7 +100,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/karyawanDelete/') ?>" + id;
+                window.location.href = "<?= base_url('monitoring/bsmcDelete/') ?>" + id;
             }
         })
     }

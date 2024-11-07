@@ -59,33 +59,33 @@
                             </thead>
                             <tbody>
                                 <?php if (!empty($karyawan)) : ?>
-                                <?php foreach ($karyawan as $karyawan) : ?>
-                                <tr>
-                                    <td><?= $karyawan['id_karyawan'] ?></td>
-                                    <td><?= $karyawan['kode_kartu'] ?></td>
-                                    <td><?= $karyawan['nama_karyawan'] ?></td>
-                                    <td><?= $karyawan['shift'] ?></td>
-                                    <td><?= $karyawan['jenis_kelamin'] ?></td>
-                                    <td><?= $karyawan['libur'] ?></td>
-                                    <td><?= $karyawan['libur_tambahan'] ?></td>
-                                    <td><?= $karyawan['warna_baju'] ?></td>
-                                    <td><?= $karyawan['status_baju'] ?></td>
-                                    <td><?= $karyawan['tgl_lahir'] ?></td>
-                                    <td><?= $karyawan['tgl_masuk'] ?></td>
-                                    <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area'] ?></td>
-                                    <td><?= $karyawan['status_aktif'] ?></td>
-                                    <td>
-                                        <a class="btn btn-warning btn-sm"
-                                            href="<?= base_url('monitoring/karyawanEdit/' . $karyawan['id_karyawan']) ?>">Edit</a>
-                                        <button class="btn btn-danger btn-sm"
-                                            onclick="confirmDelete('<?= $karyawan['id_karyawan'] ?>')">Delete</button>
-                                    </td>
-                                </tr>
-                                <?php endforeach ?>
+                                    <?php foreach ($karyawan as $karyawan) : ?>
+                                        <tr>
+                                            <td><?= $karyawan['id_karyawan'] ?></td>
+                                            <td><?= $karyawan['kode_kartu'] ?></td>
+                                            <td><?= $karyawan['nama_karyawan'] ?></td>
+                                            <td><?= $karyawan['shift'] ?></td>
+                                            <td><?= $karyawan['jenis_kelamin'] ?></td>
+                                            <td><?= $karyawan['libur'] ?></td>
+                                            <td><?= $karyawan['libur_tambahan'] ?></td>
+                                            <td><?= $karyawan['warna_baju'] ?></td>
+                                            <td><?= $karyawan['status_baju'] ?></td>
+                                            <td><?= $karyawan['tgl_lahir'] ?></td>
+                                            <td><?= $karyawan['tgl_masuk'] ?></td>
+                                            <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area'] ?></td>
+                                            <td><?= $karyawan['status_aktif'] ?></td>
+                                            <td>
+                                                <a class="btn btn-warning btn-sm"
+                                                    href="<?= base_url('monitoring/karyawanEdit/' . $karyawan['id_karyawan']) ?>">Edit</a>
+                                                <button class="btn btn-danger btn-sm"
+                                                    onclick="confirmDelete('<?= $karyawan['id_karyawan'] ?>')">Delete</button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach ?>
                                 <?php else : ?>
-                                <tr>
-                                    <td colspan="14" class="text-center">No users found</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="14" class="text-center">No Karyawan found</td>
+                                    </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -96,56 +96,56 @@
     </div>
 </div>
 <script type="text/javascript">
-function confirmDelete(id) {
-    Swal.fire({
-        title: 'Apakah Anda yakin?',
-        text: "Data yang dihapus tidak dapat dikembalikan!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, hapus!',
-        cancelButtonText: 'Batal',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = "<?= base_url('monitoring/karyawanDelete/') ?>" + id;
-        }
-    })
-}
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "<?= base_url('monitoring/karyawanDelete/') ?>" + id;
+            }
+        })
+    }
 </script>
 <script>
-$(document).ready(function() {
-    // Initialize DataTable with export options
-    $('#karyawanTable').DataTable({});
+    $(document).ready(function() {
+        // Initialize DataTable with export options
+        $('#karyawanTable').DataTable({});
 
-    // Flash message SweetAlerts
-    <?php if (session()->getFlashdata('success')) : ?>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        html: '<?= session()->getFlashdata('success') ?>',
-    });
-    <?php endif; ?>
+        // Flash message SweetAlerts
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                html: '<?= session()->getFlashdata('success') ?>',
+            });
+        <?php endif; ?>
 
-    <?php if (session()->getFlashdata('error')) : ?>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        html: '<?= session()->getFlashdata('error') ?>',
+        <?php if (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                html: '<?= session()->getFlashdata('error') ?>',
+            });
+        <?php endif; ?>
     });
-    <?php endif; ?>
-});
 </script>
 <script>
-$(document).ready(function() {
-    // File input
-    $('.file-upload-input').on('change', function() {
-        let fileName = $(this).val().split('\\').pop();
-        $('#file-label').html('<i class="fas fa-upload"></i> ' + fileName);
+    $(document).ready(function() {
+        // File input
+        $('.file-upload-input').on('change', function() {
+            let fileName = $(this).val().split('\\').pop();
+            $('#file-label').html('<i class="fas fa-upload"></i> ' + fileName);
+        });
+
+
     });
-
-
-});
 </script>
 
 <?php $this->endSection(); ?>
