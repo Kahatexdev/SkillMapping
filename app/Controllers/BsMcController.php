@@ -83,7 +83,7 @@ class BsMcController extends BaseController
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $fileType = $file->getClientMimeType();
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'Invalid file type. Please upload an Excel file.');
+                return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
@@ -182,7 +182,7 @@ class BsMcController extends BaseController
 
 
                     $bsmcModel->insert($data);
-                    $successMessage = "Data karyawan berhasil disimpan.";
+                    $successMessage = "Data Bs Mesin berhasil disimpan.";
                     $successCount++;
                 } else {
                     $errorMessages[] = $errorMessage;

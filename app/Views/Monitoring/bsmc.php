@@ -1,48 +1,85 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
+    <div class="row my-4">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="font-weight-bolder mb-0">
+                                <a href="" # class="btn bg-gradient-info">
+                                    <!-- icon data mesin -->
+                                    <i class="fas fa-cogs text-lg opacity-10" aria-hidden="true"></i>
+                                </a>
+                                Data Bs Mesin
+                            </h4>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between">
 
+                                <a href="<?= base_url('monitoring/downloadTemplateBsmc') ?>"
+                                    class="btn bg-gradient-success btn-sm me-2">
+                                    <!-- icon download -->
+                                    <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
+                                    Template Excel
+                                </a>
+                                <a href="<?= base_url('monitoring/bsmcCreate') ?>" class="btn bg-gradient-info btn-sm">
+                                    <!-- icon tambah data-->
+                                    <i class="fas fa-plus text-lg opacity-10" aria-hidden="true"></i>
+                                    Data Bs Mesin
+                                </a>
+                                <div> &nbsp;</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Upload Section -->
+    <div class="row">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Import Data Bs Mesin</h4>
+                </div>
+                <div class="card-body">
+                    <form action="<?= base_url('monitoring/bsmcStoreImport') ?>" method="post"
+                        enctype="multipart/form-data">
+                        <div class="upload-container">
+                            <div class="upload-area" id="upload-area">
+                                <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                                <p>Drag & drop any file here</p>
+                                <span>or <label for="file-upload" class="browse-link">browse file</label> from
+                                    device</span>
+                                <input type="file" id="file-upload" class="file-input" name="file" hidden required>
+                            </div>
+                            <button type="submit" class="upload-button w-100 mt-3">
+                                <i class="fas fa-upload"></i> Upload
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="float-start">
-                        Data Bs Mesin
-                    </h5>
-                    <div class="col text-end">
-                        <a href="<?= base_url('monitoring/downloadTemplateBsmc') ?>"
-                            class="btn bg-gradient-success btn-sm">Download Template Excel</a>
-                        <a href="<?= base_url('monitoring/bsmcCreate') ?>" class="btn bg-gradient-info btn-sm">Input
-                            Data Bs Mesin</a>
-                    </div>
+                    <h4 class="card-title">
+                        Table Data Bs Mesin
+                    </h4>
                 </div>
                 <div class="card-body">
-                    <!-- form import  data karyawan -->
-                    <form action="<?= base_url('monitoring/bsmcStoreImport') ?>" method="post"
-                        enctype="multipart/form-data">
-                        <div class="form-group mb-2">
-                            <label for="file">File Excel</label>
-                            <div class="file-upload-wrapper">
-                                <label class="file-upload-button" id="file-label" for="file">
-                                    <i class="fas fa-upload"></i> Pilih File
-                                </label>
-                                <input type="file" class="file-upload-input" name="file" id="file" required>
-                            </div>
-                            <small class="text-danger" style="font-size: smaller;">*File harus berformat .xls atau
-                                .xlsx</small>
-                            <small class="text-danger" style="font-size: smaller;">*Pastikan file excel sesuai dengan
-                                format yang telah
-                                ditentukan</small>
-                            <small class="text-danger" style="font-size: smaller;">*Pastikan file excel tidak
-                                kosong</small>
-                        </div>
-                        <button type="submit" class="btn bg-gradient-info btn-lg w-100">Import</button>
-                    </form>
+
 
                     <div class="table-responsive">
-                        <table id="karyawanTable" class="table table-striped table-hover table-bordered">
+                        <table id="bsmcTable" class="table table-striped table-hover table-bordered w-100">
                             <thead>
                                 <th>No</th>
                                 <th>Kode Kartu</th>
@@ -108,7 +145,7 @@
 <script>
     $(document).ready(function() {
         // Initialize DataTable with export options
-        $('#karyawanTable').DataTable({});
+        $('#bsmcTable').DataTable({});
 
         // Flash message SweetAlerts
         <?php if (session()->getFlashdata('success')) : ?>
@@ -129,15 +166,32 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
-        // File input
-        $('.file-upload-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $('#file-label').html('<i class="fas fa-upload"></i> ' + fileName);
-        });
+    const fileInput = document.getElementById('file-upload');
+    const uploadArea = document.getElementById('upload-area');
 
+    fileInput.addEventListener('change', (event) => {
+        const fileName = event.target.files[0] ? event.target.files[0].name : "No file selected";
+        uploadArea.querySelector('p').textContent = `Selected File: ${fileName}`;
+    });
 
+    uploadArea.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        uploadArea.style.backgroundColor = "#e6f5ff";
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.backgroundColor = "#ffffff";
+    });
+
+    uploadArea.addEventListener('drop', (event) => {
+        event.preventDefault();
+        fileInput.files = event.dataTransfer.files;
+        const fileName = event.dataTransfer.files[0] ? event.dataTransfer.files[0].name : "No file selected";
+        uploadArea.querySelector('p').textContent = `Selected File: ${fileName}`;
     });
 </script>
+
+
+
 
 <?php $this->endSection(); ?>

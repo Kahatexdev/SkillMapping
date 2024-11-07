@@ -29,41 +29,59 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css">
     <style>
-        /* Gaya untuk input file dengan ikon upload */
-        .file-upload-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-upload-input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-
-        .file-upload-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
+        .upload-container {
+            text-align: center;
+            padding: 20px;
             background-color: #f8f9fa;
-            color: #495057;
+            border-radius: 10px;
+            border: 1px solid #e3e6f0;
+        }
+
+        .upload-area {
+            border: 2px dashed #007bff;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            color: #007bff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background-color: #e9f4ff;
+        }
+
+        .upload-area i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
             font-size: 16px;
+            font-weight: bold;
+        }
+
+        .browse-link {
+            color: #007bff;
+            text-decoration: underline;
             cursor: pointer;
         }
 
-        .file-upload-button i {
-            margin-right: 8px;
+        .upload-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-button:hover {
+            background-color: #0056b3;
         }
     </style>
+
+
 </head>
 
 <body class="g-sidenav-show bg-gray-100 bg-opacity-50">

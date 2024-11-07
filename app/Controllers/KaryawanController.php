@@ -117,7 +117,7 @@ class KaryawanController extends BaseController
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $fileType = $file->getClientMimeType();
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'Invalid file type. Please upload an Excel file.');
+                return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
