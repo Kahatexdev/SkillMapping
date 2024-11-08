@@ -1,4 +1,4 @@
-<?php $this->extend('Monitoring/layout'); ?>
+<?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>

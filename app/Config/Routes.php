@@ -34,6 +34,7 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->post('bagianStore', 'BagianController::store');
     $routes->get('bagianEdit/(:num)', 'BagianController::edit/$1');
     $routes->post('bagianUpdate/(:num)', 'BagianController::update/$1');
+    $routes->get('bagianDelete/(:num)', 'BagianController::delete/$1');
     $routes->get('dataAbsen', 'MonitoringController::absen');
     $routes->get('dataJob', 'MonitoringController::job');
     $routes->get('jobroleCreate', 'JobroleController::create');

@@ -1,4 +1,4 @@
-<?php $this->extend('Monitoring/layout'); ?>
+<?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <?php if (session()->getFlashdata('success')) : ?>
@@ -24,8 +24,6 @@
     });
     </script>
     <?php endif; ?>
-
-
 
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
