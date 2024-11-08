@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use PhpParser\Node\Expr\Cast;
 
 class JobroleModel extends Model
 {
@@ -12,11 +13,12 @@ class JobroleModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_jobrole', 'id_bagian', 'status', 'jobdesc'];
+    protected $allowedFields    = ['id_jobrole', 'id_bagian', 'status', 'jobdesc', 'keterangan'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
+    // In JobroleModel.php
     protected array $casts = [];
     protected array $castHandlers = [];
 
@@ -48,10 +50,42 @@ class JobroleModel extends Model
     public function getJobRolesWithBagian()
     {
         return $this->db->table('job_role')
-            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.status, job_role.jobdesc, bagian.nama_bagian')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.status, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
             ->get()
             ->getResultArray();
     }
 
+    public function safeJsonDecode($data = '')
+    {
+        $decoded = json_decode($data, true);
+        return json_last_error() === JSON_ERROR_NONE ? $decoded : []; // Return empty array on failure
+    }
+
+
+    public function find($id = null)
+    {
+        $result = parent::find($id);
+
+        if ($result) {
+            // Decode JSON fields safely to ensure they are arrays
+            $result['keterangan'] = $this->safeJsonDecode($result['keterangan'] ?? '[]');
+            $result['jobdesc'] = $this->safeJsonDecode($result['jobdesc'] ?? '[]');
+        }
+
+        return $result;
+    }
+
+
+
+
+    // Optional: You can also ensure to cast back to valid JSON on update if needed
+    public function saveJobrole($data)
+    {
+        // Encode jobdesc and keterangan back to JSON before saving
+        $data['jobdesc'] = json_encode($data['jobdesc']);
+        $data['keterangan'] = json_encode($data['keterangan']);
+
+        return $this->save($data);
+    }
 }

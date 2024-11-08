@@ -25,16 +25,41 @@
         </script>
     <?php endif; ?>
 
+    <div class="row my-4">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="font-weight-bolder mb-0">
+                                <a href="" # class="btn bg-gradient-info">
+                                    <!-- icon data karyawan -->
+                                    <i class="fas fa-user-tie text-lg opacity-10" aria-hidden="true"></i>
+                                </a>
+                                Form Input Data Karyawan
+                            </h4>
+                        </div>
+                        <div>
+                            <div class="d-flex justify-content-between">
+                                <a href="<?= base_url('monitoring/datakaryawan') ?>"
+                                    class="btn bg-gradient-secondary btn-sm">
+                                    <!-- icon-->
+                                    <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
+                                    Kembali
+                                </a>
+                                <div> &nbsp;</div>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
-                    <h5>
-                        Form Tambah Data Karyawan
-                    </h5>
-                </div>
                 <div class="card-body">
                     <form action="<?= base_url('monitoring/karyawanStore') ?>" method="post">
                         <div class="form-group mb-2">
@@ -121,11 +146,8 @@
                             </select>
                         </div>
 
-                        <div class="form-group mb-5">
-                            <button type="submit" class="btn bg-gradient-info btn-sm ">Simpan</button>
-                            <a href="<?= base_url('monitoring/datakaryawan') ?>"
-                                class="btn bg-gradient-dark btn-sm">Kembali</a>
-                        </div>
+                        <!-- Tombol Simpan -->
+                        <button type="submit" class="btn bg-gradient-info btn-sm w-100"><i class="fas fa-save text-sm opacity-10"></i> Simpan</button>
                     </form>
                 </div>
             </div>

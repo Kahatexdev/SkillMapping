@@ -7,7 +7,7 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: '<?= session()->getFlashdata('success') ?>',
+                    html: '<?= session()->getFlashdata('success') ?>',
                 });
             });
         </script>
@@ -19,12 +19,11 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: '<?= session()->getFlashdata('error') ?>',
+                    html: '<?= session()->getFlashdata('error') ?>',
                 });
             });
         </script>
     <?php endif; ?>
-
 
     <div class="row my-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
@@ -34,15 +33,15 @@
                         <div>
                             <h4 class="font-weight-bolder mb-0">
                                 <a href="" # class="btn bg-gradient-info">
-                                    <!-- icon data bagian -->
+                                    <!-- icon data bs mesin -->
                                     <i class="fas fa-user-tie text-lg opacity-10" aria-hidden="true"></i>
                                 </a>
-                                Form Input Data Bagian
+                                Form Edit Data BS Mesin
                             </h4>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-                                <a href="<?= base_url('monitoring/dataBagian') ?>"
+                                <a href="<?= base_url('monitoring/dataBsmc') ?>"
                                     class="btn bg-gradient-secondary btn-sm">
                                     <!-- icon-->
                                     <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
@@ -57,33 +56,50 @@
             </div>
         </div>
     </div>
+
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-body">
-                    <form action="<?= base_url('monitoring/bagianStore') ?>" method="post">
+                    <form action="<?= base_url('monitoring/bsmcUpdate' . $bsmc['id_bsmc']) ?>" method="post">
                         <div class="form-group mb-2">
-                            <label for="nama_bagian">Nama Bagian</label>
-                            <input type="text" class="form-control" name="nama_bagian" id="nama_bagian" required>
+                            <label for="id_karyawan">Nama Karyawan</label>
+                            <select name="id_karyawan" id="id_karyawan" class="form-control" required>
+                                <option value="">Pilih karyawan</option>
+                                <?php foreach ($karyawan as $karyawan) : ?>
+                                    <option value="<?= $karyawan['id_karyawan'] ?>" <?= $karyawan['id_karyawan'] == $bsmc['id_karyawan'] ? 'selected' : '' ?>>
+                                        <?= $karyawan['kode_kartu'] . ' - ' . $karyawan['nama_karyawan'] ?></option>
+                                <?php endforeach ?>
+                            </select>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="area_utama">Area Utama</label>
-                            <input type="text" class="form-control" name="area_utama" id="area_utama" required>
+                            <label for="tanggal">Tanggal</label>
+                            <input type="date" class="form-control" name="tanggal" id="tanggal" value="<?= $bsmc['tanggal'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="area">Area</label>
-                            <input type="text" class="form-control" name="area" id="area" required>
+                            <label for="no_model">Nomor Model</label>
+                            <input type="text" class="form-control" name="no_model" id="no_model" value="<?= $bsmc['no_model'] ?>" required>
+                        </div>
+                        <div class=" form-group mb-2">
+                            <label for="inisial">Inisial</label>
+                            <input type="text" class="form-control" name="inisial" id="inisial" value="<?= $bsmc['inisial'] ?>" required>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="keterangan">Keterangan</label>
-                            <input type="text" class="form-control" name="keterangan" id="keterangan" required>
+                            <label for="qty_prod_mc">Qty Prod Mc</label>
+                            <input type="number" class="form-control" name="qty_prod_mc" id="qty_prod_mc" value="<?= $bsmc['qty_prod_mc'] ?>" required>
                         </div>
+                        <div class="form-group mb-2">
+                            <label for="qty_bs">Qty Bs</label>
+                            <input type="number" class="form-control" name="qty_bs" id="qty_bs" value="<?= $bsmc['qty_bs'] ?>" required>
+                        </div>
+
                         <!-- Tombol Simpan -->
-                        <button type="submit" class="btn bg-gradient-info btn-sm w-100"><i class="fas fa-save text-sm opacity-10"></i> Simpan</button>
+                        <button type="submit" class="btn bg-gradient-info btn-sm w-100"><i class="fas fa-save text-sm opacity-10"></i> Update</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 <?php $this->endSection(); ?>

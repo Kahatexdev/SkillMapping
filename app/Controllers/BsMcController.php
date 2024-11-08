@@ -222,6 +222,29 @@ class BsMcController extends BaseController
         return view('Bsmc/create', $data);
     }
 
+    public function edit($id)
+    {
+        $bsmcModel = new \App\Models\BsmcModel();
+        $karyawanModel = new \App\Models\KaryawanModel();
+        $bsmc = $bsmcModel->find($id);
+        // dd($id);
+        $karyawan = $karyawanModel->findAll();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Bs Mesin',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => 'active',
+            'bsmc' => $bsmc,
+            'karyawan' => $karyawan
+        ];
+        return view('bsmc/edit', $data);
+    }
+
     public function delete($id)
     {
         $bsmcModel = new \App\Models\BsmcModel();
