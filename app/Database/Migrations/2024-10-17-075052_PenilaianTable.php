@@ -31,13 +31,6 @@ class PenilaianTable extends Migration
                 'type' => 'varchar',
                 'constraint' => 11,
             ],
-            'tanggal_penilaian' => [
-                'type' => 'DATE',
-            ],
-            'keterangan' => [
-                'type' => 'TEXT',
-                'null' => true,
-            ],
             'id_user' => [
                 'type' => 'INT',
                 'constraint' => 11,
@@ -45,7 +38,13 @@ class PenilaianTable extends Migration
             'id_jobrole' => [
                 'type' => 'INT',
                 'constraint' => 11,
-            ]
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+            ],
         ]);
         $this->forge->addKey('id_penilaian', true);
         $this->forge->addForeignKey('karyawan_id', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');

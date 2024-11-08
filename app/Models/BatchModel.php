@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class PenilaianModel extends Model
+class BatchModel extends Model
 {
-    protected $table            = 'penilaian';
+    protected $table            = 'batches';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_penilaian', 'karyawan_id', 'id_batch', 'bobot_nilai', 'index_nilai', 'id_user', 'id_jobrole', 'created_at', 'updated_at'];
+    protected $allowedFields    = [];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +21,7 @@ class PenilaianModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -43,10 +43,4 @@ class PenilaianModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    // public function getPenilaian(){
-    //     return $this->select('penilaian.id_penilaian, penilaian.karyawan_id, ')
-    //         ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
-    //         ->findAll();
-    // }
 }

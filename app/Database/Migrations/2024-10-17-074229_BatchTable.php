@@ -26,8 +26,10 @@ class BatchTable extends Migration
                 'type' => 'YEAR',
             ],
             'created_at' => [
-                'type' => 'DATETIME', // Ganti 'date_time' dengan 'DATETIME'
-                'null' => true,
+                'type' => 'DATETIME',
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
             ],
         ]);
 
