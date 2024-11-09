@@ -59,6 +59,8 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('bsmcEdit/(:num)', 'BsMcController::edit/$1');
     $routes->get('bsmcUpdate/(:num)', 'BsMcController::update/$1');
     $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
+    // penilaian
+    $routes->get('dataPenilaian', 'MonitoringController::penilaian');
 });
 
 $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {

@@ -6,13 +6,13 @@ use CodeIgniter\Model;
 
 class BatchModel extends Model
 {
-    protected $table            = 'batches';
-    protected $primaryKey       = 'id';
+    protected $table            = 'batch';
+    protected $primaryKey       = 'id_batch';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['id_batch', 'shift', 'bulan', 'tahun', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +21,7 @@ class BatchModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';

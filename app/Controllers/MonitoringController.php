@@ -11,6 +11,7 @@ use App\Models\UserModel;
 use App\Models\JobroleModel;
 use App\Models\AbsenModel;
 use App\Models\BsmcModel;
+use App\Models\BatchModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class MonitoringController extends BaseController
@@ -21,6 +22,7 @@ class MonitoringController extends BaseController
     protected $jobrole;
     protected $absenmodel;
     protected $bsmcmodel;
+    protected $batchmodel;
 
     public function __construct()
     {
@@ -31,6 +33,7 @@ class MonitoringController extends BaseController
         $this->jobrole = new JobroleModel();
         $this->absenmodel = new AbsenModel();
         $this->bsmcmodel = new BsmcModel();
+        $this->batchmodel = new BatchModel();
     }
     public function index()
     {
@@ -158,5 +161,27 @@ class MonitoringController extends BaseController
 
         ];
         return view(session()->get('role') . '/bsmc', $data);
+    }
+    public function penilaian()
+    {
+        $batch = $this->batchmodel->findAll();
+        // $bagian = $this->bagianmodel->
+        // dd($bsmc);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Penilaian Mandor',
+            'active1' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'batch' => $batch
+
+        ];
+        // dd($batch);
+        return view(session()->get('role') . '/penilaian', $data);
     }
 }

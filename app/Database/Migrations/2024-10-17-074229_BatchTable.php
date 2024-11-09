@@ -20,7 +20,8 @@ class BatchTable extends Migration
                 'constraint' => 10,
             ],
             'bulan' => [
-                'type' => 'DATE', // Untuk menyimpan tanggal
+                'type' => 'ENUM', // Untuk menyimpan tanggal
+                'constraint' => ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
             ],
             'tahun' => [
                 'type' => 'YEAR',
