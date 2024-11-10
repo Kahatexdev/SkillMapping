@@ -51,11 +51,37 @@ class BagianModel extends Model
             ->first();
     }
     public function getIdBagian($nama_bagian, $area_utama, $area)
-    {   
+    {
         return $this->select('id_bagian')
-        ->where('nama_bagian', $nama_bagian)
-        ->where('area_utama', $area_utama)
-        ->where('area', $area)
-        ->first();
+            ->where('nama_bagian', $nama_bagian)
+            ->where('area_utama', $area_utama)
+            ->where('area', $area)
+            ->first();
+    }
+
+    public function getBagian()
+    {
+        // get nama bagian group by nama bagian
+        return $this->select('nama_bagian')
+            ->groupBy('nama_bagian')
+            ->findAll();
+    }
+
+    public function getAreaUtama($nama_bagian)
+    {
+        // get area_utama where nama_bagian = $nama_bagian group by area_utama
+        return $this->select('area_utama')
+            ->where('nama_bagian', $nama_bagian)
+            ->groupBy('area_utama')
+            ->findAll();
+    }
+
+    public function getArea($nama_bagian, $area_utama)
+    {
+        // get area where nama_bagian = $nama_bagian and area_utama = $area_utama
+        return $this->select('area')
+            ->where('nama_bagian', $nama_bagian)
+            ->where('area_utama', $area_utama)
+            ->findAll();
     }
 }

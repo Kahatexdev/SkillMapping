@@ -24,10 +24,10 @@ class JobroleTable extends Migration
                 'null' => true,
             ],
             'jobdesc' => [
-                'type' => 'TEXT',
+                'type' => 'JSON',
             ],
             'keterangan' => [
-                'type' => 'TEXT',
+                'type' => 'JSON',
             ]
         ]);
         $this->forge->addKey('id_jobrole', true);

@@ -44,9 +44,12 @@ class PenilaianModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    // public function getPenilaian(){
-    //     return $this->select('penilaian.id_penilaian, penilaian.karyawan_id, ')
-    //         ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
-    //         ->findAll();
-    // }
+    public function cekPenilaian($karyawan_id, $id_batch, $id_jobrole, $id_user)
+    {
+        return $this->where('karyawan_id', $karyawan_id)
+            ->where('id_batch', $id_batch)
+            ->where('id_jobrole', $id_jobrole)
+            ->where('id_user', $id_user)
+            ->first();
+    }
 }

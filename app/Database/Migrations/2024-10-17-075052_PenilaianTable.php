@@ -24,12 +24,11 @@ class PenilaianTable extends Migration
                 'unsigned' => true,
             ],
             'bobot_nilai' => [
-                'type' => 'INT',
-                'constraint' => 11,
+                'type' => 'JSON',
             ],
             'index_nilai' => [
-                'type' => 'varchar',
-                'constraint' => 11,
+                'type' => 'VARCHAR',
+                'constraint' => 20,
             ],
             'id_user' => [
                 'type' => 'INT',

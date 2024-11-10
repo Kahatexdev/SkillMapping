@@ -23,25 +23,22 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
     $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
     $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
+    // user
     $routes->get('dataUser', 'MonitoringController::user');
     $routes->get('userCreate', 'UserController::create');
     $routes->post('userStore', 'UserController::store');
     $routes->get('userEdit/(:num)', 'UserController::edit/$1');
     $routes->post('userUpdate/(:num)', 'UserController::update/$1');
     $routes->get('userDelete/(:num)', 'UserController::delete/$1');
+    // bagian
     $routes->get('dataBagian', 'MonitoringController::bagian');
     $routes->get('bagianCreate', 'BagianController::create');
     $routes->post('bagianStore', 'BagianController::store');
     $routes->get('bagianEdit/(:num)', 'BagianController::edit/$1');
     $routes->post('bagianUpdate/(:num)', 'BagianController::update/$1');
     $routes->get('bagianDelete/(:num)', 'BagianController::delete/$1');
+    // absen
     $routes->get('dataAbsen', 'MonitoringController::absen');
-    $routes->get('dataJob', 'MonitoringController::job');
-    $routes->get('jobroleCreate', 'JobroleController::create');
-    $routes->post('jobroleStore', 'JobroleController::store');
-    $routes->get('jobroleEdit/(:num)', 'JobroleController::edit/$1');
-    $routes->post('jobroleUpdate/(:num)', 'JobroleController::update/$1');
-    $routes->get('jobroleDelete/(:num)', 'JobroleController::delete/$1');
     $routes->get('absenCreate', 'AbsenController::create');
     $routes->post('absenStore', 'AbsenController::store');
     $routes->get('absenEdit/(:num)', 'AbsenController::edit/$1');
@@ -51,6 +48,13 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('downloadTemplateAbsen', 'AbsenController::downloadTemplate');
     $routes->post('absenStoreImport', 'AbsenController::upload');
     $routes->get('absenEmpty', 'AbsenController::empty');
+    // jobrole
+    $routes->get('dataJob', 'MonitoringController::job');
+    $routes->get('jobroleCreate', 'JobroleController::create');
+    $routes->post('jobroleStore', 'JobroleController::store');
+    $routes->get('jobroleEdit/(:num)', 'JobroleController::edit/$1');
+    $routes->post('jobroleUpdate/(:num)', 'JobroleController::update/$1');
+    $routes->get('jobroleDelete/(:num)', 'JobroleController::delete/$1');
     // bsmc
     $routes->get('dataBsmc', 'MonitoringController::bsmc');
     $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
@@ -61,6 +65,12 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
+    $routes->post('getAreaUtama', 'PenilaianController::getAreaUtama');
+    $routes->post('getArea', 'PenilaianController::getArea');
+    $routes->post('getJobRole', 'PenilaianController::getJobRole');
+    $routes->get('penilaianCreate', 'PenilaianController::create');
+    $routes->post('cekPenilaian', 'PenilaianController::cekPenilaian');
+    $routes->post('penilaianStore', 'PenilaianController::store');
 });
 
 $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {

@@ -43,4 +43,13 @@ class BatchModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getIdBatch($shift, $bulan, $tahun)
+    {
+        return $this->select('id_batch')
+            ->where('shift', $shift)
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->first();
+    }
 }
