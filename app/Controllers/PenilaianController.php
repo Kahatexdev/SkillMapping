@@ -18,6 +18,15 @@ class PenilaianController extends BaseController
     protected $batchmodel;
     protected $karyawanmodel;
 
+    const bobot_nilai = [
+        1 => 15,
+        2 => 30,
+        3 => 45,
+        4 => 60,
+        5 => 85,
+        6 => 100
+    ];
+
 
     public function __construct()
     {
@@ -228,44 +237,69 @@ class PenilaianController extends BaseController
 
     public function store()
     {
-        // Mendapatkan data dari form
+        // Dump all POST data to verify inputs
+        // dd($this->request->getPost());
+
+        // Retrieve the posted data
         $batchId = $this->request->getPost('id_batch');
         $jobroleId = $this->request->getPost('id_jobrole');
-        $karyawanIds = $this->request->getPost('id_karyawan');  // List of karyawan IDs
-        $bobotNilai = $this->request->getPost('nilai');  // Array of nilai for each karyawan
-        $indexNilai = $this->request->getPost('index_nilai');  // Array of index_nilai for each karyawan
+        $karyawanIds = $this->request->getPost('id_karyawan');
+        $bobotNilai = $this->request->getPost('nilai');
+        // $indexNilai = $this->request->getPost('index_nilai');  // Should now contain data
         $id_user = session()->get('id_user');
 
-        // Debug data yang diterima dari form
-        dd($this->request->getPost());
+        // hitung nilai rata-rata dari bobot nilai dengan constanta bobot_nilai
+        $indexNilai = [];
 
-        // Inisialisasi array untuk menyimpan data yang akan disimpan ke database
-        $dataToInsert = [];
+        foreach ($bobotNilai as $karyawanId => $nilai) {
+            $totalNilai = 0;
+            $totalBobot = 0;
+            foreach ($nilai as $jobdesc => $value) {
+                $totalNilai += $value;
+                $totalBobot += self::bobot_nilai[$value];
+            }
+            $average = $totalBobot / count($nilai);
+            // dd($average);
+            $indexNilai[$karyawanId] = $average;
+        }
 
-        // Proses data nilai untuk setiap karyawan
-        foreach ($karyawanIds as $karyawanId) {
-            // Pastikan data bobotNilai dan indexNilai ada untuk karyawan ini
-            if (isset($bobotNilai[$karyawanId]) && isset($indexNilai[$karyawanId])) {
-                // Menyusun data untuk insert
-                $dataToInsert[] = [
-                    'id_batch' => $batchId,
-                    'id_jobrole' => $jobroleId,
-                    'karyawan_id' => $karyawanId,
-                    'bobot_nilai' => json_encode($bobotNilai[$karyawanId]),  // Menyimpan nilai dalam format JSON
-                    'index_nilai' => json_encode($indexNilai[$karyawanId]),  // Menyimpan index nilai dalam format JSON
-                    'id_user' => $id_user
-                ];
+        // dd($indexNilai);
+
+        // ubah nilai rata-rata menjadi grade
+        foreach ($indexNilai as $karyawanId => $average) {
+            $indexNilai[$karyawanId] = 'A'; // Default to 'A'
+            if ($average < 59) {
+                $indexNilai[$karyawanId] = 'D';
+            } elseif ($average < 75) {
+                $indexNilai[$karyawanId] = 'C';
+            } elseif ($average < 85) {
+                $indexNilai[$karyawanId] = 'B';
+            } elseif ($average < 101) {
+                $indexNilai[$karyawanId] = 'A';
             }
         }
 
-        // Debugging - Cek data yang akan disimpan (hapus jika sudah yakin)
-        dd($dataToInsert);
+        // dd($indexNilai);
 
-        // Menyimpan data ke database menggunakan insertBatch
-        if ($this->penilaianmodel->insertBatch($dataToInsert)) {
-            return redirect()->to('/dataPenilaian')->with('success', 'Data berhasil ditambahkan');
-        } else {
-            return redirect()->to('/dataPenilaian')->with('error', 'Data gagal ditambahkan');
+        // Prepare the data to be inserted
+        $data = [];
+        foreach ($karyawanIds as $karyawanId) {
+            $data[] = [
+                'id_batch' => $batchId,
+                'id_jobrole' => $jobroleId,
+                'karyawan_id' => $karyawanId,
+                'bobot_nilai' => json_encode($bobotNilai[$karyawanId]),
+                'index_nilai' => $indexNilai[$karyawanId],
+                'id_user' => $id_user
+            ];
         }
+
+        // dd($data);
+
+        if ($this->penilaianmodel->insertBatch($data)) {
+            return redirect()->to('/monitoring/dataPenilaian')->with('success', 'Penilaian berhasil disimpan.');
+        }
+
+        return redirect()->back()->with('error', 'Gagal menyimpan penilaian.');
     }
 }

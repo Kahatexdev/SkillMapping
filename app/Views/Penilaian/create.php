@@ -12,9 +12,9 @@
     }
 
     .container-fluid {
-        background-color: var(--light-gray);
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* background-color: var(--light-gray); */
+        /* border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
     }
 
     .card {
@@ -35,7 +35,7 @@
 
     h5.card-title {
         font-size: 1.25rem;
-        color: var(--dark-gray);
+        /* color: var(--dark-gray); */
         font-weight: 500;
     }
 
@@ -45,16 +45,16 @@
     }
 
     .btn.bg-gradient-info {
-        background: linear-gradient(45deg, #4e73df, #2a64c7);
+        /* background: linear-gradient(45deg, #4e73df, #2a64c7); */
         color: white;
     }
 
     .btn.bg-gradient-info:hover {
-        background: linear-gradient(45deg, #2a64c7, #4e73df);
+        /* background: linear-gradient(45deg, #2a64c7, #4e73df); */
     }
 
     .btn.bg-gradient-secondary {
-        background: linear-gradient(45deg, #6c757d, #495057);
+        /* background: linear-gradient(45deg, #6c757d, #495057); */
         color: white;
     }
 
@@ -88,7 +88,7 @@
 
     table td input[type="number"]:focus {
         outline: none;
-        border-color: var(--primary-color);
+        /* border-color: var(--primary-color); */
     }
 
     .form-group {
@@ -101,7 +101,8 @@
         }
     }
 </style>
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/soft-ui-dashboard/2.1.0/css/soft-ui-dashboard.min.css"
+    rel="stylesheet" />
 <div class="container-fluid py-4">
     <!-- Flash message for success and error -->
     <?php if (session()->getFlashdata('success')) : ?>
@@ -153,14 +154,13 @@
         </div>
     </div>
 
-    <form action="<?= base_url('monitoring/penilaianStore') ?>" method="post">
+    <form action="<?= base_url('monitoring/penilaianStore') ?>" method="post" id="evaluationForm">
         <div class="row mt-4">
             <?php foreach ($karyawan as $k) : ?>
                 <div class="col-xl-6 col-sm-12 mb-xl-0 mb-4 mt-4">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title mb-3"><?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
-
                             <table>
                                 <thead>
                                     <tr>
@@ -172,21 +172,16 @@
                                     <?php foreach ($jobdesc as $desc) : ?>
                                         <tr>
                                             <td><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?></td>
-                                            <td><input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" required></td>
+                                            <td>
+                                                <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" required>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-
                             <div class="mt-3">
-                                <strong>Index Nilai:</strong>
-                                <input type="text"
-                                    id="index_nilai_<?= $k['id_karyawan'] ?>"
-                                    name="index_nilai[<?= $k['id_karyawan'] ?>]"
-                                    value=""
-                                    readonly>
+                                <input type="hidden" class="index-nilai" name="index_nilai[<?= $k['id_karyawan'] ?>]">
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -209,51 +204,21 @@
         </div>
     </form>
 </div>
-
 <?php $this->endSection(); ?>
 
-<script>
-    $(document).ready(function() {
-        const nilaiMapping = {
-            1: 15,
-            2: 30,
-            3: 45,
-            4: 60,
-            5: 85,
-            6: 100
-        };
-
-        function calculateIndexNilai(karyawanId) {
-            let totalNilai = 0;
-            let count = 0;
-
-            $(`input[data-karyawan-id="${karyawanId}"]`).each(function() {
-                const nilai = $(this).val();
-                if (nilai) {
-                    totalNilai += nilaiMapping[nilai] || 0;
-                    count++;
-                }
-            });
-
-            console.log(`Karyawan ID: ${karyawanId}, Total Nilai: ${totalNilai}, Jumlah Nilai: ${count}`);
-
-            if (count > 0) {
-                let avg = totalNilai / count;
-                console.log(`Rata-rata: ${avg}`);
-                $(`#index_nilai_${karyawanId}`).val(avg.toFixed(2));
-            }
-        }
-
-
-        // Menambahkan event listener untuk setiap perubahan input nilai
-        $('.nilai-input').on('input', function() {
-            const karyawanId = $(this).data('karyawan-id');
-            calculateIndexNilai(karyawanId);
-        });
-
-        // Jika semua nilai sudah diisi untuk karyawan, langsung hitung dan tampilkan index_nilai
-        <?php foreach ($karyawan as $k): ?>
-            calculateIndexNilai(<?= $k['id_karyawan'] ?>);
-        <?php endforeach; ?>
-    });
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/soft-ui-dashboard/2.1.0/js/soft-ui-dashboard.min.js"></script>
+<!-- script index_nilai 
+jika bobot nilai 1 bernilai 15
+jika 2 bernilai 30
+jika 3 bernilai 45
+jika 4 bernilai 60
+jika 5 bernilai 85
+jika 6 bernilai 100
+lalu jumlahkan total nilai,
+jika sudah hitunglah rata-ratanya
+kurang dari 59 bernilai D
+kurang dari 75 bernilai C
+kurang dari 85 bernilai B
+kurang dari 101 bernilai A
+hasil grade merupakan data untuk index_nilai
+ gunakan AJAX agar realtime muncul index nilainya-->
