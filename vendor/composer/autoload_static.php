@@ -216,8 +216,8 @@ class ComposerStaticInit4af92622a4d8d8eb2861dd2606e3a062
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -776,6 +776,7 @@ class ComposerStaticInit4af92622a4d8d8eb2861dd2606e3a062
         'DeepCopy\\Matcher\\PropertyTypeMatcher' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Matcher/PropertyTypeMatcher.php',
         'DeepCopy\\Reflection\\ReflectionHelper' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Reflection/ReflectionHelper.php',
         'DeepCopy\\TypeFilter\\Date\\DateIntervalFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/Date/DateIntervalFilter.php',
+        'DeepCopy\\TypeFilter\\Date\\DatePeriodFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/Date/DatePeriodFilter.php',
         'DeepCopy\\TypeFilter\\ReplaceFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/ReplaceFilter.php',
         'DeepCopy\\TypeFilter\\ShallowCopyFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/ShallowCopyFilter.php',
         'DeepCopy\\TypeFilter\\Spl\\ArrayObjectFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/Spl/ArrayObjectFilter.php',
@@ -3214,6 +3215,9 @@ class ComposerStaticInit4af92622a4d8d8eb2861dd2606e3a062
         'PhpOffice\\PhpSpreadsheet\\Reader\\Security\\XmlScanner' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Security/XmlScanner.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Slk' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Slk.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls.php',
+        'PhpOffice\\PhpSpreadsheet\\Reader\\XlsBase' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/XlsBase.php',
+        'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Biff5' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Biff5.php',
+        'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Biff8' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Biff8.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Color' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Color.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Color\\BIFF5' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Color/BIFF5.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Color\\BIFF8' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Color/BIFF8.php',
@@ -3222,7 +3226,10 @@ class ComposerStaticInit4af92622a4d8d8eb2861dd2606e3a062
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\DataValidationHelper' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/DataValidationHelper.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\ErrorCode' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/ErrorCode.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Escher' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Escher.php',
+        'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\ListFunctions' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/ListFunctions.php',
+        'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\LoadSpreadsheet' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/LoadSpreadsheet.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\MD5' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/MD5.php',
+        'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Mappings' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Mappings.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\RC4' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/RC4.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Style\\Border' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Style/Border.php',
         'PhpOffice\\PhpSpreadsheet\\Reader\\Xls\\Style\\CellAlignment' => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Reader/Xls/Style/CellAlignment.php',

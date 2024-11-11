@@ -119,29 +119,58 @@ class PenilaianController extends BaseController
 
     public function create()
     {
-        // get data from url
+        // Get data from URL query parameters
         $shift = $this->request->getGet('shift');
         $bulan = $this->request->getGet('bulan');
         $tahun = $this->request->getGet('tahun');
 
         $id_batch = $this->batchmodel->getIdBatch($shift, $bulan, $tahun);
-        // dd($id_batch);
+        if (!$id_batch) {
+            return redirect()->back()->with('error', 'Batch not found.');
+        }
 
         $nama_bagian = $this->request->getGet('nama_bagian');
         $area_utama = $this->request->getGet('area_utama');
         $area = $this->request->getGet('area');
 
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
+        if (!$id_bagian) {
+            return redirect()->back()->with('error', 'Bagian not found.');
+        }
 
         $id_jobrole = $this->jobrolemodel->getJobRoleByBagianId($id_bagian['id_bagian']);
+        if (!$id_jobrole) {
+            return redirect()->back()->with('error', 'Job role not found.');
+        }
 
+        // Decode jobdesc from JSON
+        $jobdesc = json_decode($id_jobrole['jobdesc'], true) ?? [];
+        if (empty($jobdesc)) {
+            return redirect()->back()->with('error', 'Job description not available.');
+        }
 
-        // dd($id_jobrole);
+        // Filter karyawan based on area and shift by joining 'karyawan' and 'bagian' tables
+        $karyawanQuery = $this->karyawanmodel->select('karyawan.*')
+            ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join with bagian table
 
-        $karyawan = $this->karyawanmodel->findAll();
-        // dd($karyawan_id);
+        // Filter by area if available
+        if ($area) {
+            $karyawanQuery->where('bagian.area', $area);  // Use area from the 'bagian' table
+        }
 
-        $id_user = 1; // Dummy data
+        // Filter by shift if available
+        if ($shift) {
+            $karyawanQuery->where('karyawan.shift', $shift);  // Use shift from the 'karyawan' table
+        }
+
+        // Fetch the filtered karyawan data
+        $karyawan = $karyawanQuery->findAll();
+
+        if (!$karyawan) {
+            return redirect()->back()->with('error', 'No employees found.');
+        }
+
+        $id_user = session()->get('id_user') ?? 1; // Replace dummy data with session user if available
 
         $temp = [
             'id_batch' => $id_batch['id_batch'],
@@ -150,9 +179,7 @@ class PenilaianController extends BaseController
             'id_user' => $id_user,
             'id_bagian' => $id_bagian['id_bagian']
         ];
-
-
-        $jobrole = $id_jobrole;
+        // dd($temp);
 
         $data = [
             'role' => session()->get('role'),
@@ -163,7 +190,8 @@ class PenilaianController extends BaseController
             'active4' => '',
             'active5' => 'active',
             'active6' => '',
-            'jobrole' => $jobrole,
+            'jobrole' => $id_jobrole,
+            'jobdesc' => $jobdesc, // Pass jobdesc to view
             'karyawan' => $karyawan,
             'temp' => $temp
         ];
@@ -171,35 +199,69 @@ class PenilaianController extends BaseController
         return view('penilaian/create', $data);
     }
 
+    // Controller method to handle AJAX request
+    public function updateIndexNilai()
+    {
+        // Get POST data
+        $karyawanId = $this->request->getPost('karyawan_id');
+        $totalNilai = $this->request->getPost('total_nilai');
+        $average = $this->request->getPost('average');
+
+        // Determine the index_nilai based on the average
+        $indexNilai = 'A'; // Default to 'A'
+        if ($average < 59) {
+            $indexNilai = 'D';
+        } elseif ($average < 75) {
+            $indexNilai = 'C';
+        } elseif ($average < 85) {
+            $indexNilai = 'B';
+        }
+
+        // Return the index_nilai in a response
+        return $this->response->setJSON([
+            'index_nilai' => $indexNilai
+        ]);
+    }
+
+
 
 
     public function store()
     {
+        // Mendapatkan data dari form
         $batchId = $this->request->getPost('id_batch');
         $jobroleId = $this->request->getPost('id_jobrole');
-        $karyawanIds = $this->request->getPost('id_karyawan');
-        $bobotNilai = $this->request->getPost('nilai');
-        $indexNilai = $this->request->getPost('index_nilai');
+        $karyawanIds = $this->request->getPost('id_karyawan');  // List of karyawan IDs
+        $bobotNilai = $this->request->getPost('nilai');  // Array of nilai for each karyawan
+        $indexNilai = $this->request->getPost('index_nilai');  // Array of index_nilai for each karyawan
         $id_user = session()->get('id_user');
 
-        // Pastikan array
-        $karyawanIds = array_unique($karyawanIds);
+        // Debug data yang diterima dari form
+        dd($this->request->getPost());
 
+        // Inisialisasi array untuk menyimpan data yang akan disimpan ke database
         $dataToInsert = [];
 
+        // Proses data nilai untuk setiap karyawan
         foreach ($karyawanIds as $karyawanId) {
-            $dataToInsert[] = [
-                'id_batch' => $batchId,
-                'id_jobrole' => $jobroleId,
-                'karyawan_id' => $karyawanId,
-                'bobot_nilai' => json_encode($bobotNilai[$karyawanId] ?? []), // Nilai bobot berdasarkan karyawan
-                'index_nilai' => json_encode($indexNilai[$karyawanId] ?? []), // Index nilai berdasarkan karyawan
-                'id_user' => $id_user
-            ];
+            // Pastikan data bobotNilai dan indexNilai ada untuk karyawan ini
+            if (isset($bobotNilai[$karyawanId]) && isset($indexNilai[$karyawanId])) {
+                // Menyusun data untuk insert
+                $dataToInsert[] = [
+                    'id_batch' => $batchId,
+                    'id_jobrole' => $jobroleId,
+                    'karyawan_id' => $karyawanId,
+                    'bobot_nilai' => json_encode($bobotNilai[$karyawanId]),  // Menyimpan nilai dalam format JSON
+                    'index_nilai' => json_encode($indexNilai[$karyawanId]),  // Menyimpan index nilai dalam format JSON
+                    'id_user' => $id_user
+                ];
+            }
         }
 
-        // dd($dataToInsert);
+        // Debugging - Cek data yang akan disimpan (hapus jika sudah yakin)
+        dd($dataToInsert);
 
+        // Menyimpan data ke database menggunakan insertBatch
         if ($this->penilaianmodel->insertBatch($dataToInsert)) {
             return redirect()->to('/dataPenilaian')->with('success', 'Data berhasil ditambahkan');
         } else {
