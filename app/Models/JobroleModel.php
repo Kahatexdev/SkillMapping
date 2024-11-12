@@ -50,7 +50,7 @@ class JobroleModel extends Model
     public function getJobRolesWithBagian()
     {
         return $this->db->table('job_role')
-            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.status, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
             ->get()
             ->getResultArray();
@@ -66,7 +66,7 @@ class JobroleModel extends Model
     public function getJobRoleByBagianId($id_bagian)
     {
         return $this->db->table('job_role')
-            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.status, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area')
             ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
             ->where('job_role.id_bagian', $id_bagian)
             ->get()
@@ -93,9 +93,6 @@ class JobroleModel extends Model
         return $result;
     }
 
-
-
-
     // Optional: You can also ensure to cast back to valid JSON on update if needed
     public function saveJobrole($data)
     {
@@ -104,5 +101,10 @@ class JobroleModel extends Model
         $data['keterangan'] = json_encode($data['keterangan']);
 
         return $this->save($data);
+    }
+
+    public function getAllData()
+    {
+        return $this->findAll();
     }
 }

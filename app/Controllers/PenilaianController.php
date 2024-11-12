@@ -124,7 +124,8 @@ class PenilaianController extends BaseController
         return view('penilaian/create', compact('json'));
     }
 
-    public function index() {}
+    public function index() {
+    }
 
     public function create()
     {
@@ -136,7 +137,7 @@ class PenilaianController extends BaseController
         $id_batch = $this->batchmodel->getIdBatch($shift, $bulan, $tahun);
         if (!$id_batch) {
             return redirect()->back()->with('error', 'Batch not found.');
-        }
+        } 
 
         $nama_bagian = $this->request->getGet('nama_bagian');
         $area_utama = $this->request->getGet('area_utama');
@@ -172,6 +173,11 @@ class PenilaianController extends BaseController
             $karyawanQuery->where('karyawan.shift', $shift);  // Use shift from the 'karyawan' table
         }
 
+        // Filter by bagian if available
+        if ($id_bagian) {
+            $karyawanQuery->where('karyawan.id_bagian', $id_bagian['id_bagian']);  // Use id_bagian from the 'karyawan' table
+        }
+
         // Fetch the filtered karyawan data
         $karyawan = $karyawanQuery->findAll();
 
@@ -179,8 +185,12 @@ class PenilaianController extends BaseController
             return redirect()->back()->with('error', 'No employees found.');
         }
 
+
         $id_user = session()->get('id_user') ?? 1; // Replace dummy data with session user if available
 
+        if ($penilaian = $this->penilaianmodel->cekPenilaian($karyawan[0]['id_karyawan'], $id_batch['id_batch'], $id_jobrole['id_jobrole'], $id_user)) {
+            return redirect()->back()->with('error', 'Penilaian sudah ada.');
+        }
         $temp = [
             'id_batch' => $id_batch['id_batch'],
             'id_jobrole' => $id_jobrole['id_jobrole'],
@@ -188,6 +198,8 @@ class PenilaianController extends BaseController
             'id_user' => $id_user,
             'id_bagian' => $id_bagian['id_bagian']
         ];
+
+       
         // dd($temp);
 
         $data = [

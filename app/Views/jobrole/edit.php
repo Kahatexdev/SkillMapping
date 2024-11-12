@@ -117,18 +117,6 @@
                             </select>
                         </div>
 
-                        <!-- Pilihan Status Tingkatan -->
-                        <div class="form-group mb-2">
-                            <label for="status">Status Tingkatan</label>
-                            <select name="status" id="status" class="form-control">
-                                <option value="">Pilih Status</option>
-                                <option value="Ringan" <?= $jobrole['status'] == 'Ringan' ? 'selected' : '' ?>>Ringan</option>
-                                <option value="Standar" <?= $jobrole['status'] == 'Standar' ? 'selected' : '' ?>>Standar</option>
-                                <option value="Sulit" <?= $jobrole['status'] == 'Sulit' ? 'selected' : '' ?>>Sulit</option>
-                            </select>
-                            <small class="text-danger">*kosongkan jika bukan untuk montir</small>
-                        </div>
-
                         <!-- Input Dinamis untuk Keterangan dan Jobdesk -->
                         <div class="form-group mb-2">
                             <label>Keterangan dan Jobdesk <small class="text-danger">*</small></label>
@@ -137,8 +125,22 @@
                                     <div class="input-group mb-2 jobdesc-item">
                                         <select name="keterangan[]" class="form-control mr-2" required>
                                             <option value="">Pilih Keterangan</option>
-                                            <option value="JOB" <?= $keterangan == 'JOB' ? 'selected' : '' ?>>Job Utama</option>
-                                            <option value="6S" <?= $keterangan == '6S' ? 'selected' : '' ?>>6S</option>
+                                            <option value="KNITTER" <?= $keterangan === 'KNITTER' ? 'selected' : '' ?>>KNITTER</option>
+                                            <option value="C.O" <?= $keterangan === 'C.O' ? 'selected' : '' ?>>C.O</option>
+                                            <option value="Ringan" <?= $keterangan === 'Ringan' ? 'selected' : '' ?>>Ringan</option>
+                                            <option value="Standar" <?= $keterangan === 'Standar' ? 'selected' : '' ?>>Standar</option>
+                                            <option value="Sulit" <?= $keterangan === 'Sulit' ? 'selected' : '' ?>>Sulit</option>
+                                            <option value="JOB" <?= $keterangan === 'JOB' ? 'selected' : '' ?>>JOB</option>
+                                            <option value="ROSSO" <?= $keterangan === 'ROSSO' ? 'selected' : '' ?>>ROSSO</option>
+                                            <option value="SETTING" <?= $keterangan === 'SETTING' ? 'selected' : '' ?>>SETTING</option>
+                                            <option value="Potong Manual" <?= $keterangan === 'Potong Manual' ? 'selected' : '' ?>>Potong Manual</option>
+                                            <option value="Overdeck" <?= $keterangan === 'Overdeck' ? 'selected' : '' ?>>Overdeck</option>
+                                            <option value="Obras" <?= $keterangan === 'Obras' ? 'selected' : '' ?>>Obras</option>
+                                            <option value="Single Needle" <?= $keterangan === 'Single Needle' ? 'selected' : '' ?>>Single Needle</option>
+                                            <option value="Mc Lipat" <?= $keterangan === 'Mc Lipat' ? 'selected' : '' ?>>Mc Lipat</option>
+                                            <option value="Mc Kancing" <?= $keterangan === 'Mc Kancing' ? 'selected' : '' ?>>Mc Kancing</option>
+                                            <option value="Mc Press" <?= $keterangan === 'Mc Press' ? 'selected' : '' ?>>Mc Press</option>
+                                            <option value="6S" <?= $keterangan === '6S' ? 'selected' : '' ?>>6S</option>
                                         </select>
                                         <input type="text" class="form-control" name="jobdesc[]" value="<?= $jobrole['jobdesc'][$index] ?>" required>
                                         <?php if ($index === 0) : ?>
@@ -169,7 +171,21 @@
                 <div class="input-group mb-2 jobdesc-item">
                     <select name="keterangan[]" class="form-control mr-2" required>
                         <option value="">Pilih Keterangan</option>
-                        <option value="JOB">Job Utama</option>
+                        <option value="KNITTER">KNITTER</option>
+                        <option value="C.O">C.O</option>
+                        <option value="Ringan">Ringan</option>
+                        <option value="Standar">Standar</option>
+                        <option value="Sulit">Sulit</option>
+                        <option value="JOB">JOB</option>
+                        <option value="ROSSO">ROSSO</option>
+                        <option value="SETTING">SETTING</option>
+                        <option value="Potong Manual">Potong Manual</option>
+                        <option value="Overdeck">Overdeck</option>
+                        <option value="Obras">Obras</option>
+                        <option value="Single Needle">Single Needle</option>
+                        <option value="Mc Lipat">Mc Lipat</option>
+                        <option value="Mc Kancing">Mc Kancing</option>
+                        <option value="Mc Press">Mc Press</option>
                         <option value="6S">6S</option>
                     </select>
                     <input type="text" class="form-control" name="jobdesc[]" placeholder="Jobdesk" required>

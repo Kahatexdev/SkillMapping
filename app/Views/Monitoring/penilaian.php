@@ -99,7 +99,7 @@
                                 <input type="hidden" class="form-control" id="id_jobrole" name="id_jobrole" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn bg-gradient-info w-100">Cek Data Penilaian</button>
+                        <button type="submit" class="btn bg-gradient-info w-100">Buat Batch Penilaian</button>
                     </form>
                 </div>
             </div>
@@ -110,32 +110,43 @@
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
             <div class="card">
                 <div class="card-body p-3">
-                    <!-- table penilaian -->
+                    <!-- table untuk batch penilaian -->
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped" id="table_penilaian">
+                        <table class="table table-hover table-striped" id="table_batch_penilaian">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Karyawan</th>
-                                    <th>Job Role</th>
-                                    <th>Nilai</th>
-                                    <th>Detail</th>
+                                    <th>Nama Bagian</th>
+                                    <th>Area</th>
+                                    <th>Shift</th>
+                                    <th>Bulan</th>
+                                    <th>Tahun</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $no = 1; ?>
-                                <?php foreach ($penilaian as $b): ?>
+                                <?php if (!empty($penilaian)) : ?>
+                                    <?php $no = 1; ?>
+                                    <?php foreach ($penilaian as $batch) : ?>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $batch['nama_bagian'] ?></td>
+                                            <td><?= $batch['area'] ?></td>
+                                            <td><?= $batch['shift'] ?></td>
+                                            <td><?= $batch['bulan'] ?></td>
+                                            <td><?= $batch['tahun'] ?></td>
+                                            <td>
+                                                <a href="<?= base_url('monitoring/penilaianDetail/' . $batch['id_penilaian']) ?>" class="btn bg-gradient-info btn-sm">Detail</a>
+                                                <!-- <a href="<?= base_url('monitoring/penilaianEdit/' . $batch['id_penilaian']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                                <button class="btn bg-gradient-danger btn-sm" onclick="confirmDelete('<?= $batch['id_penilaian'] ?>')">Delete</button> -->
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
                                     <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $b['karyawan_id'] ?></td>
-                                        <td><?= $b['bobot_nilai'] ?></td>
-                                        <td><?= $b['index_nilai'] ?></td>
-                                        <td>
-                                            <a href="<?= base_url('monitoring/penilaianDetail/' . $b['karyawan_id']) ?>"
-                                                class="btn bg-gradient-info btn-sm">Detail</a>
-                                        </td>
+                                        <td colspan="7" class="text-center">Tidak ada data penilaian.</td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -147,13 +158,17 @@
 </div>
 
 <script>
+    // datatable
+    $(document).ready(function() {
+        $('#table_batch_penilaian').DataTable();
+    });
     $(document).ready(function() {
         // Flash message SweetAlerts
         <?php if (session()->getFlashdata('success')) : ?>
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
-                text: '<?= session()->getFlashdata('success') ?>',
+                html: '<?= session()->getFlashdata('success') ?>',
             });
         <?php endif; ?>
 
@@ -161,7 +176,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: '<?= session()->getFlashdata('error') ?>',
+                html: '<?= session()->getFlashdata('error') ?>',
             });
         <?php endif; ?>
     });

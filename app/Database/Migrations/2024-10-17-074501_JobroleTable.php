@@ -18,11 +18,6 @@ class JobroleTable extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'status' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50,
-                'null' => true,
-            ],
             'jobdesc' => [
                 'type' => 'JSON',
             ],

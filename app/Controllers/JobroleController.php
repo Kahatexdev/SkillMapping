@@ -11,8 +11,77 @@ class JobroleController extends BaseController
 {
     public function index()
     {
-        //
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Job Role',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => 'active',
+        ];
+        $model = new JobRoleModel();
+        $rawData = $model->getAllData();
+
+        // Mengubah data JSON ke array
+        $dataArray = [];
+        foreach ($rawData as $data) {
+            $dataArray[$data['id_jobrole']][] = [
+                'keterangan' => json_decode($data['keterangan']),
+                'jobdesc' => json_decode($data['jobdesc']),
+            ];
+        }
+
+        // Mengelompokkan data berdasarkan 'keterangan' (JOB dan 6S) dalam setiap id_jobrole
+        $groupedData = [];
+
+        foreach ($dataArray as $id_jobrole => $jobData) {
+            // Mengelompokkan berdasarkan 'keterangan' di dalam setiap id_jobrole
+            $groupedData[$id_jobrole] = [
+                'JOB' => [],
+                '6S' => []
+            ];
+
+            foreach ($jobData as $data) {
+                // Mengiterasi array 'jobdesc' dan 'keterangan' berdasarkan indeks yang sama
+                foreach ($data['jobdesc'] as $index => $jobdesc) {
+                    $keterangan = $data['keterangan'][$index];
+
+                    // Menambahkan jobdesc ke kategori yang sesuai berdasarkan 'keterangan'
+                    if ($keterangan === 'JOB') {
+                        $groupedData[$id_jobrole]['JOB'][] = $jobdesc;
+                    } elseif ($keterangan === '6S') {
+                        $groupedData[$id_jobrole]['6S'][] = $jobdesc;
+                    }
+                }
+            }
+        }
+
+        // Pastikan kunci JOB dan 6S ada meskipun kosong
+        foreach ($groupedData as $id_jobrole => $data) {
+            if (!isset($groupedData[$id_jobrole]['JOB'])) {
+                $groupedData[$id_jobrole]['JOB'] = [];
+            }
+            if (!isset($groupedData[$id_jobrole]['6S'])) {
+                $groupedData[$id_jobrole]['6S'] = [];
+            }
+        }
+
+        return view('monitoring/coba', [
+            'role' => session()->get('role'),
+            'title' => 'Job Role',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => 'active',
+            'jobrole' => $rawData,
+            'groupedData' => $groupedData
+        ]);
     }
+
 
     public function create()
     {
@@ -43,7 +112,6 @@ class JobroleController extends BaseController
         // Get form data
         $data = [
             'id_bagian' => $this->request->getPost('id_bagian'),
-            'status' => $this->request->getPost('status'),
             'jobdesc' => $this->request->getPost('jobdesc'),
             'keterangan' => $this->request->getPost('keterangan'),
         ];
@@ -55,14 +123,21 @@ class JobroleController extends BaseController
         if (is_array($data['jobdesc'])) {
             $data['jobdesc'] = json_encode($data['jobdesc']);
         }
+
+        // jika id_bagian sudah ada di database maka tidak bisa diinputkan lagi
+        $id_bagian = $this->request->getPost('id_bagian');
+        $jobrole = $jobroleModel->getJobRoleByBagianId($id_bagian);
+        if ($jobrole) {
+            return redirect()->back()->withInput()->with('error', 'Job role Untuk Bagian ini sudah ada.');
+        }
         // dd($data);
         // Attempt to save the data
         if ($jobroleModel->insert($data)) {
             // If successful, redirect to a success page
-            return redirect()->to(base_url('monitoring/dataJob'))->with('success', 'Job role added successfully.');
+            return redirect()->to(base_url('monitoring/dataJob'))->with('success', 'Job role Berhasil Ditambahkan.');
         } else {
             // If not successful, redirect back with an error
-            return redirect()->back()->withInput()->with('error', 'Failed to add job role.');
+            return redirect()->back()->withInput()->with('error', 'Gagal Menyimpan Data Job Role.');
         }
     }
 

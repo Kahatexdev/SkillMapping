@@ -143,7 +143,7 @@
                             </h4>
                         </div>
                         <div>
-                            <a href="<?= base_url('monitoring/datakaryawan') ?>" class="btn bg-gradient-secondary btn-sm">
+                            <a href="<?= base_url('monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary btn-sm">
                                 <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
                                 Kembali
                             </a>

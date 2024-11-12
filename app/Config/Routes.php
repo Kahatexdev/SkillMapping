@@ -50,6 +50,7 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('absenEmpty', 'AbsenController::empty');
     // jobrole
     $routes->get('dataJob', 'MonitoringController::job');
+    $routes->get('coba', 'JobroleController::index');
     $routes->get('jobroleCreate', 'JobroleController::create');
     $routes->post('jobroleStore', 'JobroleController::store');
     $routes->get('jobroleEdit/(:num)', 'JobroleController::edit/$1');
