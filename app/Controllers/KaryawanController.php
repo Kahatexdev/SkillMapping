@@ -143,14 +143,15 @@ class KaryawanController extends BaseController
                 $liburTambahan = $dataSheet->getCell('F' . $row)->getValue();
                 $warnaBaju = $dataSheet->getCell('G' . $row)->getValue();
                 $statusBaju = $dataSheet->getCell('H' . $row)->getValue();
-                $tanggalLahir = $dataSheet->getCell('I' . $row)->getValue();
-                $tanggalMasuk = $dataSheet->getCell('J' . $row)->getValue();
+                $tanggalLahir = $dataSheet->getCell('I' . $row)->getFormattedValue();
+                $tanggalMasuk = $dataSheet->getCell('J' . $row)->getFormattedValue();
                 $namaBagian = $dataSheet->getCell('K' . $row)->getValue();
                 $areaUtama = $dataSheet->getCell('L' . $row)->getValue();
                 $area = $dataSheet->getCell('M' . $row)->getValue();
                 $statusAktif = $dataSheet->getCell('N' . $row)->getValue();
                 // dd($statusAktif);
 
+                // dd($kodeKartu, $namaKaryawan, $shift, $jenisKelamin, $libur, $liburTambahan, $warnaBaju, $statusBaju, $tanggalLahir, $tanggalMasuk, $namaBagian, $areaUtama, $area, $statusAktif);
                 // Validasi kode kartu
                 if (empty($kodeKartu)) {
                     $isValid = false;
@@ -181,6 +182,7 @@ class KaryawanController extends BaseController
                     $errorMessage .= "Tanggal Lahir harus diisi. ";
                 } else {
                     $tanggalLahir = date_create_from_format('Y/m/d', $tanggalLahir);
+                    // dd ($tanggalLahir);
                     if (!$tanggalLahir) {
                         $isValid = false;
                         $errorMessage .= "Format Tanggal Lahir salah. ";

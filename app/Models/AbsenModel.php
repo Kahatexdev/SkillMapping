@@ -12,7 +12,7 @@ class AbsenModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_absen', 'id_karyawan', 'tanggal', 'ket_absen', 'id_user'];
+    protected $allowedFields    = ['id_absen', 'id_karyawan', 'tanggal', 'izin', 'sakit', 'mangkir', 'cuti', 'id_user', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +21,7 @@ class AbsenModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
@@ -54,8 +54,9 @@ class AbsenModel extends Model
 
     public function getdata()
     {
-        return $this->select('absen.*, karyawan.nama_karyawan')
+        return $this->select('absen.*, karyawan.nama_karyawan, user.username')
             ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
+            ->join('user', 'user.id_user = absen.id_user')
             ->findAll();
     }
 }

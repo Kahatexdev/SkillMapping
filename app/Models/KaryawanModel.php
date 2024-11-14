@@ -66,4 +66,11 @@ class KaryawanModel extends Model
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             ->findAll();
     }
+
+    public function getIdKaryawan()
+    {
+        return $this->select('*')
+            ->where('id_karyawan NOT IN (SELECT id_karyawan FROM absen)')
+            ->findAll();
+    }
 }

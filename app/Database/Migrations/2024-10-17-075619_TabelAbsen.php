@@ -26,22 +26,35 @@ class TabelAbsen extends Migration
         'izin' => [
             'type' => 'INT',
             'constraint' => 11,
+            'null' => true,
         ],
         'sakit' => [
             'type' => 'INT',
             'constraint' => 11,
+                'null' => true,
         ],
         'mangkir' => [
             'type' => 'INT',
             'constraint' => 11,
+                'null' => true,
         ],
         'cuti' => [
             'type' => 'INT',
             'constraint' => 11,
+                'null' => true,
         ],
-       'id_user' => [
+        'id_user' => [
             'type' => 'INT',
-            'constraint' => 11,]
+            'constraint' => 11,
+        ],
+        'created_at' => [
+            'type' => 'DATETIME',
+            'null' => true,
+        ],
+        'updated_at' => [
+            'type' => 'DATETIME',
+            'null' => true,
+        ]
     ]);
     $this->forge->addKey('id_absen', true);
     $this->forge->addForeignKey('id_karyawan', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');

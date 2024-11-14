@@ -18,10 +18,10 @@
                             <div class="d-flex justify-content-between">
                                 <!-- download report excel -->
                                 <a href="<?= base_url('monitoring/penilaianExcel/' . $penilaian[0]['id_bagian'] . '/' . $penilaian[0]['id_batch'] . '/' . $penilaian[0]['id_jobrole']) ?>" class="btn bg-gradient-success me-2">
-                                    <i class="fas fa-file-excel me-2"></i>Download Excel
+                                    <i class="fas fa-file-excel text-lg me-2"></i>Download Excel
                                 </a>
-                                <a href="<?= base_url('monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary btn-sm">
-                                    <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
+                                <a href="<?= base_url('monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary ">
+                                    <i class="fas fa-solid fa-arrow-left text-lg opacity-10"></i>
                                     Kembali
                                 </a>
                                 <!-- <a href="<?= base_url('monitoring/penilaianEdit/' . $penilaian[0]['id_penilaian']) ?>" class="btn bg-gradient-warning">Edit</a> -->

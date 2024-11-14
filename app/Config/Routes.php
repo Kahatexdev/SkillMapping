@@ -47,6 +47,7 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('absenImport', 'AbsenController::import');
     $routes->get('downloadTemplateAbsen', 'AbsenController::downloadTemplate');
     $routes->post('absenStoreImport', 'AbsenController::upload');
+    $routes->get('absenReport', 'AbsenController::absenReport');
     $routes->get('absenEmpty', 'AbsenController::empty');
     // jobrole
     $routes->get('dataJob', 'MonitoringController::job');

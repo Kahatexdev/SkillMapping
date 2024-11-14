@@ -125,7 +125,8 @@ class MonitoringController extends BaseController
             'active4' => '',
             'active5' => 'active',
             'active6' => '',
-            'absen' => $absen
+            'absen' => $absen,
+            'users' => $users
         ];
         // dd($absen);
         return view(session()->get('role') . '/absen', $data, $users);

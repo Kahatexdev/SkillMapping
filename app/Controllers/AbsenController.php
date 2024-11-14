@@ -16,10 +16,13 @@ class AbsenController extends BaseController
 {
 
     protected $absenmodel;
+    protected $karyawanmodel;
+
 
     public function __construct()
     {
         $this->absenmodel = new AbsenModel();
+        $this->karyawanmodel = new KaryawanModel();
     }
     public function index() {}
 
@@ -28,6 +31,9 @@ class AbsenController extends BaseController
         $data = new AbsenModel();
 
         $datas = $data->getdata();
+        $karyawan = new KaryawanModel();
+        $karyawans = $karyawan->getIdKaryawan();
+        // dd ($karyawans);
 
         $usermodel = new UserModel();
         $users = $usermodel->findAll();
@@ -42,6 +48,7 @@ class AbsenController extends BaseController
             'active5' => 'active',
             'active6' => '',
             'datas' => $datas,
+            'karyawans' => $karyawans,
             'users' => $users
         ];
 
@@ -50,20 +57,30 @@ class AbsenController extends BaseController
 
     public function store()
     {
-
         $absen = new AbsenModel();
 
         $data = [
             'id_karyawan' => $this->request->getPost('id_karyawan'),
             'tanggal' => $this->request->getPost('tanggal'),
-            'ket_absen' => $this->request->getPost('ket_absen'),
+            'izin' => $this->request->getPost('izin'),
+            'sakit' => $this->request->getPost('sakit'),
+            'mangkir' => $this->request->getPost('mangkir'),
+            'cuti' => $this->request->getPost('cuti'),
             'id_user' => $this->request->getPost('id_user')
         ];
-
-        if ($absen->insert($data)) {
-            session()->setFlashdata('success', 'Data berhasil ditambahkan');
+        // dd ($data);
+        $tanggal = $this->karyawanmodel->where('id_karyawan', $data['id_karyawan'])->first()['tgl_masuk'];
+        // dd ($tanggal);
+        // validasi tanggal masuk karyawan
+        if ($data['tanggal'] != $tanggal) {
+            session()->setFlashdata('error', 'Tanggal tidak sama tanggal masuk karyawan');
+            return redirect()->to('/monitoring/absenCreate');
         } else {
-            session()->setFlashdata('error', 'Data gagal ditambahkan');
+            if ($absen->insert($data)) {
+                session()->setFlashdata('success', 'Data berhasil ditambahkan');
+            } else {
+                session()->setFlashdata('error', 'Data gagal ditambahkan');
+            }
         }
 
         return redirect()->to('/monitoring/dataAbsen');
@@ -71,12 +88,11 @@ class AbsenController extends BaseController
 
     public function edit($id)
     {
-        $absen = new AbsenModel();
-        $datajoin = $absen->getAbsenWithKaryawan();
+        $datajoin = $this->absenmodel->getdata();
         $usermodel = new UserModel();
 
         $users = $usermodel->findAll();
-        $data = $absen->find($id);
+        $data = $this->absenmodel->find($id);
 
         $data = [
             'role' => session()->get('role'),
@@ -101,14 +117,25 @@ class AbsenController extends BaseController
         $data = [
             'id_karyawan' => $this->request->getPost('id_karyawan'),
             'tanggal' => $this->request->getPost('tanggal'),
-            'ket_absen' => $this->request->getPost('ket_absen'),
+            'izin' => $this->request->getPost('izin'),
+            'sakit' => $this->request->getPost('sakit'),
+            'mangkir' => $this->request->getPost('mangkir'),
+            'cuti' => $this->request->getPost('cuti'),
             'id_user' => $this->request->getPost('id_user')
         ];
 
-        if ($absen->update($id, $data)) {
-            session()->setFlashdata('success', 'Data berhasil diubah');
+        $tanggal = $this->karyawanmodel->where('id_karyawan', $data['id_karyawan'])->first()['tgl_masuk'];
+        // dd ($tanggal);
+        // validasi tanggal masuk karyawan
+        if ($data['tanggal'] != $tanggal) {
+            session()->setFlashdata('error', 'Tanggal tidak sama tanggal masuk karyawan');
+            return redirect()->to('/monitoring/absenEdit/' . $id);
         } else {
-            session()->setFlashdata('error', 'Data gagal diubah');
+            if ($absen->update($id, $data)) {
+                session()->setFlashdata('success', 'Data berhasil diubah');
+            } else {
+                session()->setFlashdata('error', 'Data gagal diubah');
+            }
         }
 
         return redirect()->to('/monitoring/dataAbsen');
@@ -203,7 +230,7 @@ class AbsenController extends BaseController
             // Load the spreadsheet
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
             $dataSheet = $spreadsheet->getActiveSheet();
-            $startRow = 2; // Assuming the first row is for headers
+            $startRow = 3; // Assuming the first row is for headers
 
             // Models
             $absenModel = new \App\Models\AbsenModel();
@@ -220,27 +247,38 @@ class AbsenController extends BaseController
                 $errorMessage = "Row {$row}: ";
 
                 // Get cell values
-                $namaKaryawan = $dataSheet->getCell('A' . $row)->getValue();
-                $tanggal = $dataSheet->getCell('B' . $row)->getValue();
-                $KetAbsen = $dataSheet->getCell('C' . $row)->getValue();
-                $namaUser = $dataSheet->getCell('D' . $row)->getValue();
+                $kodeKartu = $dataSheet->getCell('A' . $row)->getFormattedValue();
+                $namaKaryawan = $dataSheet->getCell('D' . $row)->getValue();
+                $tanggal = $dataSheet->getCell('G' . $row)->getFormattedValue();
+                $sakit = $dataSheet->getCell('I' . $row)->getValue();
+                $izin = $dataSheet->getCell('J' . $row)->getValue();
+                $cuti = $dataSheet->getCell('K' . $row)->getValue();
+                $mangkir = $dataSheet->getCell('L' . $row)->getValue();
+                $idUser = session()->get('id_user');
 
+                
+                // dd ($kodeKartu, $namaKaryawan, $tanggal, $sakit, $izin, $cuti, $mangkir, $idUser);
                 // Validate data
+                // Validasi tangal 
+                if (empty($tanggal)) {
+                    $isValid = false;
+                    $errorMessage .= "Tanggal harus diisi. ";
+                } else {
+                    $tanggal = date('Y-m-d', strtotime($tanggal));
+                    // dd ($tanggal);
+                    // Validasi format tanggal
+                    if ($tanggal === false) {
+                        $isValid = false;
+                        $errorMessage .= "Tanggal  tidak valid. ";
+                    } 
+                }
                 if (empty($namaKaryawan)) {
                     $isValid = false;
                     $errorMessage .= "Nama Karyawan is required. ";
                 }
-                if (empty($tanggal)) {
+                if (empty($kodeKartu)) {
                     $isValid = false;
-                    $errorMessage .= "Tanggal is required. ";
-                }
-                if (empty($KetAbsen)) {
-                    $isValid = false;
-                    $errorMessage .= "Keterangan Absen is required. ";
-                }
-                if (empty($namaUser)) {
-                    $isValid = false;
-                    $errorMessage .= "Nama User is required. ";
+                    $errorMessage .= "Kode Kartu is required. ";
                 }
 
                 // If valid, proceed to save
@@ -250,10 +288,13 @@ class AbsenController extends BaseController
                     if ($karyawan) {
                         // Prepare the data for saving
                         $data = [
-                            'id_karyawan' => $karyawan['id_karyawan'], // Ensure this is the correct foreign key
+                            'id_karyawan' => $karyawan['id_karyawan'],
                             'tanggal' => $tanggal,
-                            'ket_absen' => $KetAbsen,
-                            'id_user' => session()->get('id_user'),
+                            'sakit' => $sakit,
+                            'izin' => $izin,
+                            'cuti' => $cuti,
+                            'mangkir' => $mangkir,
+                            'id_user' => $idUser
                         ];
 
                         // kalau ada data karyawan dan tanggal absen sama maka tidak bisa diinputkan
@@ -261,40 +302,105 @@ class AbsenController extends BaseController
                         if ($absen) {
                             $isValid = false;
                             $errorMessage .= "Data absen sudah ada. ";
-                        } 
-
-                        // only save if the data is valid
-                        if (!$isValid) {
-                            $errorCount++;
-                            $errorMessages[] = $errorMessage;
                         } else {
-                            $absenModel->save($data);
+                            // Save the data
+                            $absenModel->insert($data);
                             $successCount++;
                         }
                     } else {
                         $isValid = false;
-                        $errorMessage .= "Karyawan not found. ";
-                        $errorCount++;
-                        $errorMessages[] = $errorMessage;
+                        $errorMessage .= "Karyawan tidak ditemukan. ";
                     }
-                } else {
+                }
+
+                // If invalid, add to error count and log the error message
+                if (!$isValid) {
                     $errorCount++;
                     $errorMessages[] = $errorMessage;
+                } 
+            }
+
+            // Redirect with success and error messages
+            $message = "Data absen berhasil diupload. Total data: {$successCount}.";
+            if ($errorCount > 0) {
+                $message .= " Terdapat {$errorCount} data yang gagal diupload.";
+                $message .= "<ul>";
+                foreach ($errorMessages as $msg) {
+                    $message .= "<li>{$msg}</li>";
                 }
+                $message .= "</ul>";
             }
-
-            // Set flash messages
-            if ($isValid) {
-                return redirect()->to(base_url('monitoring/dataAbsen'))->with('success', 'Data absen berhasil diimport.');
-            } else {
-                return redirect()->to(base_url('monitoring/dataAbsen'))->with('error', 'Data absen gagal diimport. ');
-            }
-
-            return redirect()->to(base_url('monitoring/dataAbsen'))->with('success', 'Data absen berhasil diimport.');
+            return redirect()->to(base_url('monitoring/dataAbsen'))->with('success', $message);
         } else {
             return redirect()->to(base_url('monitoring/dataAbsen'))->with('error', 'Invalid file. Please upload an Excel file.');
         }
         
+    }
+
+    public function absenReport()
+    {
+        $data = $this->absenmodel->getdata();
+
+        // export data ke excel
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // header
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', ' Nama Karyawan');
+        $sheet->setCellValue('C1', 'Tanggal');
+        $sheet->setCellValue('D1', 'Izin');
+        $sheet->setCellValue('E1', 'Sakit');
+        $sheet->setCellValue('F1', 'Mangkir');
+        $sheet->setCellValue('G1', 'Cuti');
+        $sheet->setCellValue('H1', 'Input By');
+        $sheet->setCellValue('I1', 'Created At');
+        $sheet->setCellValue('J1', 'Updated At');
+
+        $no = 1;
+        $column = 2;
+
+        // style kolom manual
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(20);
+        $sheet->getColumnDimension('J')->setWidth(20);
+        
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:J1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
+        $sheet->getStyle('A1:J1')->getAlignment()->setHorizontal('center');
+
+        foreach ($data as $row) {
+            $sheet->setCellValue('A' . $column, $no++);
+            $sheet->setCellValue('B' . $column, $row['nama_karyawan']);
+            $sheet->setCellValue('C' . $column, $row['tanggal']);
+            $sheet->setCellValue('D' . $column, $row['izin']);
+            $sheet->setCellValue('E' . $column, $row['sakit']);
+            $sheet->setCellValue('F' . $column, $row['mangkir']);
+            $sheet->setCellValue('G' . $column, $row['cuti']);
+            $sheet->setCellValue('H' . $column, $row['username']);
+            $sheet->setCellValue('I' . $column, $row['created_at']);
+            $sheet->setCellValue('J' . $column, $row['updated_at']);
+
+            $column++;
+        }
+
+        // Set the header
+        $fileName = 'Data_Absen.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"{$fileName}\"");
+        header('Cache-Control: max-age=0');
+
+        // Save the file
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 
     public function empty()
