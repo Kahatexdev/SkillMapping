@@ -9,6 +9,7 @@ use App\Models\PenilaianModel;
 use App\Models\BatchModel;
 use App\Models\KaryawanModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class PenilaianController extends BaseController
 {
@@ -204,13 +205,15 @@ class PenilaianController extends BaseController
 
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Penilaian',
+            'title' => 'Penilaian Mandor',
             'active1' => '',
             'active2' => '',
             'active3' => '',
             'active4' => '',
-            'active5' => 'active',
+            'active5' => '',
             'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
             'jobrole' => $id_jobrole,
             'jobdesc' => $jobdesc, // Pass jobdesc to view
             'karyawan' => $karyawan,
@@ -313,5 +316,113 @@ class PenilaianController extends BaseController
         }
 
         return redirect()->back()->with('error', 'Gagal menyimpan penilaian.');
+    }
+
+    public function show($id_bagian, $id_batch, $id_jobrole)
+    {
+        $id_bagian = (int) $id_bagian;
+        $id_batch = (int) $id_batch;
+        $id_jobrole = (int) $id_jobrole;
+        // dd ($id_bagian, $id_batch, $id_jobrole);
+        $penilaian = $this->penilaianmodel->getPenilaianByIdBagian($id_bagian, $id_batch, $id_jobrole);
+        // dd ($penilaian[0]['bobot_nilai']);
+
+        $bobotNilai = [];
+        foreach ($penilaian as $p) {
+            $bobotNilai[$p['karyawan_id']] = json_decode($p['bobot_nilai'], true);
+        }
+
+        // dd($bobotNilai);
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Penilaian Mandor',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'penilaian' => $penilaian,
+            'bobotNilai' => $bobotNilai
+        ];
+
+        return view('penilaian/show', $data);
+    }
+
+    public function reportExcel ($id_bagian, $id_batch, $id_jobrole)
+    {
+        $id_bagian = (int) $id_bagian;
+        $id_batch = (int) $id_batch;
+        $id_jobrole = (int) $id_jobrole;
+
+        $penilaian = $this->penilaianmodel->getPenilaianByIdBagian($id_bagian, $id_batch, $id_jobrole);
+
+        $bobotNilai = [];
+        foreach ($penilaian as $p) {
+            $bobotNilai[$p['karyawan_id']] = json_decode($p['bobot_nilai'], true);
+        }
+
+        // format nama file excel
+        $filename = 'Penilaian-' . date('Y-m-d') . '.xlsx';
+
+        // Load the Excel library
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set the column headers
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Nama Karyawan');
+        $sheet->setCellValue('C1', 'Jobdesk');
+        $sheet->setCellValue('D1', 'Bobot Nilai');
+        $sheet->setCellValue('E1', 'Grade');
+
+        // Set the data
+        $no = 1;
+        $row = 2;
+
+        foreach ($penilaian as $p) {
+            $jobdesc = json_decode($p['jobdesc'], true) ?? [];
+            $keterangan = json_decode($p['keterangan'], true) ?? [];
+            $index_nilai = json_decode($p['index_nilai'], true) ?? [];
+            $bobot_nilai = json_decode($p['bobot_nilai'], true) ?? [];
+
+            $total_nilai = 0;
+            $total_bobot = 0;
+
+            if (!empty($bobot_nilai) && !empty($index_nilai)) {
+                foreach ($bobot_nilai as $key => $value) {
+                    $indexVal = $index_nilai[$key] ?? 0;
+                    $total_nilai += $indexVal * $value;
+                    $total_bobot += $value;
+                }
+            }
+
+            foreach ($jobdesc as $key => $desc) {
+                $sheet->setCellValue('A' . $row, $no);
+                $sheet->setCellValue('B' . $row, $p['nama_karyawan']);
+                $sheet->setCellValue('C' . $row, $desc);
+                $sheet->setCellValue('D' . $row, $keterangan[$key]);
+                $sheet->setCellValue('E' . $row, $p['index_nilai']);
+
+                $row++;
+            }
+
+            $no++;
+        }
+
+        // Set the header
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        // Save the file to the output
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('php://output');
+
+        exit();
+
     }
 }

@@ -136,7 +136,7 @@
                                             <td><?= $batch['bulan'] ?></td>
                                             <td><?= $batch['tahun'] ?></td>
                                             <td>
-                                                <a href="<?= base_url('monitoring/penilaianDetail/' . $batch['id_penilaian']) ?>" class="btn bg-gradient-info btn-sm">Detail</a>
+                                                <a href="<?= base_url('monitoring/penilaianDetail/' . $batch['id_bagian'].'/'.$batch['id_batch'].'/'.$batch['id_jobrole']) ?>" class="btn bg-gradient-info btn-sm">Detail</a>
                                                 <!-- <a href="<?= base_url('monitoring/penilaianEdit/' . $batch['id_penilaian']) ?>" class="btn btn-warning btn-sm">Edit</a>
                                                 <button class="btn bg-gradient-danger btn-sm" onclick="confirmDelete('<?= $batch['id_penilaian'] ?>')">Delete</button> -->
                                             </td>

@@ -75,7 +75,7 @@
     }
 
     table th {
-        background-color: var(--primary-color);
+        /* background-color: var(--primary-color); */
         color: white;
     }
 
@@ -139,7 +139,7 @@
                                 <a href="#" class="btn bg-gradient-info">
                                     <i class="fas fa-solid fa-tasks text-sm opacity-10"></i>
                                 </a>
-                                Form Input Data Penilaian Mandor
+                                Form Penilaian Mandor
                             </h4>
                         </div>
                         <div>
@@ -160,12 +160,12 @@
                 <div class="col-xl-6 col-sm-12 mb-xl-0 mb-4 mt-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-3"><?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
+                            <h5 class="mb-3">Nama : <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Deskripsi Pekerjaan</th>
-                                        <th>Nilai</th>
+                                        <th class="bg-gradient-info">Deskripsi Pekerjaan</th>
+                                        <th class="bg-gradient-info">Nilai</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -173,7 +173,7 @@
                                         <tr>
                                             <td><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?></td>
                                             <td>
-                                                <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" required>
+                                                <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" min="1" max="6" required>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

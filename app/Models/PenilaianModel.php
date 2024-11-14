@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class PenilaianModel extends Model
 {
     protected $table            = 'penilaian';
-    protected $primaryKey       = 'id';
+    protected $primaryKey       = 'id_penilaian';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
@@ -56,13 +56,29 @@ class PenilaianModel extends Model
     public function getPenilaian()
     {
         return $this->db->table('penilaian')
-            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_batch, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.nama_bagian, bagian.area, batch.shift, batch.bulan, batch.tahun')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_batch, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, batch.shift, batch.bulan, batch.tahun')
             ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
             ->join('batch', 'batch.id_batch=penilaian.id_batch')
+            ->groupBy('bagian.id_bagian')
             // group by batch.id_batch
             ->groupBy('penilaian.id_batch')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getPenilaianByIdBagian($id_bagian, $id_batch, $id_jobrole)
+    {
+        return $this->db->table('penilaian')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_batch, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, batch.shift, batch.bulan, batch.tahun, job_role.jobdesc')
+            ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
+            ->join('batch', 'batch.id_batch=penilaian.id_batch')
+            ->where('job_role.id_bagian', $id_bagian)
+            ->where('penilaian.id_batch', $id_batch)
+            ->where('penilaian.id_jobrole', $id_jobrole)
             ->get()
             ->getResultArray();
     }

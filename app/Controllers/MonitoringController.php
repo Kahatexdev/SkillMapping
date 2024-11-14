@@ -51,7 +51,7 @@ class MonitoringController extends BaseController
             'active6' => ''
 
         ];
-        return view('Layout/index', $data);
+        return view(session()->get('role') . '/index', $data);
     }
     public function karyawan()
     {
@@ -322,7 +322,7 @@ class MonitoringController extends BaseController
             // 'area' => $area
 
         ];
-        // dd($batch);
+        // dd($penilaian);
         return view(session()->get('role') . '/penilaian', $data);
     }
 }
