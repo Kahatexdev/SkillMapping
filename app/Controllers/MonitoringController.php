@@ -362,7 +362,7 @@ class MonitoringController extends BaseController
             // 'area' => $area
 
         ];
-        dd ($absen);
+        // dd ($absen);
         return view(session()->get('role') . '/reportpenilaian', $data);
     }
 }

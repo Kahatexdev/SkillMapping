@@ -34,7 +34,7 @@
                 <div class="card-body p-3">
                     <!-- table untuk batch penilaian -->
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped" id="table_batch_penilaian">
+                        <table class="table table-hover table-striped" id="table_report_penilaian">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -47,6 +47,7 @@
                                     <th>ACCUMULASI ABSENSI</th>
                                     <th>GRADE</th>
                                     <th>TRACKING</th>
+                                    <th>AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,9 +62,11 @@
                                         <td><?= $p['jml_hari_tidak_masuk_kerja'] ?></td>
                                         <td><?= $p['persentase_kehadiran'] ?></td>
                                         <td><?= $p['accumulasi_absensi'] ?></td>
-                                        <td><?= $p['grade'] ?></td>
+                                        <td><?= $p['grade_penilaian'] ?></td>
+                                        <td><?= $p['index_nilai'] ?><?= $p['grade_penilaian'] ?></td>
+
                                         <td>
-                                            <a href="<?= base_url('monitoring/penilaianDetail/' . $p['id_penilaian']) ?>" class="btn bg-gradient-info btn-sm">
+                                            <a href="<?= base_url('monitoring/penilaianDetail/' . $p['id_karyawan']) ?>" class="btn bg-gradient-info btn-sm">
                                                 <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>
                                                 Detail
                                             </a>
@@ -80,7 +83,28 @@
     </div>
 
 </div>
+<!-- datatable -->
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable with export options
+        $('#table_report_penilaian').DataTable({});
 
+        // Flash message SweetAlerts
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                html: '<?= session()->getFlashdata('success') ?>',
+            });
+        <?php endif; ?>
 
-
+        <?php if (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                html: '<?= session()->getFlashdata('error') ?>',
+            });
+        <?php endif; ?>
+    });
+</script>
 <?php $this->endSection(); ?>
