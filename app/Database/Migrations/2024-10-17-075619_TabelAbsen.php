@@ -20,7 +20,7 @@ class TabelAbsen extends Migration
             'type' => 'INT',
             'constraint' => 11,
         ],
-        'absen' => [
+        'bulan' => [
             'type' => 'VARCHAR',
             'constraint' => 50,
         ],

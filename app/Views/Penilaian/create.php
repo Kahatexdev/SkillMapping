@@ -164,8 +164,8 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th class="bg-gradient-info">Deskripsi Pekerjaan</th>
-                                        <th class="bg-gradient-info">Nilai</th>
+                                        <th class="bg-gradient-dark">Deskripsi Pekerjaan</th>
+                                        <th class="bg-gradient-dark">Nilai</th>
                                     </tr>
                                 </thead>
                                 <tbody>

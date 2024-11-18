@@ -54,9 +54,86 @@ class AbsenModel extends Model
 
     public function getdata()
     {
-        return $this->select('absen.*, karyawan.nama_karyawan, user.username')
-            ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
-            ->join('user', 'user.id_user = absen.id_user')
-            ->findAll();
+        return $this->select('absen.*, karyawan.nama_karyawan, user.username, 
+        (absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3) as jml_hari_tidak_masuk_kerja, 
+        ((31 - ((absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3))) / 31) * 100 as persentase_kehadiran,
+        CASE 
+            WHEN (((31 - ((absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3))) / 31) * 100) < 94 THEN -1
+            ELSE 0
+        END as accumulasi_absensi')
+        ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
+        ->join('user', 'user.id_user = absen.id_user')
+        ->findAll();
     }
+
+    public function getReportPenilaian()
+    {
+        return $this->select('absen.*, karyawan.nama_karyawan, karyawan.kode_kartu,  penilaian.index_nilai,
+        CAST(COALESCE(absen.mangkir, 0) * 3 AS INT) AS jml_mangkir,
+        CAST(COALESCE(absen.izin, 0) * 2 AS INT) AS jml_izin,
+        CAST(COALESCE(absen.sakit, 0) * 1 AS INT) AS jml_sakit,
+        CAST((COALESCE(absen.mangkir, 0) * 3) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.sakit, 0) * 1) AS INT) AS jml_hari_tidak_masuk_kerja,
+        CAST(((31 - ((COALESCE(absen.sakit, 0) * 1) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.mangkir, 0) * 3))) / 31) * 100 AS INT) AS persentase_kehadiran,
+
+        CASE 
+            WHEN ((31 - ((COALESCE(absen.sakit, 0) * 1) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.mangkir, 0) * 3))) / 31) * 100 < 94 THEN -1
+            ELSE 0
+        END AS accumulasi_absensi,
+
+        CASE 
+            WHEN (
+                CAST((COALESCE(absen.mangkir, 0) * 3) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.sakit, 0) * 1) AS INT)
+                + 
+                CASE 
+                    WHEN penilaian.index_nilai = "A" THEN 4
+                    WHEN penilaian.index_nilai = "B" THEN 3
+                    WHEN penilaian.index_nilai = "C" THEN 2
+                    WHEN penilaian.index_nilai = "D" THEN 1
+                    ELSE 0
+                END
+            ) = 4 THEN "A"
+            WHEN (
+                CAST((COALESCE(absen.mangkir, 0) * 3) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.sakit, 0) * 1) AS INT)
+                + 
+                CASE 
+                    WHEN penilaian.index_nilai = "A" THEN 4
+                    WHEN penilaian.index_nilai = "B" THEN 3
+                    WHEN penilaian.index_nilai = "C" THEN 2
+                    WHEN penilaian.index_nilai = "D" THEN 1
+                    ELSE 0
+                END
+            ) = 3 THEN "B"
+            WHEN (
+                CAST((COALESCE(absen.mangkir, 0) * 3) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.sakit, 0) * 1) AS INT)
+                + 
+                CASE 
+                    WHEN penilaian.index_nilai = "A" THEN 4
+                    WHEN penilaian.index_nilai = "B" THEN 3
+                    WHEN penilaian.index_nilai = "C" THEN 2
+                    WHEN penilaian.index_nilai = "D" THEN 1
+                    ELSE 0
+                END
+            ) = 2 THEN "C"
+            WHEN (
+                CAST((COALESCE(absen.mangkir, 0) * 3) + (COALESCE(absen.izin, 0) * 2) + (COALESCE(absen.sakit, 0) * 1) AS INT)
+                + 
+                CASE 
+                    WHEN penilaian.index_nilai = "A" THEN 4
+                    WHEN penilaian.index_nilai = "B" THEN 3
+                    WHEN penilaian.index_nilai = "C" THEN 2
+                    WHEN penilaian.index_nilai = "D" THEN 1
+                    ELSE 0
+                END
+            ) = 1 THEN "D"
+            ELSE "E"
+        END AS grade
+    ')
+        ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
+        ->join('penilaian', 'penilaian.karyawan_id = karyawan.id_karyawan')
+        ->findAll();
+    }
+
+
+
+
 }

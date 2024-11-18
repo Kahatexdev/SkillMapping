@@ -38,26 +38,39 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Bagian</th>
-                                    <th>Area</th>
-                                    <th>Shift</th>
-                                    <th>Bulan</th>
-                                    <th>Tahun</th>
+                                    <th>Nama Karyawan</th>
+                                    <th>SI(Sakit)</th>
+                                    <th>MI(Izin)</th>
+                                    <th>M(Mangkir )</th>
+                                    <th>JML HARI TIDAK MASUK KERJA</th>
+                                    <th>PERSENTASE KEHADIRAN</th>
+                                    <th>ACCUMULASI ABSENSI</th>
+                                    <th>GRADE</th>
+                                    <th>TRACKING</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $no = 1; ?>
-                                <?php foreach ($penilaian as $batch) : ?>
+                                <?php foreach ($absen as $p) : ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td><?= $batch['nama_bagian'] ?></td>
-                                        <td><?= $batch['area'] ?></td>
-                                        <td><?= $batch['shift'] ?></td>
-                                        <td><?= $batch['bulan'] ?></td>
-                                        <td><?= $batch['tahun'] ?></td>
-                                        
+                                        <td><?= $p['nama_karyawan'] ?></td>
+                                        <td><?= $p['sakit'] ?></td>
+                                        <td><?= $p['izin'] ?></td>
+                                        <td><?= $p['mangkir'] ?></td>
+                                        <td><?= $p['jml_hari_tidak_masuk_kerja'] ?></td>
+                                        <td><?= $p['persentase_kehadiran'] ?></td>
+                                        <td><?= $p['accumulasi_absensi'] ?></td>
+                                        <td><?= $p['grade'] ?></td>
+                                        <td>
+                                            <a href="<?= base_url('monitoring/penilaianDetail/' . $p['id_penilaian']) ?>" class="btn bg-gradient-info btn-sm">
+                                                <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>
+                                                Detail
+                                            </a>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
+
                             </tbody>
                         </table>
                     </div>

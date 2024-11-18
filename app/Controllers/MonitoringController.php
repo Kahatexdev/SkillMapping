@@ -343,14 +343,12 @@ class MonitoringController extends BaseController
     }
     public function reportpenilaian()
     {
-        $batch = $this->batchmodel->findAll();
-        $namabagian = $this->bagianmodel->getBagian();
-        $penilaian = $this->penilaianmodel->getPenilaian();
+        $absen = $this->absenmodel->getReportPenilaian();
 
         // dd($area);
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Penilaian Mandor',
+            'title' => 'Report Penilaian',
             'active1' => '',
             'active2' => '',
             'active3' => '',
@@ -358,13 +356,13 @@ class MonitoringController extends BaseController
             'active5' => '',
             'active6' => '',
             'active7' => '',
-            'active8' => 'active',
-            'batch' => $batch,
-            'namabagian' => $namabagian,
-            'penilaian' => $penilaian
+            'active8' => '',
+            'active9' => 'active',
+            'absen' => $absen
             // 'area' => $area
 
         ];
+        dd ($absen);
         return view(session()->get('role') . '/reportpenilaian', $data);
     }
 }
