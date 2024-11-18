@@ -75,6 +75,7 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->post('penilaianStore', 'PenilaianController::store');
     $routes->get('penilaianDetail/(:num)/(:num)/(:num)', 'PenilaianController::show/$1/$2/$3');
     $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
+    $routes->get('reportpenilaian', 'MonitoringController::reportpenilaian');
 
 
 });

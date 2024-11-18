@@ -61,6 +61,7 @@ class AbsenController extends BaseController
 
         $data = [
             'id_karyawan' => $this->request->getPost('id_karyawan'),
+            'bulan' => $this->request->getPost('bulan'),
             'tanggal' => $this->request->getPost('tanggal'),
             'izin' => $this->request->getPost('izin'),
             'sakit' => $this->request->getPost('sakit'),
@@ -69,18 +70,10 @@ class AbsenController extends BaseController
             'id_user' => $this->request->getPost('id_user')
         ];
         // dd ($data);
-        $tanggal = $this->karyawanmodel->where('id_karyawan', $data['id_karyawan'])->first()['tgl_masuk'];
-        // dd ($tanggal);
-        // validasi tanggal masuk karyawan
-        if ($data['tanggal'] != $tanggal) {
-            session()->setFlashdata('error', 'Tanggal tidak sama tanggal masuk karyawan');
-            return redirect()->to('/monitoring/absenCreate');
+        if ($absen->insert($data)) {
+            session()->setFlashdata('success', 'Data berhasil ditambahkan');
         } else {
-            if ($absen->insert($data)) {
-                session()->setFlashdata('success', 'Data berhasil ditambahkan');
-            } else {
-                session()->setFlashdata('error', 'Data gagal ditambahkan');
-            }
+            session()->setFlashdata('error', 'Data gagal ditambahkan');
         }
 
         return redirect()->to('/monitoring/dataAbsen');
@@ -116,7 +109,7 @@ class AbsenController extends BaseController
 
         $data = [
             'id_karyawan' => $this->request->getPost('id_karyawan'),
-            'tanggal' => $this->request->getPost('tanggal'),
+            'bulan' => $this->request->getPost('bulan'),
             'izin' => $this->request->getPost('izin'),
             'sakit' => $this->request->getPost('sakit'),
             'mangkir' => $this->request->getPost('mangkir'),
@@ -124,20 +117,15 @@ class AbsenController extends BaseController
             'id_user' => $this->request->getPost('id_user')
         ];
 
-        $tanggal = $this->karyawanmodel->where('id_karyawan', $data['id_karyawan'])->first()['tgl_masuk'];
-        // dd ($tanggal);
-        // validasi tanggal masuk karyawan
-        if ($data['tanggal'] != $tanggal) {
-            session()->setFlashdata('error', 'Tanggal tidak sama tanggal masuk karyawan');
-            return redirect()->to('/monitoring/absenEdit/' . $id);
+        $id_karyawan = $this->karyawanmodel->where('id_karyawan', $data['id_karyawan'])->first();
+        // dd ($id_karyawan);
+        // validasi id_karyawan masuk karyawan
+        
+        if ($absen->update($id, $data)) {
+            session()->setFlashdata('success', 'Data berhasil diubah');
         } else {
-            if ($absen->update($id, $data)) {
-                session()->setFlashdata('success', 'Data berhasil diubah');
-            } else {
-                session()->setFlashdata('error', 'Data gagal diubah');
-            }
+            session()->setFlashdata('error', 'Data gagal diubah');
         }
-
         return redirect()->to('/monitoring/dataAbsen');
     }
 
@@ -177,7 +165,7 @@ class AbsenController extends BaseController
 
         // Menyusun header kolom
         $sheet->setCellValue('A1', 'Nama Karyawan');
-        $sheet->setCellValue('B1', 'Tanggal');
+        $sheet->setCellValue('B1', 'Bulan');
         $sheet->setCellValue('C1', 'Keterangan Absen');
         $sheet->setCellValue('D1', 'Nama User');
 
@@ -249,7 +237,7 @@ class AbsenController extends BaseController
                 // Get cell values
                 $kodeKartu = $dataSheet->getCell('A' . $row)->getFormattedValue();
                 $namaKaryawan = $dataSheet->getCell('D' . $row)->getValue();
-                $tanggal = $dataSheet->getCell('G' . $row)->getFormattedValue();
+                $bulan = $dataSheet->getCell('I1')->getValue();
                 $sakit = $dataSheet->getCell('I' . $row)->getValue();
                 $izin = $dataSheet->getCell('J' . $row)->getValue();
                 $cuti = $dataSheet->getCell('K' . $row)->getValue();
@@ -257,21 +245,13 @@ class AbsenController extends BaseController
                 $idUser = session()->get('id_user');
 
                 
-                // dd ($kodeKartu, $namaKaryawan, $tanggal, $sakit, $izin, $cuti, $mangkir, $idUser);
+                // dd ($kodeKartu, $namaKaryawan, $bulan, $sakit, $izin, $cuti, $mangkir, $idUser);
                 // Validate data
                 // Validasi tangal 
-                if (empty($tanggal)) {
+                if (empty($bulan)) {
                     $isValid = false;
-                    $errorMessage .= "Tanggal harus diisi. ";
-                } else {
-                    $tanggal = date('Y-m-d', strtotime($tanggal));
-                    // dd ($tanggal);
-                    // Validasi format tanggal
-                    if ($tanggal === false) {
-                        $isValid = false;
-                        $errorMessage .= "Tanggal  tidak valid. ";
-                    } 
-                }
+                    $errorMessage .= "bulan harus diisi. ";
+                } 
                 if (empty($namaKaryawan)) {
                     $isValid = false;
                     $errorMessage .= "Nama Karyawan is required. ";
@@ -289,7 +269,7 @@ class AbsenController extends BaseController
                         // Prepare the data for saving
                         $data = [
                             'id_karyawan' => $karyawan['id_karyawan'],
-                            'tanggal' => $tanggal,
+                            'bulan' => $bulan,
                             'sakit' => $sakit,
                             'izin' => $izin,
                             'cuti' => $cuti,
@@ -298,7 +278,7 @@ class AbsenController extends BaseController
                         ];
 
                         // kalau ada data karyawan dan tanggal absen sama maka tidak bisa diinputkan
-                        $absen = $absenModel->where('id_karyawan', $karyawan['id_karyawan'])->where('tanggal', $tanggal)->first();
+                        $absen = $absenModel->where('id_karyawan', $karyawan['id_karyawan'])->first();
                         if ($absen) {
                             $isValid = false;
                             $errorMessage .= "Data absen sudah ada. ";
@@ -348,7 +328,7 @@ class AbsenController extends BaseController
         // header
         $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', ' Nama Karyawan');
-        $sheet->setCellValue('C1', 'Tanggal');
+        $sheet->setCellValue('C1', 'Bulan');
         $sheet->setCellValue('D1', 'Izin');
         $sheet->setCellValue('E1', 'Sakit');
         $sheet->setCellValue('F1', 'Mangkir');
@@ -379,7 +359,7 @@ class AbsenController extends BaseController
         foreach ($data as $row) {
             $sheet->setCellValue('A' . $column, $no++);
             $sheet->setCellValue('B' . $column, $row['nama_karyawan']);
-            $sheet->setCellValue('C' . $column, $row['tanggal']);
+            $sheet->setCellValue('C' . $column, $row['bulan']);
             $sheet->setCellValue('D' . $column, $row['izin']);
             $sheet->setCellValue('E' . $column, $row['sakit']);
             $sheet->setCellValue('F' . $column, $row['mangkir']);

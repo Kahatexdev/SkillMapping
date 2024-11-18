@@ -70,7 +70,6 @@ class KaryawanModel extends Model
     public function getIdKaryawan()
     {
         return $this->select('*')
-            ->where('id_karyawan NOT IN (SELECT id_karyawan FROM absen)')
             ->findAll();
     }
 }

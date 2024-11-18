@@ -12,7 +12,7 @@ class AbsenModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_absen', 'id_karyawan', 'tanggal', 'izin', 'sakit', 'mangkir', 'cuti', 'id_user', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_absen', 'id_karyawan', 'bulan', 'izin', 'sakit', 'mangkir', 'cuti', 'id_user', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
