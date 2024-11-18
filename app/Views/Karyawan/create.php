@@ -74,9 +74,9 @@
                             <label for="shift">Shift</label>
                             <select name="shift" id="shift" class="form-control" required>
                                 <option value="">Pilih Shift</option>
-                                <option value="A">Pagi</option>
-                                <option value="B">Siang</option>
-                                <option value="C">Malam</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
                                 <option value="Non Shift">Non Shift</option>
                             </select>
                         </div>
@@ -100,11 +100,12 @@
                             <label for="warna_baju">Warna Baju</label>
                             <select name="warna_baju" id="warna_baju" class="form-control" required>
                                 <option value="">Pilih Warna Baju</option>
-                                <option value="Merah">Merah</option>
-                                <option value="Biru">Biru</option>
-                                <option value="Hijau">Hijau</option>
-                                <option value="Kuning">Kuning</option>
                                 <option value="Putih">Putih</option>
+                                <option value="Biru">Biru</option>
+                                <option value="Kuning">Kuning</option>
+                                <option value="Pink">Pink</option>
+                                <option value="Coklat">Coklat</option>
+                                <option value="Hijau">Hijau</option>
                                 <option value="Hitam">Hitam</option>
                             </select>
                         </div>

@@ -72,9 +72,9 @@
                         </div>
 
                         <div class="form-group mb-2">
-                            <label for="tanggal">Tanggal Masuk</label>
-                            <input type="date" name="tanggal" id="tanggal" class="form-control"
-                                value="<?= $data['tanggal'] ?>" required>
+                            <label for="bulan">Bulan</label>
+                            <input type="text" name="bulan" id="bulan" class="form-control"
+                                value="<?= $data['bulan'] ?>" required>
                         </div>
 
                         <div class="form-group mb-2">

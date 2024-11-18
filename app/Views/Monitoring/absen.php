@@ -77,7 +77,7 @@
                             <thead>
                                 <th>No</th>
                                 <th>Nama Karyawan</th>
-                                <th>Tanggal Masuk</th>
+                                <th>Bulan</th>
                                 <th>SI(Sakit)</th>
                                 <th>MI(Izin)</th>
                                 <th>M(Mangkir )</th>
@@ -92,7 +92,7 @@
                                         <tr>
                                             <td><?= $absen['id_absen'] ?></td>
                                             <td><?= $absen['nama_karyawan'] ?></td>
-                                            <td><?= $absen['tanggal'] ?></td>
+                                            <td><?= $absen['bulan'] ?></td>
                                             <?php if ($absen['sakit'] == 0) : ?>
                                                 <td></td>
                                             <?php else : ?>

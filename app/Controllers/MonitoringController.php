@@ -341,4 +341,30 @@ class MonitoringController extends BaseController
         // dd($penilaian);
         return view(session()->get('role') . '/penilaian', $data);
     }
+    public function reportpenilaian()
+    {
+        $batch = $this->batchmodel->findAll();
+        $namabagian = $this->bagianmodel->getBagian();
+        $penilaian = $this->penilaianmodel->getPenilaian();
+
+        // dd($area);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Penilaian Mandor',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'batch' => $batch,
+            'namabagian' => $namabagian,
+            'penilaian' => $penilaian
+            // 'area' => $area
+
+        ];
+        return view(session()->get('role') . '/reportpenilaian', $data);
+    }
 }

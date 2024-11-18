@@ -72,8 +72,8 @@
                             </select>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="tanggal">Tanggal Masuk</label>
-                            <input type="date" class="form-control" name="tanggal" id="tanggal" required>
+                            <label for="bulan">Bulan</label>
+                            <input type="text" class="form-control" name="bulan" id="bulan" required>
                         </div>
                         <div class="form-group mb-2">
                             <label for="izin">Izin</label>

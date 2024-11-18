@@ -74,19 +74,31 @@
                                                             'JOB',
                                                             '6S'
                                                         ]; ?>
-                                                        <?php foreach ($categories as $category): ?>
-                                                            <?php $items = $groupedData[$role['id_jobrole']][$category] ?? null; ?>
-                                                            <?php if ($items): ?>
-                                                                <div class="col-6">
-                                                                    <h6><?= $category ?></h6>
-                                                                    <ol>
-                                                                        <?php foreach ($items as $item): ?>
-                                                                            <li><?= $item ?></li>
-                                                                        <?php endforeach; ?>
-                                                                    </ol>
-                                                                </div>
-                                                            <?php endif; ?>
-                                                        <?php endforeach; ?>
+                                                        <table class="table">
+                                                            <thread>
+                                                                <tr>
+                                                                    <th>Categories</th>
+                                                                    <th>Items</th>
+                                                                </tr>
+                                                            </thread>
+                                                            <tbody>
+                                                                <?php foreach ($categories as $category): ?>
+                                                                    <?php $items = $groupedData[$role['id_jobrole']][$category] ?? null; ?>
+                                                                    <?php if ($items): ?>
+                                                                        <tr>
+                                                                            <td><?= $category ?></td>
+                                                                            <td>
+                                                                                <ul>
+                                                                                    <?php foreach ($items as $item): ?>
+                                                                                        <li><?= $item ?></li>
+                                                                                    <?php endforeach; ?>
+                                                                                </ul>
+                                                                            </td>
+                                                                        </tr>
+                                                                    <?php endif; ?>
+                                                                <?php endforeach; ?>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </td>
