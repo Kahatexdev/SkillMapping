@@ -33,7 +33,8 @@ class AuthController extends BaseController
                 return redirect()->to(base_url('/monitoring'));
             case 'mandor':
                 return redirect()->to(base_url('/mandor'));
-
+            case 'trainingschool':
+                return redirect()->to(base_url('/trainingschool'));
             default:
                 return redirect()->to(base_url('/login'))->withInput()->with('error', 'Invalid username or password');
                 break;

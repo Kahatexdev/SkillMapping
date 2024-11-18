@@ -77,18 +77,89 @@ class BsMcController extends BaseController
         exit;
     }
 
+    // public function upload()
+    // {
+    //     $file = $this->request->getFile('file');
+    //     if ($file && $file->isValid() && !$file->hasMoved()) {
+    //         $fileType = $file->getClientMimeType();
+    //         if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+    //             return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file type. Please upload an Excel file.');
+    //         }
+
+    //         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
+    //         $dataSheet = $spreadsheet->getActiveSheet();
+    //         $startRow = 34;
+
+    //         $karyawanModel = new \App\Models\KaryawanModel();
+    //         $bsmcModel = new \App\Models\BsmcModel();
+
+    //         $successCount = 0;
+    //         $errorCount = 0;
+    //         $errorMessages = [];
+
+    //         $nameSheet = $spreadsheet->getSheetNames();
+    //         // dd ($nameSheet);
+    //         $sheet = $spreadsheet->getSheetByName($nameSheet[2]);
+    //         $highestRow = $sheet->getHighestRow();
+    //         $highestColumn = $sheet->getHighestColumn();
+
+    //         for ($row = $startRow; $row <= $highestRow; $row++) {
+    //             $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE)[0];
+    //             $namaKaryawan = $rowData[4];
+    //             $tanggal = \date('Y-m-d', strtotime($rowData[6]));
+    //             $noModel = $rowData[10];
+    //             $inisial = $rowData[11];
+    //             $qtyProdMc = $rowData[5];
+    //             $qtyBs = $rowData[20];
+
+    //             dd($namaKaryawan, $tanggal, $noModel, $inisial, $qtyProdMc, $qtyBs);
+    //             $karyawan = $karyawanModel->where('kode_kartu', $kodeKartu)->first();
+    //             if ($karyawan) {
+    //                 $bsmcModel->insert([
+    //                     'id_karyawan' => $karyawan['id_karyawan'],
+    //                     'tanggal' => $tanggal,
+    //                     'no_model' => $noModel,
+    //                     'inisial' => $inisial,
+    //                     'qty_prod_mc' => $qtyProdMc,
+    //                     'qty_bs' => $qtyBs
+    //                 ]);
+    //                 $successCount++;
+    //             } else {
+    //                 $errorCount++;
+    //                 $errorMessages[] = "Row $row: Kode Kartu $kodeKartu not found.";
+    //             }
+    //         }
+
+    //         $message = 'Data uploaded successfully.';
+    //         if ($successCount > 0) {
+    //             $message .= " $successCount data successfully uploaded.";
+    //         }
+    //         if ($errorCount > 0) {
+    //             $message .= " $errorCount data failed to upload.";
+    //         }
+    //         if (!empty($errorMessages)) {
+    //             $message .= "<br>" . implode("<br>", $errorMessages);
+    //         }
+
+    //         return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', $message);
+    //     } else {
+    //         return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file.');
+    //     }
+    // }
+
     public function upload()
     {
-        $file = $this->request->getFile('file');
+        set_time_limit(0); // Disable time limit for this script
+        // ini_set('memory_limit', '2048M'); // Set memory limit to 2GB
+
+        $file = $this->request->getFile('file'); // Nama input file excel
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $fileType = $file->getClientMimeType();
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
                 return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
-            $dataSheet = $spreadsheet->getActiveSheet();
-            $startRow = 2;
+            $spreadsheet = IOFactory::load($file->getTempName());
 
             $karyawanModel = new \App\Models\KaryawanModel();
             $bsmcModel = new \App\Models\BsmcModel();
@@ -97,111 +168,192 @@ class BsMcController extends BaseController
             $errorCount = 0;
             $errorMessages = [];
 
-            for ($row = $startRow; $row <= $dataSheet->getHighestRow(); $row++) {
-                $isValid = true;
-                $errorMessage = "Row {$row}: ";
-                $kodeKartu = $dataSheet->getCell('A' . $row)->getValue();
-                $namaKaryawan = $dataSheet->getCell('B' . $row)->getValue();
-                $tanggal = $dataSheet->getCell('C' . $row)->getValue();
-                $no_model = $dataSheet->getCell('D' . $row)->getValue();
-                $inisial = $dataSheet->getCell('E' . $row)->getValue();
-                $qty_prod_mc = $dataSheet->getCell('F' . $row)->getValue();
-                $qty_bs = $dataSheet->getCell('G' . $row)->getValue();
+            $dataToInsert = [];
 
-                if (empty($kodeKartu)) {
-                    $isValid = false;
-                    $errorMessage .= "Kode Kartu tidak ada / harus diisi. ";
-                }
-                if (empty($namaKaryawan)) {
-                    $isValid = false;
-                    $errorMessage .= "Nama Karyawan tidak ada / harus diisi. ";
-                }
+            for ($sheetIndex = 2; $sheetIndex <= 32; $sheetIndex++) { // 1-31
+                $sheet = $spreadsheet->getSheet($sheetIndex);
+                $highestRow = min(40, $sheet->getHighestRow());
+                $highestColumn = $sheet->getHighestColumn();
+                // limit highestColumn to 5 to avoid memory limit
+                $highestColumn = $highestColumn > 'S' ? 'S' : $highestColumn;
 
-                if ($isValid) {
-                    $karyawan = $karyawanModel->where([
-                        'kode_kartu' => $kodeKartu,
-                        'nama_karyawan' => $namaKaryawan
-                    ])->first();
-                    // dd($karyawan);
+                for ($row = 33; $row <= $highestRow; $row++) {
+                    $rowData = $sheet->rangeToArray('J' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE)[0];
 
-                    if ($karyawan) {
-                        $idKaryawan = $karyawan['id_karyawan'];
-                        // dd($idKaryawan);
-                        $errorMessage .= "Karyawan ditemukan dengan ID: {$idKaryawan}. ";
-                    } else {
-                        $isValid = false;
-                        $errorMessage .= "Karyawan dengan Kode Kartu dan Nama tersebut tidak ditemukan. ";
+                    if (!empty($rowData[4])){
+                        $nama_karyawan = $rowData[4];
+                        $no_model = $rowData[1];
+                        $inisial = $rowData[2];
+                        $qty_bs = $rowData[8];
+                        // tanggal didapat dari nama sheet
+                        $tmp_tgl = $sheet->getTitle();
+                        // bulan sekarang
+                        $tmp_month = date('m');
+                        // tahun sekarang
+                        $tmp_year = date('Y');
+                        // tanggal sekarang
+                        $tanggal = date('Y-m-d', strtotime($tmp_year . '-' . $tmp_month . '-' . $tmp_tgl));
+
+                        // dd ($nama_karyawan, $no_model, $inisial, $qty_bs, $tanggal, $rowData);
+
+                        // Validasi untuk record yang hilang di databse.
+                        $karyawan = $karyawanModel->where('nama_karyawan', $nama_karyawan)->first();
+                        // dd ($karyawan);
+                        if ($karyawan) {
+                            $dataToInsert[] = [
+                                'id_karyawan' => $karyawan['id_karyawan'],
+                                'no_model' => $no_model,
+                                'tanggal' => $tanggal,
+                                'inisial' => $inisial,
+                                'qty_bs' => (float) $qty_bs
+                            ];
+                            $successCount++;
+                            // dd ($dataToInsert);
+                        } else {
+                            $errorCount++;
+                            $errorMessages[] = "Sheet $sheetIndex, Row $row: Nama $nama_karyawan not found.";
+                        }
                     }
-                }
+                    if (!empty($rowData[5])){
+                        $nama_karyawan = $rowData[5];
+                        $no_model = $rowData[1];
+                        $inisial = $rowData[2];
+                        $qty_bs = $rowData[11];
+                        // tanggal didapat dari nama sheet
+                        $tmp_tgl = $sheet->getTitle();
+                        // bulan sekarang
+                        $tmp_month = date('m');
+                        // tahun sekarang
+                        $tmp_year = date('Y');
+                        // tanggal sekarang
+                        $tanggal = date('Y-m-d', strtotime($tmp_year . '-' . $tmp_month . '-' . $tmp_tgl));
 
-                if (empty($tanggal)) {
-                    $isValid = false;
-                    $errorMessage .= "Tanggal harus diisi. ";
-                } else {
-                    // Cek jika tanggal dalam format Excel (serial number)
-                    if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($dataSheet->getCell('C' . $row))) {
-                        try {
-                            // Konversi serial Excel ke objek DateTime
-                            $tanggalObject = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggal);
-                        } catch (\Exception $e) {
-                            $isValid = false;
-                            $errorMessage .= "Gagal mengonversi tanggal dari format Excel. ";
-                            $tanggalObject = false;
+                        // dd ($nama_karyawan, $no_model, $inisial, $qty_bs, $tanggal);
+
+                        // Validasi untuk record yang hilang di databse.
+                        $karyawan = $karyawanModel->where('nama_karyawan', $nama_karyawan)->first();
+                        // dd ($karyawan);
+                        if ($karyawan) {
+                            $dataToInsert[] = [
+                                'id_karyawan' => $karyawan['id_karyawan'],
+                                'no_model' => $no_model,
+                                'tanggal' => $tanggal,
+                                'inisial' => $inisial,
+                                'qty_bs' => (float) $qty_bs
+                            ];
+                            $successCount++;
+                            // dd ($dataToInsert);
+                        } else {
+                            $errorCount++;
+                            $errorMessages[] = "Sheet $sheetIndex, Row $row: Nama $nama_karyawan not found.";
+                        }
+                    }
+                    if(!empty($rowData[6])){
+                        $nama_karyawan = $rowData[6];
+                        $no_model = $rowData[1];
+                        $inisial = $rowData[2];
+                        $qty_bs = $rowData[14];
+                        // tanggal didapat dari nama sheet
+                        $tmp_tgl = $sheet->getTitle();
+                        // bulan sekarang
+                        $tmp_month = date('m');
+                        // tahun sekarang
+                        $tmp_year = date('Y');
+                        // tanggal sekarang
+                        $tanggal = date('Y-m-d', strtotime($tmp_year . '-' . $tmp_month . '-' . $tmp_tgl));
+
+                        // dd ($nama_karyawan, $no_model, $inisial, $qty_bs, $tanggal);
+
+                        // Validasi untuk record yang hilang di databse.
+                        $karyawan = $karyawanModel->where('nama_karyawan', $nama_karyawan)->first();
+                        // dd ($karyawan);
+                        if ($karyawan) {
+                            $dataToInsert[] = [
+                                'id_karyawan' => $karyawan['id_karyawan'],
+                                'no_model' => $no_model,
+                                'tanggal' => $tanggal,
+                                'inisial' => $inisial,
+                                'qty_bs' => (float) $qty_bs
+                            ];
+                            $successCount++;
+                            // dd ($dataToInsert);
+                        } else {
+                            $errorCount++;
+                            $errorMessages[] = "Sheet $sheetIndex, Row $row: Nama $nama_karyawan not found.";
                         }
                     } else {
-                        // Coba parsing menggunakan format yang berbeda
-                        $tanggalObject = date_create_from_format('Y/m/d', $tanggal) ?:
-                            date_create_from_format('d/m/Y', $tanggal) ?:
-                            date_create($tanggal);
+                        $errorCount++;
+                        $errorMessages[] = "Sheet $sheetIndex, Row $row empty nama_karyawan";
                     }
-
-                    // Validasi hasil konversi tanggal
-                    if ($tanggalObject instanceof \DateTime) {
-                        // Format ulang tanggal menjadi 'Y-m-d' untuk database
-                        $tanggal = $tanggalObject->format('Y-m-d');
-                    } else {
-                        $isValid = false;
-                        $errorMessage .= "Format Tanggal salah atau tidak bisa dikonversi. ";
-                    }
-                }
-
-
-
-                if ($isValid) {
-                    $data = [
-                        'id_karyawan' => $karyawan['id_karyawan'],
-                        'tanggal' => $tanggal,
-                        'no_model' => $no_model,
-                        'inisial' => $inisial,
-                        'qty_prod_mc' => $qty_prod_mc,
-                        'qty_bs' => $qty_bs,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ];
-                    // dd($data);
-
-
-                    $bsmcModel->insert($data);
-                    $successMessage = "Data Bs Mesin berhasil disimpan.";
-                    $successCount++;
-                } else {
-                    $errorMessages[] = $errorMessage;
-                    $errorCount++;
                 }
             }
 
-            if ($errorCount > 0) {
-                $errorMessages = implode("<br>", $errorMessages);
-                return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
-            } else {
-                return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', "{$successCount} data berhasil disimpan.");
+            if(!empty($dataToInsert)) {
+                // dd ($dataToInsert);
+                $bsmcModel->insertBatch($dataToInsert);
             }
+        
+            $message = "Upload success: $successCount record(s). <br>Error: $errorCount.<br>";
+            if ($errorMessages) $message .= implode(' | ', $errorMessages);
+            return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', $message);
+            
         } else {
             return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file.');
         }
     }
 
+    public function fetchDataAPI()
+    {
+        $client = \Config\Services::curlrequest();
+        $response = $client->request('GET', 'http://localhost:8080/api/bsmc');
+        $data = json_decode($response->getBody(), true);
 
+        $bsmcModel = new \App\Models\BsmcModel();
+        $karyawanModel = new \App\Models\KaryawanModel();
+
+        $successCount = 0;
+        $errorCount = 0;
+        $errorMessages = [];
+
+        foreach ($data as $row) {
+            $namaKaryawan = $row['nama_karyawan'];
+            $tanggal = date('Y-m-d', strtotime($row['tanggal']));
+            $noModel = $row['no_model'];
+            $inisial = $row['inisial'];
+            $qtyProdMc = $row['qty_prod_mc'];
+            $qtyBs = $row['qty_bs'];
+
+            $karyawan = $karyawanModel->where('nama_karyawan', $namaKaryawan)->first();
+            if ($karyawan) {
+                $bsmcModel->insert([
+                    'id_karyawan' => $karyawan['id_karyawan'],
+                    'tanggal' => $tanggal,
+                    'no_model' => $noModel,
+                    'inisial' => $inisial,
+                    'qty_prod_mc' => $qtyProdMc,
+                    'qty_bs' => $qtyBs
+                ]);
+                $successCount++;
+            } else {
+                $errorCount++;
+                $errorMessages[] = "Nama Karyawan $namaKaryawan not found.";
+            }
+        }
+
+        $message = 'Data fetched successfully.';
+        if ($successCount > 0) {
+            $message .= " $successCount data successfully fetched.";
+        }
+        if ($errorCount > 0) {
+            $message .= " $errorCount data failed to fetch.";
+        }
+        if (!empty($errorMessages)) {
+            $message .= "<br>" . implode("<br>", $errorMessages);
+        }
+
+        return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', $message);
+    }
+    
     public function index() {}
 
     public function create()

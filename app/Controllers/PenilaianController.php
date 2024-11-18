@@ -404,7 +404,7 @@ class PenilaianController extends BaseController
                 $sheet->setCellValue('A' . $row, $no);
                 $sheet->setCellValue('B' . $row, $p['nama_karyawan']);
                 $sheet->setCellValue('C' . $row, $desc);
-                $sheet->setCellValue('D' . $row, $keterangan[$key]);
+                $sheet->setCellValue('D' . $row, $p['bobot_nilai']);
                 $sheet->setCellValue('E' . $row, $p['index_nilai']);
 
                 $row++;

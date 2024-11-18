@@ -40,6 +40,11 @@ class MonitoringController extends BaseController
     }
     public function index()
     {
+        $employeeModel = $this->karyawanmodel;
+        $attendanceModel = $this->absenmodel;
+        $jobRoleModel = $this->jobrole;
+        $evaluationModel = $this->penilaianmodel;
+
         $data = [
             'role' => session()->get('role'),
             'title' => 'Dashboard',
@@ -48,9 +53,19 @@ class MonitoringController extends BaseController
             'active3' => '',
             'active4' => '',
             'active5' => '',
-            'active6' => ''
-
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'totalEmployees' => $employeeModel->countAll(),
+            'totalAttendance' => $attendanceModel->countAll(),
+            'totalJobRoles' => $jobRoleModel->countAll(),
+            'totalEvaluations' => $evaluationModel->countAll(),
+            // Data for charts
+            'monthlyEvaluations' => [10,30,50,20,1], // Dummy, replace with dynamic data
+            'gradeDistribution' => [30, 50, 10, 10], // Dummy, replace with dynamic data
         ];
+        // dd($employeeModel);
+        // dd($data['totalEmployees']);
         return view(session()->get('role') . '/index', $data);
     }
     public function karyawan()

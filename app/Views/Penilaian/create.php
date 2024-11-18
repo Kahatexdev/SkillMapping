@@ -207,18 +207,3 @@
 <?php $this->endSection(); ?>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/soft-ui-dashboard/2.1.0/js/soft-ui-dashboard.min.js"></script>
-<!-- script index_nilai 
-jika bobot nilai 1 bernilai 15
-jika 2 bernilai 30
-jika 3 bernilai 45
-jika 4 bernilai 60
-jika 5 bernilai 85
-jika 6 bernilai 100
-lalu jumlahkan total nilai,
-jika sudah hitunglah rata-ratanya
-kurang dari 59 bernilai D
-kurang dari 75 bernilai C
-kurang dari 85 bernilai B
-kurang dari 101 bernilai A
-hasil grade merupakan data untuk index_nilai
- gunakan AJAX agar realtime muncul index nilainya-->

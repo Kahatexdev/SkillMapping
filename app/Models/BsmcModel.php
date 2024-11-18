@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class BsmcModel extends Model
 {
-    protected $table            = 'bsmc';
+    protected $table            = 'bs_mesin';
     protected $primaryKey       = 'id_bsmc';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -56,8 +56,8 @@ class BsmcModel extends Model
 
     public function getKaryawan()
     {
-        return $this->select('bsmc.id_bsmc, bsmc.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, bsmc.tanggal, bsmc.no_model, bsmc.inisial, bsmc.qty_bs, bsmc.qty_prod_mc, bsmc.created_at, bsmc.updated_at')
-            ->join('karyawan', 'karyawan.id_karyawan = bsmc.id_karyawan')
+        return $this->select('bs_mesin.id_bsmc, bs_mesin.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mesin.tanggal, bs_mesin.no_model, bs_mesin.inisial, bs_mesin.qty_bs, bs_mesin.qty_prod_mc, bs_mesin.created_at, bs_mesin.updated_at')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
             ->findAll();
     }
 }

@@ -17,17 +17,10 @@
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-
-                                <a href="<?= base_url('monitoring/downloadTemplateBsmc') ?>"
-                                    class="btn bg-gradient-success btn-sm me-2">
-                                    <!-- icon download -->
-                                    <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
-                                    Template Excel
-                                </a>
-                                <a href="<?= base_url('monitoring/bsmcCreate') ?>" class="btn bg-gradient-info btn-sm">
-                                    <!-- icon tambah data-->
+                                <a href="<?= base_url('monitoring/fetchDataBsMc') ?>" class="btn bg-gradient-info btn-sm">
+                                    <!-- icon fetch data-->
                                     <i class="fas fa-plus text-lg opacity-10" aria-hidden="true"></i>
-                                    Data Bs Mesin
+                                    Fetch Data
                                 </a>
                                 <div> &nbsp;</div>
 
@@ -38,14 +31,16 @@
             </div>
         </div>
     </div>
-    <!-- Upload Section -->
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Import Data Bs Mesin</h4>
+                    <h4 class="card-title">
+                        Import Data Bs Mesin
+                    </h4>
                 </div>
                 <div class="card-body">
+                    <!-- form import  data absen -->
                     <form action="<?= base_url('monitoring/bsmcStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="upload-container">
@@ -65,8 +60,6 @@
             </div>
         </div>
     </div>
-
-
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
@@ -84,6 +77,7 @@
                                 <th>No</th>
                                 <th>Kode Kartu</th>
                                 <th>Nama Karyawan</th>
+                                <th>Shift</th>
                                 <th>Tanggal</th>
                                 <th>Nomor Model</th>
                                 <th>Inisial</th>
@@ -98,6 +92,7 @@
                                             <td><?= $bsmc['id_bsmc'] ?></td>
                                             <td><?= $bsmc['kode_kartu'] ?></td>
                                             <td><?= $bsmc['nama_karyawan'] ?></td>
+                                            <td><?= $bsmc['shift'] ?></td>
                                             <td><?= $bsmc['tanggal'] ?></td>
                                             <td><?= $bsmc['no_model'] ?></td>
                                             <td><?= $bsmc['inisial'] ?></td>
