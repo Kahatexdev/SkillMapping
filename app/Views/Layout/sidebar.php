@@ -135,7 +135,7 @@
                         <span class="nav-link-text ms-1">Karyawan</span>
                     </a>
                 </li>
-                
+
                 <!-- Job Role -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Job Role' ? 'active' : '' ?>"
@@ -192,6 +192,38 @@
                         <span class="nav-link-text ms-1">Bs Mesin</span>
                     </a>
                 </li>
+                <!-- summary rosso -->
+                <li class="nav-item">
+                    <a class="nav-link <?= $title == 'Summary Rosso' ? 'active' : '' ?>"
+                        href="<?= base_url('monitoring/dataSummaryRosso') ?>">
+                        <!-- icon summary rosso -->
+                        <div
+                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>machine</title>
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g fill="#FFFFFF" fill-rule="nonzero">
+                                        <!-- Gear outer circle -->
+                                        <circle cx="23" cy="23" r="10" class="color-foreground" opacity="0.8"></circle>
+
+                                        <!-- Gear teeth -->
+                                        <path class="color-background" d="M23,3 L24.5,3 C24.9,3 25,3.3 25,3.5 L25,8 C25,8.2 24.7,8.5 24.5,8.5 L23,8.5 C22.6,8.5 22.5,8.2 22.5,8 L22.5,3.5 C22.5,3.3 22.7,3 23,3 Z"></path>
+                                        <path class="color-background" d="M23,38 L24.5,38 C24.9,38 25,38.3 25,38.5 L25,43 C25,43.2 24.7,43.5 24.5,43.5 L23,43.5 C22.6,43.5 22.5,43.2 22.5,43 L22.5,38.5 C22.5,38.3 22.7,38 23,38 Z"></path>
+                                        <path class="color-background" d="M3,22 L8,22 C8.2,22 8.5,22.3 8.5,22.5 L8.5,24 C8.5,24.2 8.2,24.5 8,24.5 L3.5,24.5 C3.3,24.5 3,24.3 3,24 L3,22.5 C3,22.3 3.3,22 3.5,22 Z"></path>
+                                        <path class="color-background" d="M38,22 L43,22 C43.2,22 43.5,22.3 43.5,22.5 L43.5,24 C43.5,24.2 43.2,24.5 43,24.5 L38.5,24.5 C38.3,24.5 38,24.3 38,24 L38,22.5 C38,22.3 38.3,22 38.5,22 Z"></path>
+
+                                        <!-- Center gear inner circle -->
+                                        <circle cx="23" cy="23" r="6" class="color-background"></circle>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <span class="nav-link-text ms-1">Summary Rosso</span>
+                    </a>
+                </li>
+
+
+
                 <hr class="horizontal dark mt-3 mb-1">
 
                 <li class="nav-item mt-3  ">
@@ -385,7 +417,7 @@
                 </li>
             <?php endif; ?>
 
-            <?php if($role == 'trainingschool'): ?>
+            <?php if ($role == 'trainingschool'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
                         href="<?= base_url('mandor/dataKaryawan') ?>">
@@ -417,7 +449,7 @@
                         <span class="nav-link-text ms-1">Karyawan</span>
                     </a>
                 </li>
-                <?php endif; ?>
+            <?php endif; ?>
         </ul>
     </div>
 </aside>

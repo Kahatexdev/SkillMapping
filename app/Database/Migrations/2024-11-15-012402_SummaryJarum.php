@@ -35,7 +35,7 @@ class SummaryJarum extends Migration
         $this->forge->addKey('id_sj', true);
         $this->forge->addForeignKey('id_karyawan', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');
         $this->forge->createTable('summary_jarum');
-
+    }
     public function down()
     {
         $this->forge->dropTable('summary_jarum');

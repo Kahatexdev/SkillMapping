@@ -18,14 +18,11 @@
     <script src="<?= base_url('assets/fa/js/fontawesome.min.js') ?>"></script>
     <link href="<?= base_url('assets/fa/css/all.min.css') ?>" rel=" stylesheet" />
     <!-- CSS Files -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
     <link id="pagestyle" href="<?= base_url('assets/css/soft-ui-dashboard.css?v=1.0.7') ?>" rel="stylesheet" />
     <!--  -->
     <script src="<?= base_url('assets/js/jquery/jquery-3.7.1.min.js') ?>" crossorigin="anonymous"></script>
     <link href="<?= base_url('assets/css/dataTables.dataTables.css') ?>" rel="stylesheet">
     <script src="<?= base_url('assets/js/dataTables.min.js') ?>"></script>
-    <link href="<?= base_url('assets/css/select2.min.css') ?>" rel="stylesheet" />
-    <link href="<?= base_url('assets/css/sweetalert2.css') ?>" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css">
     <style>
@@ -242,6 +239,7 @@
         </div>
     </main>
     <!--   Core JS Files   -->
+    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('assets/js/select2.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/popper.min.js') ?>"></script>
@@ -267,6 +265,7 @@
     <script async defer src="<?= base_url('assets/js/buttons.js') ?>"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="<?= base_url('assets/js/soft-ui-dashboard.min.js?v=1.0.7') ?>"></script>
+
 </body>
 
 </html>

@@ -11,6 +11,7 @@ use App\Models\UserModel;
 use App\Models\JobroleModel;
 use App\Models\AbsenModel;
 use App\Models\BsmcModel;
+use App\Models\SummaryRossoModel;
 use App\Models\BatchModel;
 use App\Models\PenilaianModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -23,6 +24,7 @@ class MonitoringController extends BaseController
     protected $jobrole;
     protected $absenmodel;
     protected $bsmcmodel;
+    protected $summaryRosso;
     protected $batchmodel;
     protected $penilaianmodel;
 
@@ -35,6 +37,7 @@ class MonitoringController extends BaseController
         $this->jobrole = new JobroleModel();
         $this->absenmodel = new AbsenModel();
         $this->bsmcmodel = new BsmcModel();
+        $this->summaryRosso = new SummaryRossoModel();
         $this->batchmodel = new BatchModel();
         $this->penilaianmodel = new PenilaianModel();
     }
@@ -71,6 +74,7 @@ class MonitoringController extends BaseController
     public function karyawan()
     {
         $karyawan = $this->karyawanmodel->getBagian();
+
         // dd($karyawan);
         $data = [
             'role' => session()->get('role'),
@@ -302,7 +306,7 @@ class MonitoringController extends BaseController
         $data = [
             'role' => session()->get('role'),
             'title' => 'Bs Mesin',
-            'active1' => 'active',
+            'active1' => '',
             'active2' => '',
             'active3' => '',
             'active4' => '',
@@ -313,6 +317,28 @@ class MonitoringController extends BaseController
 
         ];
         return view(session()->get('role') . '/bsmc', $data);
+    }
+    public function summaryRosso()
+    {
+        $summaryRosso = $this->summaryRosso->getData();
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Summary Rosso',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'summaryRosso' => $summaryRosso
+
+        ];
+
+        // dd ($summaryRosso);
+        return view(session()->get('role').'/summaryRosso', $data);
     }
     public function penilaian()
     {
@@ -331,7 +357,8 @@ class MonitoringController extends BaseController
             'active5' => '',
             'active6' => '',
             'active7' => '',
-            'active8' => 'active',
+            'active8' => '',
+            'active9' => 'active',
             'batch' => $batch,
             'namabagian' => $namabagian,
             'penilaian' => $penilaian

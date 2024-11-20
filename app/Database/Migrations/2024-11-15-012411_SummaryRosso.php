@@ -18,7 +18,7 @@ class SummaryRosso extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'tanggal' => [
+            'tgl_prod_rosso' => [
                 'type' => 'DATE',
             ],
             'qty_prod_rosso' => [

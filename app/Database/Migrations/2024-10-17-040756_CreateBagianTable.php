@@ -25,6 +25,7 @@ class CreateBagianTable extends Migration
             'area' => [
                 'type' => 'VARCHAR',
                 'constraint' => 50,
+                'NULL' => true,
             ],
             'keterangan' => [
                 'type' => 'TEXT',

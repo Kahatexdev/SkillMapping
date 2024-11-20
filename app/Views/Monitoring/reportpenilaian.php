@@ -37,15 +37,16 @@
                         <table class="table table-hover table-striped" id="table_report_penilaian">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Karyawan</th>
-                                    <th>SI(Sakit)</th>
-                                    <th>MI(Izin)</th>
-                                    <th>M(Mangkir )</th>
-                                    <th>JML HARI TIDAK MASUK KERJA</th>
-                                    <th>PERSENTASE KEHADIRAN</th>
-                                    <th>ACCUMULASI ABSENSI</th>
-                                    <th>GRADE</th>
+                                    <th>KODE</br>KARTU</th>
+                                    <th>NAMA</br>KARYAWAN</th>
+                                    <th>SI</br>(Sakit)</th>
+                                    <th>MI</br>(Izin)</th>
+                                    <th>M</br>(Mangkir )</th>
+                                    <th>JML HARI</br>TIDAK MASUK</br>KERJA</th>
+                                    <th>PERSENTASE</br>KEHADIRAN</th>
+                                    <th>ACCUMULASI</br>ABSENSI</th>
+                                    <th>GRADE</br>BEFORE</th>
+                                    <th>GRADE</br>AFTER</th>
                                     <th>TRACKING</th>
                                     <th>AKSI</th>
                                 </tr>
@@ -54,14 +55,15 @@
                                 <?php $no = 1; ?>
                                 <?php foreach ($absen as $p) : ?>
                                     <tr>
-                                        <td><?= $no++ ?></td>
+                                        <td><?= $p['kode_kartu'] ?></td>
                                         <td><?= $p['nama_karyawan'] ?></td>
                                         <td><?= $p['sakit'] ?></td>
                                         <td><?= $p['izin'] ?></td>
                                         <td><?= $p['mangkir'] ?></td>
                                         <td><?= $p['jml_hari_tidak_masuk_kerja'] ?></td>
-                                        <td><?= $p['persentase_kehadiran'] ?></td>
+                                        <td><?= $p['persentase_kehadiran'] ?>%</td>
                                         <td><?= $p['accumulasi_absensi'] ?></td>
+                                        <td><?= $p['index_nilai'] ?></td>
                                         <td><?= $p['grade_penilaian'] ?></td>
                                         <td><?= $p['index_nilai'] ?><?= $p['grade_penilaian'] ?></td>
 

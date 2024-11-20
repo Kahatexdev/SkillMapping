@@ -150,7 +150,7 @@ class KaryawanController extends BaseController
                 $area = $dataSheet->getCell('M' . $row)->getValue();
                 $statusAktif = $dataSheet->getCell('N' . $row)->getValue();
                 // dd($statusAktif);
-
+                // dd($namaBagian, $areaUtama, $area);
                 // dd($kodeKartu, $namaKaryawan, $shift, $jenisKelamin, $libur, $liburTambahan, $warnaBaju, $statusBaju, $tanggalLahir, $tanggalMasuk, $namaBagian, $areaUtama, $area, $statusAktif);
                 // Validasi kode kartu
                 if (empty($kodeKartu)) {
@@ -208,12 +208,14 @@ class KaryawanController extends BaseController
                     $errorMessage .= "Nama Bagian harus diisi. ";
                 } else {
                     $bagian = $bagianModel->where('nama_bagian', $namaBagian)->where('area_utama', $areaUtama)->where('area', $area)->first();
+                    // dd ($bagian);
                     if (!$bagian) {
                         $isValid = false;
                         $errorMessage .= "Nama Bagian tidak ditemukan. ";
                     }
                 }
 
+                // dd ($isValid);
                 // kalau ada kartu yang sama maka tidak akan di save
                 if ($isValid) {
                     $data = [
@@ -235,12 +237,14 @@ class KaryawanController extends BaseController
                     // dd($data);
 
                     $karyawanModel->insert($data);
+                    // dd ($data);
                     $successMessage = "Data karyawan berhasil disimpan.";
                     $successCount++;
                 } else {
                     $errorMessages[] = $errorMessage;
                     $errorCount++;
                 }
+                // dd ($data);
             }
 
             // Jika ada data yang gagal disimpan

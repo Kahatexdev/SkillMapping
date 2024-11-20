@@ -66,6 +66,15 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('bsmcEdit/(:num)', 'BsMcController::edit/$1');
     $routes->get('bsmcUpdate/(:num)', 'BsMcController::update/$1');
     $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
+    // summary rosso
+    $routes->get('dataSummaryRosso', 'MonitoringController::summaryRosso');
+    $routes->get('downloadTemplateSummaryRosso', 'SummaryRossoController::downloadTemplate');
+    $routes->post('summaryRossoStoreImport', 'SummaryRossoController::upload');
+    $routes->get('summaryRossoCreate', 'SummaryRossoController::create');
+    $routes->post('summaryRossoStore', 'SummaryRossoController::store');
+    $routes->get('summaryRossoEdit/(:num)', 'SummaryRossoController::edit/$1');
+    $routes->post('summaryRossoUpdate/(:num)', 'SummaryRossoController::update/$1');
+    $routes->get('summaryRossoDelete/(:num)', 'SummaryRossoController::delete/$1');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
     $routes->post('getAreaUtama', 'PenilaianController::getAreaUtama');
@@ -106,4 +115,16 @@ $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
     // $routes->get('absenEmpty', 'AbsenController::empty');
 
     $routes->get('dataPenilaian', 'MandorController::penilaian');
+});
+
+
+$routes->group('api', function ($routes) {
+    $routes->get('karyawan', 'Api\KaryawanController::index');
+    $routes->get('karyawan/(:segment)', 'Api\KaryawanController::show/$1');
+    $routes->post('karyawan', 'Api\KaryawanController::create');
+    $routes->put('karyawan/(:segment)', 'Api\KaryawanController::update/$1');
+    $routes->delete('karyawan/(:segment)', 'Api\KaryawanController::delete/$1');
+
+    $routes->get('area_utama/(:segment)','Api\KaryawanController::getKaryawanByAreaUtama/$1');
+    $routes->get('area/(:segment)','Api\KaryawanController::getKaryawanByArea/$1');
 });
