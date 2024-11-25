@@ -36,6 +36,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'Monitoring'    => \App\Filters\MonitoringFilter::class,
         'Mandor'        => \App\Filters\MandorFilter::class,
+        'TrainingSchool'=> \App\Filters\TrainingSchoolFilter::class,
     ];
 
     /**

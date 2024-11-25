@@ -15,16 +15,9 @@ class BatchTable extends Migration
                 'unsigned' => true, // Tambah 'unsigned' untuk mendukung auto_increment
                 'auto_increment' => true,
             ],
-            'shift' => [
+            'nama_batch' => [
                 'type' => 'VARCHAR',
-                'constraint' => 10,
-            ],
-            'bulan' => [
-                'type' => 'ENUM', // Untuk menyimpan tanggal
-                'constraint' => ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-            ],
-            'tahun' => [
-                'type' => 'YEAR',
+                'constraint' => 100,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

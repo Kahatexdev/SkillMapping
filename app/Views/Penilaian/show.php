@@ -12,12 +12,12 @@
                             <h4 class="font-weight-bolder">
                                 Data Penilaian Mandor
                             </h4>
-                            <h5 class="card-title"><?= $penilaian[0]['nama_bagian'] .' '. $penilaian[0]['area'] . ' (' . $penilaian[0]['shift'] . ') ' . $penilaian[0]['bulan'] . ' ' . $penilaian[0]['tahun'] ?></h5>
+                            <h5 class="card-title"><?= $penilaian[0]['nama_bagian'] .' '. $penilaian[0]['area_utama'] . ' ' . $penilaian[0]['area'] . ' Periode ' . $penilaian[0]['nama_periode'] ?></h5>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
                                 <!-- download report excel -->
-                                <a href="<?= base_url('monitoring/penilaianExcel/' . $penilaian[0]['id_bagian'] . '/' . $penilaian[0]['id_batch'] . '/' . $penilaian[0]['id_jobrole']) ?>" class="btn bg-gradient-success me-2">
+                                <a href="<?= base_url('monitoring/penilaianExcel/' . $penilaian[0]['id_bagian'] . '/' . $penilaian[0]['id_periode'] . '/' . $penilaian[0]['id_jobrole']) ?>" class="btn bg-gradient-success me-2">
                                     <i class="fas fa-file-excel text-lg me-2"></i>Download Excel
                                 </a>
                                 <a href="<?= base_url('monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary ">

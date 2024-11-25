@@ -65,16 +65,24 @@
                                             <td><?= $bagian['keterangan'] ?></td>
 
                                             <td>
-                                                <a href="<?= base_url('monitoring/jobroleCreate') ?>" class="btn bg-gradient-info btn-sm">
+                                                <a href="<?= base_url('monitoring/bagianEdit/' . $bagian['id_bagian']) ?>"
+                                                    class="btn bg-gradient-warning btn-sm">
+                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
+                                                </a>
+                                                <button onclick="confirmDelete(<?= $bagian['id_bagian'] ?>)"
+                                                    class="btn bg-gradient-danger btn-sm">
+                                                    <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
+                                                </button>
+                                                <!-- <a href="<?= base_url('monitoring/jobroleCreate') ?>" class="btn bg-gradient-info btn-sm">
                                                     <i class="fas fa-plus text-lg opacity-10" aria-hidden="true"></i>
                                                     Job Role
-                                                </a>
+                                                </a> -->
                                             </td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="5" class="text-center">No users found</td>
+                                        <td colspan="6" class="text-center">No bagian found</td>
                                     </tr>
                                 <?php endif ?>
                             </tbody>

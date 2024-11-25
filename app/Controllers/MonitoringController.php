@@ -13,6 +13,7 @@ use App\Models\AbsenModel;
 use App\Models\BsmcModel;
 use App\Models\SummaryRossoModel;
 use App\Models\BatchModel;
+use App\Models\PeriodeModel;
 use App\Models\PenilaianModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -26,6 +27,7 @@ class MonitoringController extends BaseController
     protected $bsmcmodel;
     protected $summaryRosso;
     protected $batchmodel;
+    protected $periodeModel;
     protected $penilaianmodel;
 
     public function __construct()
@@ -39,6 +41,7 @@ class MonitoringController extends BaseController
         $this->bsmcmodel = new BsmcModel();
         $this->summaryRosso = new SummaryRossoModel();
         $this->batchmodel = new BatchModel();
+        $this->periodeModel = new PeriodeModel();
         $this->penilaianmodel = new PenilaianModel();
     }
     public function index()
@@ -88,6 +91,38 @@ class MonitoringController extends BaseController
             'karyawan' => $karyawan
         ];
         return view(session()->get('role') . '/karyawan', $data);
+    }
+    public function batch()
+    {
+        $batch = $this->batchmodel->findAll();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Batch',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => 'active',
+            'active6' => '',
+            'batch' => $batch
+        ];
+        return view(session()->get('role') . '/batch', $data);
+    }
+    public function periode()
+    {
+        $periode = $this->periodeModel->getPeriode();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Periode',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => 'active',
+            'active6' => '',
+            'periode' => $periode
+        ];
+        return view(session()->get('role') . '/periode', $data);
     }
     public function user()
     {
@@ -318,13 +353,14 @@ class MonitoringController extends BaseController
         ];
         return view(session()->get('role') . '/bsmc', $data);
     }
-    public function summaryRosso()
+    public function rosso()
     {
         $summaryRosso = $this->summaryRosso->getData();
+        $periode = $this->periodeModel->getPeriode();
 
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Summary Rosso',
+            'title' => 'Rosso',
             'active1' => '',
             'active2' => '',
             'active3' => '',
@@ -333,18 +369,20 @@ class MonitoringController extends BaseController
             'active6' => '',
             'active7' => '',
             'active8' => 'active',
-            'summaryRosso' => $summaryRosso
+            'summaryRosso' => $summaryRosso,
+            'periode' => $periode
 
         ];
 
         // dd ($summaryRosso);
-        return view(session()->get('role').'/summaryRosso', $data);
+        return view(session()->get('role').'/rosso', $data);
     }
     public function penilaian()
     {
         $batch = $this->batchmodel->findAll();
         $namabagian = $this->bagianmodel->getBagian();
         $penilaian = $this->penilaianmodel->getPenilaian();
+        $periode = $this->periodeModel->getPeriode();
 
         // dd($area);
         $data = [
@@ -361,6 +399,7 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             'batch' => $batch,
             'namabagian' => $namabagian,
+            'periode' => $periode,
             'penilaian' => $penilaian
             // 'area' => $area
 
@@ -391,5 +430,29 @@ class MonitoringController extends BaseController
         ];
         // dd ($absen);
         return view(session()->get('role') . '/reportpenilaian', $data);
+    }
+    public function reportSummaryRosso()
+    {
+        $summaryRosso = $this->summaryRosso->getRossoGroupByPeriode();
+        $periode = $this->periodeModel->getPeriode();
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Report Summary Rosso',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'summaryRosso' => $summaryRosso,
+            'periode' => $periode
+
+        ];
+
+        // dd ($summaryRosso);
+        return view(session()->get('role').'/reportsummaryrosso', $data);
     }
 }

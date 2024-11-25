@@ -37,6 +37,7 @@ class KaryawanTable extends Migration
             'libur_tambahan' => [
                 'type' => 'VARCHAR',
                 'constraint' => 50,
+                'null' => true,
             ],
             'warna_baju' => [
                 'type' => 'VARCHAR',

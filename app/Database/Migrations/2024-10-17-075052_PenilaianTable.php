@@ -18,7 +18,7 @@ class PenilaianTable extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'id_batch' => [
+            'id_periode' => [
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
@@ -47,7 +47,7 @@ class PenilaianTable extends Migration
         ]);
         $this->forge->addKey('id_penilaian', true);
         $this->forge->addForeignKey('karyawan_id', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_batch', 'batch', 'id_batch', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_periode', 'periode', 'id_periode', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_user', 'user', 'id_user', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_jobrole', 'job_role', 'id_jobrole', 'CASCADE', 'CASCADE');
         $this->forge->createTable('penilaian');

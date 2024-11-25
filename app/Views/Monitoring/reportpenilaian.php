@@ -48,7 +48,6 @@
                                     <th>GRADE</br>BEFORE</th>
                                     <th>GRADE</br>AFTER</th>
                                     <th>TRACKING</th>
-                                    <th>AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,13 +65,6 @@
                                         <td><?= $p['index_nilai'] ?></td>
                                         <td><?= $p['grade_penilaian'] ?></td>
                                         <td><?= $p['index_nilai'] ?><?= $p['grade_penilaian'] ?></td>
-
-                                        <td>
-                                            <a href="<?= base_url('monitoring/penilaianDetail/' . $p['id_karyawan']) ?>" class="btn bg-gradient-info btn-sm">
-                                                <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>
-                                                Detail
-                                            </a>
-                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
 

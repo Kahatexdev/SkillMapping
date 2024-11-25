@@ -99,16 +99,22 @@
                                             <td><?= $bsmc['qty_prod_mc'] ?></td>
                                             <td><?= $bsmc['qty_bs'] ?></td>
                                             <td>
-                                                <a class="btn btn-warning btn-sm"
-                                                    href="<?= base_url('monitoring/bsmcEdit/' . $bsmc['id_bsmc']) ?>">Edit</a>
+                                                <a class="btn bg-gradient-warning btn-sm"
+                                                    href="<?= base_url('monitoring/bsmcEdit/' . $bsmc['id_bsmc']) ?>">
+                                                    <!-- icon edit -->
+                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
+                                                </a>
                                                 <button class="btn bg-gradient-danger btn-sm"
-                                                    onclick="confirmDelete('<?= $bsmc['id_bsmc'] ?>')">Delete</button>
+                                                    onclick="confirmDelete('<?= $bsmc['id_bsmc'] ?>')">
+                                                    <!-- icon hapus -->
+                                                    <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="9" class="text-center">No Bs Mesin found</td>
+                                        <td colspan="10" class="text-center">No Bs Mesin found</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

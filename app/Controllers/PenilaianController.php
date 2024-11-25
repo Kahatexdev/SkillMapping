@@ -8,6 +8,7 @@ use App\Models\JobroleModel;
 use App\Models\PenilaianModel;
 use App\Models\BatchModel;
 use App\Models\KaryawanModel;
+use App\Models\PeriodeModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -18,6 +19,7 @@ class PenilaianController extends BaseController
     protected $bagianmodel;
     protected $batchmodel;
     protected $karyawanmodel;
+    protected $periodeModel;
 
     const bobot_nilai = [
         1 => 15,
@@ -36,6 +38,7 @@ class PenilaianController extends BaseController
         $this->bagianmodel = new BagianModel();
         $this->batchmodel = new BatchModel();
         $this->karyawanmodel = new KaryawanModel();
+        $this->periodeModel = new PeriodeModel();
     }
 
     public function getAreaUtama()
@@ -131,20 +134,23 @@ class PenilaianController extends BaseController
     public function create()
     {
         // Get data from URL query parameters
-        $shift = $this->request->getGet('shift');
-        $bulan = $this->request->getGet('bulan');
-        $tahun = $this->request->getGet('tahun');
+        $id_periode = $this->request->getGet('id_periode');
 
-        $id_batch = $this->batchmodel->getIdBatch($shift, $bulan, $tahun);
-        if (!$id_batch) {
-            return redirect()->back()->with('error', 'Batch not found.');
+        if (!$id_periode) {
+            return redirect()->back()->with('error', 'Periode not found.');
         } 
 
         $nama_bagian = $this->request->getGet('nama_bagian');
         $area_utama = $this->request->getGet('area_utama');
         $area = $this->request->getGet('area');
 
+        if($area == 'null') {
+            $area = null;
+        } 
+        
+
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
+        // dd ($id_bagian, $nama_bagian, $area_utama, $area);
         if (!$id_bagian) {
             return redirect()->back()->with('error', 'Bagian not found.');
         }
@@ -170,9 +176,9 @@ class PenilaianController extends BaseController
         }
 
         // Filter by shift if available
-        if ($shift) {
-            $karyawanQuery->where('karyawan.shift', $shift);  // Use shift from the 'karyawan' table
-        }
+        // if ($shift) {
+        //     $karyawanQuery->where('karyawan.shift', $shift);  // Use shift from the 'karyawan' table
+        // }
 
         // Filter by bagian if available
         if ($id_bagian) {
@@ -189,11 +195,11 @@ class PenilaianController extends BaseController
 
         $id_user = session()->get('id_user') ?? 1; // Replace dummy data with session user if available
 
-        if ($penilaian = $this->penilaianmodel->cekPenilaian($karyawan[0]['id_karyawan'], $id_batch['id_batch'], $id_jobrole['id_jobrole'], $id_user)) {
-            return redirect()->back()->with('error', 'Penilaian sudah ada.');
-        }
+        // if ($penilaian = $this->penilaianmodel->cekPenilaian($karyawan[0]['id_karyawan'], $id_periode['id_periode'], $id_jobrole['id_jobrole'], $id_user)) {
+        //     return redirect()->back()->with('error', 'Penilaian sudah ada.');
+        // }
         $temp = [
-            'id_batch' => $id_batch['id_batch'],
+            'id_periode' => $id_periode,
             'id_jobrole' => $id_jobrole['id_jobrole'],
             'id_karyawan' => $karyawan,
             'id_user' => $id_user,
@@ -256,7 +262,7 @@ class PenilaianController extends BaseController
         // dd($this->request->getPost());
 
         // Retrieve the posted data
-        $batchId = $this->request->getPost('id_batch');
+        $periodeId = $this->request->getPost('id_periode');
         $jobroleId = $this->request->getPost('id_jobrole');
         $karyawanIds = $this->request->getPost('id_karyawan');
         $bobotNilai = $this->request->getPost('nilai');
@@ -300,7 +306,7 @@ class PenilaianController extends BaseController
         $data = [];
         foreach ($karyawanIds as $karyawanId) {
             $data[] = [
-                'id_batch' => $batchId,
+                'id_periode' => $periodeId,
                 'id_jobrole' => $jobroleId,
                 'karyawan_id' => $karyawanId,
                 'bobot_nilai' => json_encode($bobotNilai[$karyawanId]),
@@ -318,13 +324,13 @@ class PenilaianController extends BaseController
         return redirect()->back()->with('error', 'Gagal menyimpan penilaian.');
     }
 
-    public function show($id_bagian, $id_batch, $id_jobrole)
+    public function show($id_bagian, $id_periode, $id_jobrole)
     {
         $id_bagian = (int) $id_bagian;
-        $id_batch = (int) $id_batch;
+        $id_periode = (int) $id_periode;
         $id_jobrole = (int) $id_jobrole;
-        // dd ($id_bagian, $id_batch, $id_jobrole);
-        $penilaian = $this->penilaianmodel->getPenilaianByIdBagian($id_bagian, $id_batch, $id_jobrole);
+        // dd ($id_bagian, $id_periode, $id_jobrole);
+        $penilaian = $this->penilaianmodel->getPenilaianByIdBagian($id_bagian, $id_periode, $id_jobrole);
         // dd ($penilaian[0]['bobot_nilai']);
 
         $bobotNilai = [];

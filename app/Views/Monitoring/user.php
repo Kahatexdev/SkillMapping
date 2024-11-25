@@ -58,9 +58,15 @@
                                             <td><?= $user['role'] ?></td>
                                             <td>
                                                 <a href="<?= base_url('monitoring/userEdit/' . $user['id_user']) ?>"
-                                                    class="btn btn-warning btn-sm">Edit</a>
+                                                    class="btn bg-gradient-warning btn-sm">
+                                                    <!-- icon edit -->
+                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
+                                                </a>
                                                 <button class="btn bg-gradient-danger btn-sm"
-                                                    onclick="confirmDelete('<?= $user['id_user'] ?>')">Delete</button>
+                                                    onclick="confirmDelete('<?= $user['id_user'] ?>')">
+                                                    <!-- icon delete -->
+                                                    <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endforeach ?>

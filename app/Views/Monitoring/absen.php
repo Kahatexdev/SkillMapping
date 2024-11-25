@@ -116,9 +116,15 @@
                                             <td><?= $absen['username'] ?></td>
                                             <td>
                                                 <a href="<?= base_url('monitoring/absenEdit/' . $absen['id_absen']) ?>"
-                                                    class="btn btn-warning btn-sm">Edit</a>
+                                                    class="btn bg-gradient-warning btn-sm">
+                                                    <!-- icon edit -->
+                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i></a>
                                                 <button class="btn bg-gradient-danger btn-sm"
-                                                    onclick="confirmDelete('<?= $absen['id_absen'] ?>')">Delete</button>
+                                                    onclick="confirmDelete('<?= $absen['id_absen'] ?>')">
+                                                    <!-- icon hapus -->
+                                                    <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else : ?>

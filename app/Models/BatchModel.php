@@ -12,7 +12,7 @@ class BatchModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_batch', 'shift', 'bulan', 'tahun', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_batch', 'nama_batch', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,13 +43,4 @@ class BatchModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    public function getIdBatch($shift, $bulan, $tahun)
-    {
-        return $this->select('id_batch')
-            ->where('shift', $shift)
-            ->where('bulan', $bulan)
-            ->where('tahun', $tahun)
-            ->first();
-    }
 }

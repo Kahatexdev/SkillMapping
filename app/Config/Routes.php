@@ -23,6 +23,16 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
     $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
     $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
+    // batch
+    $routes->get('dataBatch', 'MonitoringController::batch');
+    $routes->get('batchCreate', 'BatchController::create');
+    $routes->post('batchStore', 'BatchController::store');
+    // periode
+    $routes->get('dataPeriode', 'MonitoringController::periode');
+    $routes->get('periodeCreate', 'PeriodeController::create');
+    $routes->post('periodeStore', 'PeriodeController::store');
+    $routes->get('periodeEdit/(:num)', 'PeriodeController::edit/$1');
+    $routes->post('periodeUpdate/(:num)', 'PeriodeController::update/$1');
     // user
     $routes->get('dataUser', 'MonitoringController::user');
     $routes->get('userCreate', 'UserController::create');
@@ -67,14 +77,16 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('bsmcUpdate/(:num)', 'BsMcController::update/$1');
     $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
     // summary rosso
-    $routes->get('dataSummaryRosso', 'MonitoringController::summaryRosso');
-    $routes->get('downloadTemplateSummaryRosso', 'SummaryRossoController::downloadTemplate');
-    $routes->post('summaryRossoStoreImport', 'SummaryRossoController::upload');
-    $routes->get('summaryRossoCreate', 'SummaryRossoController::create');
-    $routes->post('summaryRossoStore', 'SummaryRossoController::store');
-    $routes->get('summaryRossoEdit/(:num)', 'SummaryRossoController::edit/$1');
-    $routes->post('summaryRossoUpdate/(:num)', 'SummaryRossoController::update/$1');
-    $routes->get('summaryRossoDelete/(:num)', 'SummaryRossoController::delete/$1');
+    $routes->get('dataRosso', 'MonitoringController::rosso');
+    $routes->get('downloadTemplateRosso', 'SummaryRossoController::downloadTemplate');
+    $routes->post('rossoStoreImport', 'SummaryRossoController::upload');
+    $routes->get('rossoCreate', 'SummaryRossoController::create');
+    $routes->post('rossoStore', 'SummaryRossoController::store');
+    $routes->get('rossoEdit/(:num)', 'SummaryRossoController::edit/$1');
+    $routes->post('rossoUpdate/(:num)', 'SummaryRossoController::update/$1');
+    $routes->get('rossoDelete/(:num)', 'SummaryRossoController::delete/$1');
+    $routes->get('reportSummaryRosso', 'MonitoringController::reportSummaryRosso');
+    $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
     $routes->post('getAreaUtama', 'PenilaianController::getAreaUtama');
@@ -115,6 +127,12 @@ $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
     // $routes->get('absenEmpty', 'AbsenController::empty');
 
     $routes->get('dataPenilaian', 'MandorController::penilaian');
+});
+
+$routes->group('/trainingschool', ['filter' => 'TrainingSchool'], function ($routes){
+    $routes->get('', 'TrainingSchoolController::karyawan');
+
+    $routes->get('dataKaryawan', 'TrainingSchoolController::karyawan');
 });
 
 

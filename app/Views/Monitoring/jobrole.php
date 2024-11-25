@@ -106,7 +106,7 @@
                                     <?php endforeach; ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="4" class="text-center">No Job Role found</td>
+                                        <td colspan="3" class="text-center">No Job Role found</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

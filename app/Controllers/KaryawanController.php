@@ -208,7 +208,7 @@ class KaryawanController extends BaseController
                     $errorMessage .= "Nama Bagian harus diisi. ";
                 } else {
                     $bagian = $bagianModel->where('nama_bagian', $namaBagian)->where('area_utama', $areaUtama)->where('area', $area)->first();
-                    // dd ($bagian);
+                    // dd ($bagian, $namaBagian, $areaUtama, $area);
                     if (!$bagian) {
                         $isValid = false;
                         $errorMessage .= "Nama Bagian tidak ditemukan. ";

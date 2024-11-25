@@ -32,46 +32,20 @@
             <div class="card">
                 <div class="card-body">
                     <h4>
-                        Pilih Bacth Penilaian</h4>
+                        Pilih Batch Penilaian</h4>
                     <form action="<?= base_url('monitoring/penilaianCreate') ?>" method="get">
                         <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="bulan">Bulan</label>
-                                <select class="form-select" id="bulan" name="bulan" required>
-                                    <option value="">Pilih Bulan</option>
-                                    <option value="Januari">Januari</option>
-                                    <option value="Februari">Februari</option>
-                                    <option value="Maret">Maret</option>
-                                    <option value="April">April</option>
-                                    <option value="Mei">Mei</option>
-                                    <option value="Juni">Juni</option>
-                                    <option value="Juli">Juli</option>
-                                    <option value="Agustus">Agustus</option>
-                                    <option value="September">September</option>
-                                    <option value="Oktober">Oktober</option>
-                                    <option value="November">November</option>
-                                    <option value="Desember">Desember</option>
+                            <div class="col-md-3 mb-3">
+                                <label for="id_periode">Batch Penilaian</label>
+                                <select class="form-select" id="id_periode" name="id_periode" required>
+                                    <option value="">Pilih Batch Penilaian</option>
+                                    <?php foreach ($periode as $b) : ?>
+                                        <option value="<?= $b['id_periode'] ?>">Periode <?= $b['nama_periode'] ?> - <?= $b['nama_batch'] ?> (<?= $b['start_date'] ?> s/d <?= $b['end_date'] ?>)</option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="tahun">Tahun</label>
-                                <select class="form-select" id="tahun" name="tahun" required>
-                                    <option value="">Pilih Tahun</option>
-                                    <?php for ($i = date('Y'); $i >= 2020; $i--): ?>
-                                        <option value="<?= $i ?>"><?= $i ?></option>
-                                    <?php endfor; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="shift">Shift</label>
-                                <select class="form-select" id="shift" name="shift" required>
-                                    <option value="">Pilih Shift</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-3">
+
+                            <div class="col-md-3 mb-3">
                                 <label for="nama_bagian">Bagian</label>
                                 <select class="form-select" id="nama_bagian" name="nama_bagian" required>
                                     <option value="">Pilih Bagian</option>
@@ -81,23 +55,20 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="area_utama">Area Utama</label>
                                 <select class="form-select" id="area_utama" name="area_utama" required>
                                     <option value="">Pilih Area Utama</option>
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="area">Area</label>
-                                <select class="form-select" id="area" name="area" required>
+                                <select class="form-select" id="area" name="area">
                                     <option value="">Pilih Area</option>
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <!-- <label for="id_jobrole">id_jobrole</label> -->
                                 <input type="hidden" class="form-control" id="id_jobrole" name="id_jobrole" required>
-                            </div>
                         </div>
                         <button type="submit" class="btn bg-gradient-info w-100">Buat Batch Penilaian</button>
                     </form>
@@ -117,28 +88,24 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Bagian</th>
+                                    <th>Area Utama</th>
                                     <th>Area</th>
-                                    <th>Shift</th>
-                                    <th>Bulan</th>
-                                    <th>Tahun</th>
+                                    <th>Periode</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (!empty($penilaian)) : ?>
                                     <?php $no = 1; ?>
-                                    <?php foreach ($penilaian as $batch) : ?>
+                                    <?php foreach ($penilaian as $periode) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><?= $batch['nama_bagian'] ?></td>
-                                            <td><?= $batch['area'] ?></td>
-                                            <td><?= $batch['shift'] ?></td>
-                                            <td><?= $batch['bulan'] ?></td>
-                                            <td><?= $batch['tahun'] ?></td>
+                                            <td><?= $periode['nama_bagian'] ?></td>
+                                            <td><?= $periode['area_utama'] ?></td>
+                                            <td><?= $periode['area'] ?></td>
+                                            <td><?= $periode['nama_periode'] ?></td>
                                             <td>
-                                                <a href="<?= base_url('monitoring/penilaianDetail/' . $batch['id_bagian'].'/'.$batch['id_batch'].'/'.$batch['id_jobrole']) ?>" class="btn bg-gradient-info btn-sm">Detail</a>
-                                                <!-- <a href="<?= base_url('monitoring/penilaianEdit/' . $batch['id_penilaian']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                <button class="btn bg-gradient-danger btn-sm" onclick="confirmDelete('<?= $batch['id_penilaian'] ?>')">Delete</button> -->
+                                                <a href="<?= base_url('monitoring/penilaianDetail/' . $periode['id_bagian'] . '/' . $periode['id_periode'] . '/' . $periode['id_jobrole']) ?>" class="btn bg-gradient-info btn-sm">Detail</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

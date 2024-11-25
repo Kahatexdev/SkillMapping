@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<?= base_url('assets/img/apple-icon.png') ?>">
     <link rel="icon" type="image/png" href="<?= base_url('assets/img/logo-ct.png') ?>">
     <title>
         Skill Mapping
@@ -199,7 +199,7 @@
             <div class="modal-dialog  modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Keluar</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Log Out</h5>
                         <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -207,7 +207,7 @@
                     <div class="modal-body">
                         <form action="<?= base_url('logout') ?>" method="get">
 
-                            Apakah anda yakin Cancel Keluar?
+                            Apakah anda yakin untuk keluar?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
