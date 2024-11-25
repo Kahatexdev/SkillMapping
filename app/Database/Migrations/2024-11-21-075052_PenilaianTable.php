@@ -21,7 +21,6 @@ class PenilaianTable extends Migration
             'id_periode' => [
                 'type' => 'INT',
                 'constraint' => 11,
-                'unsigned' => true,
             ],
             'bobot_nilai' => [
                 'type' => 'JSON',
