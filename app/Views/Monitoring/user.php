@@ -1,9 +1,9 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 
-<div class="container-fluid py-4">
-    <div class="row my-4">
-        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
+<div class="container-fluid ">
+    <div class="row my-2">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2">
             <div class="card">
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between">
@@ -18,11 +18,9 @@
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-                                <a href="<?= base_url('monitoring/userCreate') ?>"
-                                    class="btn bg-gradient-info btn-sm">
-                                    <!-- icon-->
-                                    <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
-                                    Data User
+                                <a href="#"
+                                    class="btn btn-success add-btn" data-bs-toggle="modal" data-bs-target="#addUser"></i>
+                                    Tambah User
                                 </a>
                                 <div> &nbsp;</div>
 
@@ -43,7 +41,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Username</th>
-                                    <th>Password</th>
+
                                     <th>Role</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -54,11 +52,11 @@
                                         <tr>
                                             <td><?= $user['id_user'] ?></td>
                                             <td><?= $user['username'] ?></td>
-                                            <td><?= $user['password'] ?></td>
+
                                             <td><?= $user['role'] ?></td>
                                             <td>
-                                                <a href="<?= base_url('monitoring/userEdit/' . $user['id_user']) ?>"
-                                                    class="btn bg-gradient-warning btn-sm">
+                                                <a href="#"
+                                                    class="btn btn-warning edit-btn" data-id="<?= $user['id_user'] ?> " data-usn="<?= $user['username'] ?>" data-pass="<?= $user['password'] ?>" data-bs-toggle="modal" data-bs-target="#editUser">
                                                     <!-- icon edit -->
                                                     <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
@@ -82,48 +80,148 @@
             </div>
         </div>
     </div>
-</div>
+    <div class="modal fade  bd-example-modal-lg" id="addUser" tabindex="-1" role="dialog" aria-labelledby="addUser" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah User</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url($role . '/userStore'); ?>" method="post">
 
-<script type="text/javascript">
-    function confirmDelete(id) {
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/userDelete/') ?>" + id;
-            }
-        })
-    }
-</script>
-<script>
-    $(document).ready(function() {
-        // Initialize DataTable with export options
-        $('#userTable').DataTable({});
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="col-lg-6 col-sm-12">Username</label>
+                                    <input type="text" class="form-control" name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-lg-6 col-sm-12">Password</label>
+                                    <input type="password" class="form-control" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <select name="role" id="role" class="form-control" required>
+                                        <option value="">Pilih Role</option>
+                                        <option value="mandor">mandor</option>
+                                        <option value="monitoring">Monitoring</option>
+                                    </select>
+                                </div>
 
-        // Flash message SweetAlerts
-        <?php if (session()->getFlashdata('success')) : ?>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url($role . '/userStore'); ?>" method="post">
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="col-lg-6 col-sm-12">Username</label>
+                                    <input type="text" class="form-control" name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-lg-6 col-sm-12">Password</label>
+                                    <input type="password" class="form-control" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <select name="role" id="role" class="form-control" required>
+                                        <option value="">Pilih Role</option>
+                                        <option value="mandor">mandor</option>
+                                        <option value="monitoring">Monitoring</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modals -->
+
+    <script type="text/javascript">
+        function confirmDelete(id) {
             Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '<?= session()->getFlashdata('success') ?>',
-            });
-        <?php endif; ?>
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "<?= base_url('monitoring/userDelete/') ?>" + id;
+                }
+            })
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable with export options
+            $('#userTable').DataTable({});
 
-        <?php if (session()->getFlashdata('error')) : ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: '<?= session()->getFlashdata('error') ?>',
-            });
-        <?php endif; ?>
-    });
-</script>
+            // Flash message SweetAlerts
+            <?php if (session()->getFlashdata('success')) : ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '<?= session()->getFlashdata('success') ?>',
+                });
+            <?php endif; ?>
 
-<?php $this->endSection(); ?>
+            <?php if (session()->getFlashdata('error')) : ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '<?= session()->getFlashdata('error') ?>',
+                });
+            <?php endif; ?>
+        });
+
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            var username = $(this).data('usn');
+            var pass = $(this).data('pass');
+            var area = $(this).data('area');
+            $('#ModalEdit').find('form').attr('action', '<?= base_url('monitoring/userUpdate/') ?>' + id);
+            $('#ModalEdit').find('input[name="username"]').val(username);
+            $('#ModalEdit').find('input[name="password"]').val(pass);
+            $('#ModalEdit').modal('show'); // Show the modal
+        });
+    </script>
+
+    <?php $this->endSection(); ?>
