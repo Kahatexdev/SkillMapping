@@ -67,7 +67,7 @@ class MonitoringController extends BaseController
             'totalJobRoles' => $jobRoleModel->countAll(),
             'totalEvaluations' => $evaluationModel->countAll(),
             // Data for charts
-            'monthlyEvaluations' => [10,30,50,20,1], // Dummy, replace with dynamic data
+            'monthlyEvaluations' => [10, 30, 50, 20, 1], // Dummy, replace with dynamic data
             'gradeDistribution' => [30, 50, 10, 10], // Dummy, replace with dynamic data
         ];
         // dd($employeeModel);
@@ -76,6 +76,8 @@ class MonitoringController extends BaseController
     }
     public function karyawan()
     {
+        $bagianModel = new \App\Models\BagianModel();
+        $bagian = $bagianModel->findAll();
         $karyawan = $this->karyawanmodel->getBagian();
 
         // dd($karyawan);
@@ -88,7 +90,8 @@ class MonitoringController extends BaseController
             'active4' => 'active',
             'active5' => '',
             'active6' => '',
-            'karyawan' => $karyawan
+            'karyawan' => $karyawan,
+            'bagian' => $bagian
         ];
         return view(session()->get('role') . '/karyawan', $data);
     }
@@ -316,7 +319,6 @@ class MonitoringController extends BaseController
             if (!isset($groupedData[$id_jobrole]['Mc Press'])) {
                 $groupedData[$id_jobrole]['Mc Press'] = [];
             }
-
         }
 
         $jobrole = $this->jobrole->getJobRolesWithBagian();
@@ -375,7 +377,7 @@ class MonitoringController extends BaseController
         ];
 
         // dd ($summaryRosso);
-        return view(session()->get('role').'/rosso', $data);
+        return view(session()->get('role') . '/rosso', $data);
     }
     public function penilaian()
     {
@@ -453,6 +455,6 @@ class MonitoringController extends BaseController
         ];
 
         // dd ($summaryRosso);
-        return view(session()->get('role').'/reportsummaryrosso', $data);
+        return view(session()->get('role') . '/reportsummaryrosso', $data);
     }
 }

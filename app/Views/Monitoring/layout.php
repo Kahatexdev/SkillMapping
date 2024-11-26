@@ -10,24 +10,27 @@
         Skill Mapping
     </title>
     <!--     Fonts and icons     -->
+    <!--     Fonts and icons     -->
     <link href="<?= base_url('assets/css/open_sans_family.css') ?>" rel="stylesheet" />
     <!-- Nucleo Icons -->
     <link href="<?= base_url('assets/css/nucleo-icons.css') ?>" rel=" stylesheet" />
     <link href="<?= base_url('assets/css/nucleo-svg.css') ?>" rel=" stylesheet" />
+
     <!-- Font Awesome Icons -->
     <script src="<?= base_url('assets/fa/js/fontawesome.min.js') ?>"></script>
     <link href="<?= base_url('assets/fa/css/all.min.css') ?>" rel=" stylesheet" />
+
+    <link href="<?= base_url('assets/css/nucleo-svg.css') ?>" rel=" stylesheet" />
     <!-- CSS Files -->
     <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
     <link id="pagestyle" href="<?= base_url('assets/css/soft-ui-dashboard.css?v=1.0.7') ?>" rel="stylesheet" />
-    <!--  -->
+    <!-- Nepcha Analytics (nepcha.com) -->
+    <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script src="<?= base_url('assets/js/jquery/jquery-3.7.1.min.js') ?>" crossorigin="anonymous"></script>
     <link href="<?= base_url('assets/css/dataTables.dataTables.css') ?>" rel="stylesheet">
     <script src="<?= base_url('assets/js/dataTables.min.js') ?>"></script>
     <link href="<?= base_url('assets/css/select2.min.css') ?>" rel="stylesheet" />
-    <link href="<?= base_url('assets/css/sweetalert2.css') ?>" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css">
+    <link href="<?= base_url('assets/node_modules/sweetalert2/dist/sweetalert2.min.css') ?>" rel="stylesheet">
 
     <style>
         /* Gaya untuk input file dengan ikon upload */
@@ -309,7 +312,7 @@
     </aside>
     <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg ">
         <!-- Navbar -->
-        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 mb-5 shadow-none border-radius-xl" id="navbarBlur"
+        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4  shadow-none border-radius-xl" id="navbarBlur"
             navbar-scroll="true">
             <div class="container-fluid py-1 px-3">
                 <nav aria-label="breadcrumb">
@@ -363,17 +366,11 @@
 
 
     <!--   Core JS Files   -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="<?= base_url('assets/js/select2.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/popper.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/bootstrap.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/perfect-scrollbar.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/smooth-scrollbar.min.js') ?>"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
