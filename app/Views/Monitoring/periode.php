@@ -10,8 +10,8 @@
                             <h4 class="font-weight-bolder mb-0">
                                 <a href="" # class="btn bg-gradient-info">
                                     <!-- icon data periode -->
-                                    <i class="fas fa-user-tie text-lg opacity-10" aria-hidden="true"></i>
-                                </a>    
+                                    <i class="fas fa-calendar text-lg opacity-10 me-1" aria-hidden="true"> </i>
+                                </a>
                                 Data periode
                             </h4>
                         </div>
@@ -20,7 +20,7 @@
                                 <a href="<?= base_url('monitoring/periodeCreate') ?>"
                                     class="btn bg-gradient-info btn-sm">
                                     <!-- icon tambah periode-->
-                                    <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
+                                    <i class="fas fa-plus text-lg opacity-10 me-1" aria-hidden="true"></i>
                                     Data periode
                                 </a>
                                 <div> &nbsp;</div>
@@ -78,7 +78,7 @@
                                 <?php else : ?>
 
                                     <tr>
-                                        <td colspan="4" class="text-center">No periode found</td>
+                                        <td colspan="6" class="text-center">No periode found</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

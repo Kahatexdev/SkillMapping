@@ -11,7 +11,7 @@
                             <h4 class="font-weight-bolder mb-0">
                                 <a href="" # class="btn bg-gradient-info">
                                     <!-- icon data batch -->
-                                    <i class="fas fa-user-tie text-lg opacity-10" aria-hidden="true"></i>
+                                    <i class="fas fa-database text-lg opacity-10 me-1" aria-hidden="true"></i>
                                 </a>
                                 Data Batch
                             </h4>
@@ -21,7 +21,7 @@
                                 <a href="<?= base_url('monitoring/batchCreate') ?>"
                                     class="btn bg-gradient-info btn-sm">
                                     <!-- icon tambah batch-->
-                                    <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
+                                    <i class="fas fa-plus text-lg opacity-10 me-1" aria-hidden="true"></i>
                                     Data Batch
                                 </a>
                                 <div> &nbsp;</div>
@@ -71,7 +71,7 @@
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else : ?>
-                                
+
                                     <tr>
                                         <td colspan="4" class="text-center">No Batch found</td>
                                     </tr>

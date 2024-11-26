@@ -29,11 +29,11 @@ class AuthController extends BaseController
         session()->set('role', $userData['role']);
         // dd($userData['role']);
         switch ($userData['role']) {
-            case 'monitoring':
+            case 'Monitoring':
                 return redirect()->to(base_url('/monitoring'));
-            case 'mandor':
+            case 'Mandor':
                 return redirect()->to(base_url('/mandor'));
-            case 'trainingschool':
+            case 'TrainingSchool':
                 return redirect()->to(base_url('/trainingschool'));
             default:
                 return redirect()->to(base_url('/login'))->withInput()->with('error', 'Invalid username or password');

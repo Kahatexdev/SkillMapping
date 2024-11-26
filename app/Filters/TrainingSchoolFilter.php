@@ -25,7 +25,7 @@ class TrainingSchoolFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session('role') || session('role') !== 'trainingschool') {
+        if (!session('role') || session('role') !== 'TrainingSchool') {
             return redirect()->to(base_url('/login'))->with('error', 'Unauthorized access');
         }
     }
