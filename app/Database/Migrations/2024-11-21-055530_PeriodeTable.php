@@ -12,7 +12,6 @@ class PeriodeTable extends Migration
             'id_periode' => [
                 'type' => 'INT',
                 'constraint' => 11,
-                'unsigned' => true, // Tambah 'unsigned' untuk mendukung auto_increment
                 'auto_increment' => true,
             ],
             'nama_periode' => [
