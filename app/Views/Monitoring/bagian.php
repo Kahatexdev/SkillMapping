@@ -1,9 +1,9 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 
-<div class="container-fluid py-4">
+<div class="container-fluid">
 
-    <div class="row my-4">
+    <div class="row my-2">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
             <div class="card">
                 <div class="card-body p-3">
@@ -19,8 +19,8 @@
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-                                <a href="<?= base_url('monitoring/bagianCreate') ?>"
-                                    class="btn bg-gradient-info btn-sm">
+                                <a href=""
+                                    class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addBagian">
                                     <!-- Icon Tambah Bagian-->
                                     <i class="fas fa-plus text-lg opacity-10 me-1" aria-hidden="true"></i>
                                     Data Bagian
@@ -33,13 +33,13 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
+    <div class="row mt-2">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2 mt-2">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">
+                    <h5 class="card-title">
                         Tabel Data Bagian
-                    </h4>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -65,9 +65,12 @@
                                             <td><?= $bagian['keterangan'] ?></td>
 
                                             <td>
-                                                <a href="<?= base_url('monitoring/bagianEdit/' . $bagian['id_bagian']) ?>"
-                                                    class="btn bg-gradient-warning btn-sm">
-                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
+                                                <a href="#"
+                                                    class="btn btn-warning edit-btn" data-id="<?= $bagian['id_bagian'] ?> "
+                                                    data-nama="<?= $bagian['nama_bagian'] ?>"
+                                                    data-areautama="<?= $bagian['area_utama'] ?>" data-area="<?= $bagian['area'] ?>"
+                                                    data-ket="<?= $bagian['keterangan'] ?>" data-bs-toggle=" modal" data-bs-target="#editUser">
+                                                    <i class=" fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
                                                 <button onclick="confirmDelete(<?= $bagian['id_bagian'] ?>)"
                                                     class="btn bg-gradient-danger btn-sm">
@@ -88,6 +91,96 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade  bd-example-modal-lg" id="addBagian" tabindex="-1" role="dialog" aria-labelledby="addBagian" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Bagian</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url($role . '/bagianStore'); ?>" method="post">
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group mb-2">
+                                    <label for="nama_bagian">Nama Bagian</label>
+                                    <input type="text" class="form-control" name="nama_bagian" id="nama_bagian" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="area_utama">Area Utama</label>
+                                    <input type="text" class="form-control" name="area_utama" id="area_utama" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="area">Area</label>
+                                    <input type="text" class="form-control" name="area" id="area" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="keterangan">Keterangan</label>
+                                    <input type="text" class="form-control" name="keterangan" id="keterangan" required>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Bagian</h5>
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= base_url($role . '/userStore'); ?>" method="post">
+
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12">
+                                <div class="form-group mb-2">
+                                    <label for="nama_bagian">Nama Bagian</label>
+                                    <input type="text" class="form-control" name="nama_bagian" id="nama_bagian"
+                                        value="" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="area_utama">Area Utama</label>
+                                    <input type="text" class="form-control" name="area_utama" id="area_utama"
+                                        value="" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="area">Area</label>
+                                    <input type="text" class="form-control" name="area" id="area" value=""
+                                        required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label for="keterangan">Keterangan</label>
+                                    <input type="text" class="form-control" name="keterangan" id="keterangan"
+                                        value="" required>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-primary">Save</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -115,7 +208,7 @@
 <script>
     $(document).ready(function() {
         // Initialize DataTable with export options
-        $('#bagianTable').DataTable({});
+        $('#userTable').DataTable({});
 
         // Flash message SweetAlerts
         <?php if (session()->getFlashdata('success')) : ?>
@@ -133,6 +226,20 @@
                 text: '<?= session()->getFlashdata('error') ?>',
             });
         <?php endif; ?>
+    });
+
+    $('.edit-btn').click(function() {
+        var id = $(this).data('id');
+        var namaBag = $(this).data('nama');
+        var areaUtama = $(this).data('areautama');
+        var area = $(this).data('area');
+        var ket = $(this).data('ket');
+        $('#ModalEdit').find('form').attr('action', '<?= base_url('monitoring/bagianUpdate/') ?>' + id);
+        $('#ModalEdit').find('input[name="nama_bagian"]').val(namaBag);
+        $('#ModalEdit').find('input[name="area_utama"]').val(areaUtama);
+        $('#ModalEdit').find('input[name="area"]').val(area);
+        $('#ModalEdit').find('input[name="keterangan"]').val(ket);
+        $('#ModalEdit').modal('show'); // Show the modal
     });
 </script>
 
