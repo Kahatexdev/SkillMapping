@@ -12,17 +12,17 @@ class UserSeeder extends Seeder
             [
                 'username' => 'monitoring',
                 'password' => 'monitoring',
-                'role' => 'monitoring'
+                'role' => 'Monitoring'
             ],
             [
                 'username' => 'mandor',
                 'password' => 'mandor',
-                'role' => 'mandor'
+                'role' => 'Mandor'
             ],
             [
                 'username' => 'trainingschool',
                 'password' => 'trainingschool',
-                'role' => 'trainingschool'
+                'role' => 'TrainingSchool'
             ],
         ];
         $this->db->table('user')->insertBatch($data);

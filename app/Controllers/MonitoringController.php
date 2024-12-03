@@ -114,6 +114,7 @@ class MonitoringController extends BaseController
     public function periode()
     {
         $periode = $this->periodeModel->getPeriode();
+        $batch = $this->batchmodel->findAll();
         $data = [
             'role' => session()->get('role'),
             'title' => 'Periode',
@@ -123,7 +124,8 @@ class MonitoringController extends BaseController
             'active4' => '',
             'active5' => 'active',
             'active6' => '',
-            'periode' => $periode
+            'periode' => $periode, 
+            'batch' => $batch
         ];
         return view(session()->get('role') . '/periode', $data);
     }
@@ -172,6 +174,8 @@ class MonitoringController extends BaseController
         $usermodel = new UserModel();
 
         $users = $usermodel->findAll();
+        $karyawan = $this->karyawanmodel->getBagian();
+        $periode = $this->periodeModel->getPeriode();
 
         $data = [
             'role' => session()->get('role'),
@@ -183,10 +187,12 @@ class MonitoringController extends BaseController
             'active5' => 'active',
             'active6' => '',
             'absen' => $absen,
-            'users' => $users
+            'users' => $users,
+            'karyawan' => $karyawan,
+            'periode' => $periode
         ];
         // dd($absen);
-        return view(session()->get('role') . '/absen', $data, $users);
+        return view(session()->get('role') . '/absen', $data);
     }
     public function job()
     {
@@ -359,7 +365,7 @@ class MonitoringController extends BaseController
     {
         $summaryRosso = $this->summaryRosso->getData();
         $periode = $this->periodeModel->getPeriode();
-
+        $karyawan = $this->karyawanmodel->getBagianRosso();
         $data = [
             'role' => session()->get('role'),
             'title' => 'Rosso',
@@ -372,7 +378,8 @@ class MonitoringController extends BaseController
             'active7' => '',
             'active8' => 'active',
             'summaryRosso' => $summaryRosso,
-            'periode' => $periode
+            'periode' => $periode,
+            'karyawan' => $karyawan
 
         ];
 
@@ -428,7 +435,6 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             'absen' => $absen
             // 'area' => $area
-
         ];
         // dd ($absen);
         return view(session()->get('role') . '/reportpenilaian', $data);

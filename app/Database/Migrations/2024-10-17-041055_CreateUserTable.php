@@ -24,8 +24,8 @@ class CreateUserTable extends Migration
             ],
            'role' => [
                 'type' => 'ENUM',
-                'constraint' => ['monitoring', 'mandor', 'trainingschool'],
-                'default' => 'mandor',
+                'constraint' => ['Monitoring', 'Mandor', 'TrainingSchool'],
+                'default' => 'Mandor',
            ],
             'created_at' => [
                 'type' => 'DATETIME',

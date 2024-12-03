@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-                                <a href="<?= base_url('monitoring/dataJob') ?>"
+                                <a href="<?= base_url('Monitoring/dataJob') ?>"
                                     class="btn bg-gradient-secondary btn-sm">
                                     <!-- icon-->
                                     <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
@@ -130,14 +130,14 @@
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-body">
-                    <form action="<?= base_url('monitoring/jobroleStore') ?>" method="post">
+                    <form action="<?= base_url('Monitoring/jobroleStore') ?>" method="post">
                         <!-- Pilihan Nama Bagian -->
                         <div class="form-group mb-2">
                             <label for="id_bagian">Nama Bagian <small class="text-danger">*</small></label>
                             <select name="id_bagian" id="id_bagian" class="form-control" required>
                                 <option value="">Pilih Bagian</option>
                                 <?php foreach ($bagians as $bagian) : ?>
-                                    <option value="<?= $bagian['id_bagian'] ?>"><?= $bagian['nama_bagian'] ?> - <?= $bagian['area'] ?></option>
+                                    <option value="<?= $bagian['id_bagian'] ?>"><?= $bagian['nama_bagian'] ?> - <?= $bagian['area_utama'] ?> - <?= $bagian['area'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -151,6 +151,7 @@
                                     <select name="keterangan[]" class="form-control mr-2" required>
                                         <option value="">Pilih Keterangan</option>
                                         <option value="KNITTER">KNITTER</option>
+                                        <option value="OPERATOR">OPERATOR</option>
                                         <option value="C.O">C.O</option>
                                         <option value="Ringan">Ringan</option>
                                         <option value="Standar">Standar</option>
@@ -193,6 +194,7 @@
                     <select name="keterangan[]" class="form-control mr-2" required>
                         <option value="">Pilih Keterangan</option>
                         <option value="KNITTER">KNITTER</option>
+                        <option value="OPERATOR">OPERATOR</option>
                         <option value="C.O">C.O</option>
                         <option value="Ringan">Ringan</option>
                         <option value="Standar">Standar</option>

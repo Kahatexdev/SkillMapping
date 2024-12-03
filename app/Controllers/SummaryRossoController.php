@@ -8,10 +8,12 @@ use App\Models\KaryawanModel;
 use App\Models\AbsenModel;
 use App\Models\UserModel;
 use App\Models\SummaryRossoModel;
+use App\Models\PeriodeModel;
 use App\Models\PenilaianModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use DateTime;
 
 
 class SummaryRossoController extends BaseController
@@ -20,6 +22,7 @@ class SummaryRossoController extends BaseController
     protected $absenmodel;
     protected $usermodel;
     protected $summaryRosso;
+    protected $periodeModel;
     protected $penilaianmodel;
 
     public function __construct()
@@ -28,6 +31,7 @@ class SummaryRossoController extends BaseController
         $this->absenmodel = new AbsenModel();
         $this->usermodel = new UserModel();
         $this->summaryRosso = new SummaryRossoModel();
+        $this->periodeModel = new PeriodeModel();
         $this->penilaianmodel = new PenilaianModel();
     }
 
@@ -40,12 +44,12 @@ class SummaryRossoController extends BaseController
         $sheet->setCellValue('A1', 'KODE KARTU')
         ->setCellValue('B1', 'NAMA LENGKAP')
         ->setCellValue('C1', 'L/P')
-            ->setCellValue('D1', 'BAGIAN')
-            ->setCellValue('E1', 'AREA')
-            ->setCellValue('F1', 'TGL PRODUKSI')
-            ->setCellValue('G1', 'PROD')
-            ->setCellValue('H1', 'REWORK')
-            ->setCellValue('I1', 'REJECT');
+        ->setCellValue('D1', 'BAGIAN')
+        ->setCellValue('E1', 'AREA')
+        ->setCellValue('F1', 'TGL PRODUKSI')
+        ->setCellValue('G1', 'PROD')
+        ->setCellValue('H1', 'REWORK')
+        ->setCellValue('I1', 'REJECT');
 
         // Lebar Kolom
         foreach (range('A', 'I') as $col) {
@@ -61,12 +65,12 @@ class SummaryRossoController extends BaseController
         $sheet->setCellValue('A2', 'KK0001')
         ->setCellValue('B2', 'JOHN DOE')
         ->setCellValue('C2', 'L')
-            ->setCellValue('D2', 'ROSSO')
-            ->setCellValue('E2', 'KK1')
-            ->setCellValue('F2', '2024-10-20')
-            ->setCellValue('G2', '6086')
-            ->setCellValue('H2', '13')
-            ->setCellValue('I2', '0');
+        ->setCellValue('D2', 'ROSSO')
+        ->setCellValue('E2', 'KK1')
+        ->setCellValue('F2', '2024-10-20')
+        ->setCellValue('G2', '6086')
+        ->setCellValue('H2', '13')
+        ->setCellValue('I2', '0');
 
         $fileName = 'Template_Produksi_Rosso.xlsx';
 
@@ -87,7 +91,7 @@ class SummaryRossoController extends BaseController
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $fileType = $file->getClientMimeType();
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return redirect()->to(base_url('monitoring/dataSummaryRosso'))->with('error', 'Invalid file type. Please upload an Excel file.');
+                return redirect()->to(base_url('Monitoring/dataRosso'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
@@ -189,12 +193,12 @@ class SummaryRossoController extends BaseController
             // Jika ada data yang gagal disimpan
             if ($errorCount > 0) {
                 $errorMessages = implode("<br>", $errorMessages);
-                return redirect()->to(base_url('monitoring/dataRosso'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                return redirect()->to(base_url('Monitoring/dataRosso'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
             } else {
-                return redirect()->to(base_url('monitoring/dataRosso'))->with('success', "{$successCount} data berhasil disimpan.");
+                return redirect()->to(base_url('Monitoring/dataRosso'))->with('success', "{$successCount} data berhasil disimpan.");
             }
         } else {
-            return redirect()->to(base_url('monitoring/dataRosso'))->with('error', 'Invalid file.');
+            return redirect()->to(base_url('Monitoring/dataRosso'))->with('error', 'Invalid file.');
         }
     }
 
@@ -221,7 +225,7 @@ class SummaryRossoController extends BaseController
             'active8' => 'active',
             'bagian' => $bagian
         ];
-        return view('summaryRosso/create', $data);
+        return view('Rosso/create', $data);
 
     }
 
@@ -229,9 +233,9 @@ class SummaryRossoController extends BaseController
     {
 
         //tambahkan validasi stardate dan end date
-        $karyawan = $this->karyawanmodel->where('kode_kartu', $this->request->getPost('kode_kartu'))->where('nama_karyawan', $this->request->getPost('nama_karyawan'))->first();
+        $karyawan = $this->karyawanmodel->where('id_karyawan', $this->request->getPost('id_karyawan'))->first();
         if (!$karyawan) {
-            return redirect()->to(base_url('monitoring/dataSummaryRosso'))->with('error', 'Kode Kartu not found.');
+            return redirect()->to(base_url('Monitoring/dataRosso'))->with('error', 'Id Karyawan not found.');
         } else {
             $data = [
                 'id_periode' => $this->request->getPost('id_periode'),
@@ -243,14 +247,29 @@ class SummaryRossoController extends BaseController
 
             // dd($data);  
             $this->summaryRosso->insert($data);
-            return redirect()->to(base_url('monitoring/dataSummaryRosso'))->with('success', 'Data successfully added.');
+            return redirect()->to(base_url('Monitoring/dataRosso'))->with('success', 'Data successfully added.');
         }
     }
 
-    public function show($id)
+    public function show($id_periode)
     {
         $summaryRosso = new SummaryRossoModel();
-        $SummaryRosso = $summaryRosso->getRossoByPeriode($id);
+        $SummaryRosso = $summaryRosso->getRossoByPeriode($id_periode);
+        $periode = $this->periodeModel->checkPeriode($id_periode);
+
+        // Perhitungan rata-rata berdasarkan rentang hari
+        foreach ($SummaryRosso as &$row) {
+            $start_date = new DateTime($row['start_date']); // pastikan 'start_date' ada di hasil query
+            $end_date = new DateTime($row['end_date']); // pastikan 'end_date' ada di hasil query
+            $jml_libur = $row['jml_libur'];
+            $days = $start_date->diff($end_date)->days + 1; // Hitung rentang hari (inklusif)
+            $days -= $jml_libur; // Kurangi jumlah hari libur
+            // dd($days);
+            
+            // Hitung rata-rata
+            $row['avg_qty_prod_rosso'] = $days > 0 ? $row['total_qty_prod_rosso'] / $days : 0;
+            $row['avg_qty_bs'] = $days > 0 ? $row['total_qty_bs'] / $days : 0;
+        }
         $data = [
             'role' => session()->get('role'),
             'title' => 'Summary Rosso',
@@ -262,11 +281,13 @@ class SummaryRossoController extends BaseController
             'active6' => '',
             'active7' => '',
             'active8' => 'active',
-            'SummaryRosso' => $SummaryRosso
+            'SummaryRosso' => $SummaryRosso,
+            'periode' => $periode
         ];
-        dd ($data);
-        return view('summaryRosso/show', $data);
+        // dd ($SummaryRosso);
+        return view('Rosso/show-detail', $data);
     }
+
 
     public function edit($id)
     {
@@ -296,9 +317,9 @@ class SummaryRossoController extends BaseController
 
     public function update($id)
     {
-        $karyawan = $this->karyawanmodel->where('kode_kartu', $this->request->getPost('kode_kartu'))->where('nama_karyawan', $this->request->getPost('nama_karyawan'))->first();
+        $karyawan = $this->karyawanmodel->where('id_karyawan', $this->request->getPost('id_karyawan'))->first();
         if (!$karyawan) {
-            return redirect()->to(base_url('monitoring/dataSummaryRosso'))->with('error', 'Kode Kartu not found.');
+            return redirect()->to(base_url('Monitoring/dataRosso'))->with('error', 'ID Karyawan not found.');
         } else {
             $data = [
                 'id_karyawan' => $karyawan['id_karyawan'],
@@ -307,13 +328,13 @@ class SummaryRossoController extends BaseController
                 'qty_prod_rosso' => $this->request->getPost('qty_prod_rosso')
             ];
             $this->summaryRosso->update($id, $data);
-            return redirect()->to(base_url('monitoring/dataSummaryRosso'))->with('success', 'Data successfully updated.');
+            return redirect()->to(base_url('Monitoring/dataRosso'))->with('success', 'Data successfully updated.');
         }
     }
 
     public function delete($id)
     {
         $this->summaryRosso->delete($id);
-        return redirect()->to(base_url('monitoring/dataSummaryRosso'))->with('success', 'Data successfully deleted.');
+        return redirect()->to(base_url('Monitoring/dataRosso'))->with('success', 'Data successfully deleted.');
     }
 }

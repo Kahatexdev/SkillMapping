@@ -154,13 +154,13 @@
         </div>
     </div>
 
-    <form action="<?= base_url('monitoring/penilaianStore') ?>" method="post" id="evaluationForm">
+    <form action="<?= base_url('Monitoring/penilaianStore') ?>" method="post" id="evaluationForm">
         <div class="row mt-4">
             <?php foreach ($karyawan as $k) : ?>
                 <div class="col-xl-6 col-sm-12 mb-xl-0 mb-4 mt-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="mb-3">Nama : <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
+                            <h5 class="mb-3"><?= htmlspecialchars($k['kode_kartu'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
                             <table>
                                 <thead>
                                     <tr>

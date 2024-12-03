@@ -9,7 +9,7 @@
     Login | Skill Mapping
   </title>
   <!--     Fonts and icons     -->
-  <link href="<?php echo base_url('assets/css/Inter.css'); ?>" rel="stylesheet" />
+  <link href="<?php echo base_url('assets/css/open_sans_family.css'); ?>" rel="stylesheet" />
   <!-- Nucleo Icons -->
   <link href="<?= base_url('assets/css/nucleo-icons.css') ?>" rel="stylesheet" />
   <link href="<?= base_url('assets/css/nucleo-svg.css') ?>" rel="stylesheet" />
@@ -48,8 +48,9 @@
                       <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon" name="username">
                     </div>
                     <label>Password</label>
-                    <div class="mb-3">
-                      <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon" name="password">
+                    <div class="mb-3 position-relative">
+                      <input type="password" class="form-control" placeholder="Password" aria-label="Password"
+                        aria-describedby="password-addon" name="password" id="password">
                     </div>
                     <div class="text-center">
                       <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
@@ -60,7 +61,8 @@
             </div>
             <div class="col-md-6">
               <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('<?= base_url('assets/img/curved-images/curved6.jpg') ?>')"></div>
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('<?= base_url('assets/img/rating.jpg') ?>')"></div>
+                <!-- https://www.freepik.com/free-photo/closeup-doctor-checking-patient-daily-report-checklist_2767783.htm#fromView=search&page=1&position=36&uuid=fd47a838-0f65-41de-bf11-dab96bbb68db -->
               </div>
             </div>
           </div>

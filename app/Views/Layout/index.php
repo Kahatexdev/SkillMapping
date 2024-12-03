@@ -10,7 +10,7 @@
         Skill Mapping
     </title>
     <!--     Fonts and icons     -->
-    <link href="<?php base_url('assets/fonts/inter.ttf') ?>" rel="stylesheet" />
+    <link href="<?php base_url('assets/fonts/open_sans_family.css') ?>" rel="stylesheet" />
     <!-- Nucleo Icons -->
     <link href="<?= base_url('assets/css/nucleo-icons.css') ?>" rel=" stylesheet" />
     <link href="<?= base_url('assets/css/nucleo-svg.css') ?>" rel=" stylesheet" />

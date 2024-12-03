@@ -41,12 +41,12 @@
                         <div>
                             <div class="d-flex justify-content-between">
                                 <!-- button template excel-->
-                                <a href="<?= base_url('monitoring/downloadTemplateRosso') ?>" class="btn bg-gradient-success btn-sm me-2">
+                                <a href="<?= base_url('Monitoring/downloadTemplateRosso') ?>" class="btn bg-gradient-success btn-sm me-2">
                                     <!-- icon download-->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
                                 </a>
-                                <a href="<?= base_url('monitoring/rossoCreate') ?>" class="btn bg-gradient-info btn-sm me-2">
+                                <a href="#" class="btn bg-gradient-info btn-sm me-2" data-bs-toggle="modal" data-bs-target="#addRosso">
                                     <!-- icon tambah-->
                                     <i class="fas fa-plus text-lg opacity-10" aria-hidden="true"></i>
                                     Rosso
@@ -64,14 +64,12 @@
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
 
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h4 class="card-title">
                         Import Rosso
                     </h4>
-                </div>
-                <div class="card-body">
                     <!-- form import  data absen -->
-                    <form action="<?= base_url('monitoring/rossoStoreImport') ?>" method="post"
+                    <form action="<?= base_url('Monitoring/rossoStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-12">
@@ -85,7 +83,7 @@
                                     </select>
                                 </div>
                             </div>
-                                    
+
                         </div>
 
                         <div class="upload-container">
@@ -108,12 +106,10 @@
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">
-                        Table Rosso
-                    </h4>
-                </div>
                 <div class="card-body">
+                    <h4 class="card-title">
+                        Tabel Rosso
+                    </h4>
                     <div class="table-responsive">
                         <table id="rossoTable" class="table table-striped table-hover table-bordered w-100">
                             <thead>
@@ -138,8 +134,14 @@
                                             <td><?= $sr['qty_prod_rosso'] ?></td>
                                             <td><?= $sr['qty_bs'] ?></td>
                                             <td>
-                                                <a class="btn bg-gradient-warning btn-sm"
-                                                    href="<?= base_url('monitoring/rossoEdit/' . $sr['id_sr']) ?>">
+                                                <a class="btn btn-warning edit-btn"
+                                                    data-id="<?= $sr['id_sr'] ?>"
+                                                    data-idKar="<?= $sr['id_karyawan'] ?>"
+                                                    data-idPeriode="<?= $sr['id_periode'] ?>"
+                                                    data-tglProdRosso="<?= $sr['tgl_prod_rosso'] ?>"
+                                                    data-qtyProdRosso="<?= $sr['qty_prod_rosso'] ?>"
+                                                    data-qtyBs="<?= $sr['qty_bs'] ?>"
+                                                    data-bs-toggle="modal" data-bs-target="#editUser">
                                                     <!-- icon edit -->
                                                     <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
@@ -164,6 +166,119 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="addRosso" tabindex="-1" aria-labelledby="addRossoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRossoLabel">Tambah Data Rosso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <form action="<?= base_url('Monitoring/rossoStore') ?>" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label for="id_periode" class="form-label">Periode</label>
+                        <select class="form-select" name="id_periode" id="id_periode" required>
+                            <option value="">Pilih Periode</option>
+                            <?php foreach ($periode as $p) : ?>
+                                <option value="<?= $p['id_periode'] ?>">Periode <?= $p['nama_periode'] ?> (<?= $p['start_date'] ?> - <?= $p['end_date'] ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_karyawan" class="form-label">Kode Kartu</label>
+                        <select class="form-select" name="id_karyawan" id="id_karyawan" required>
+                            <option value="">Pilih Kode Kartu</option>
+                            <?php foreach ($karyawan as $k) : ?>
+                                <option value="<?= $k['id_karyawan'] ?>"><?= $k['kode_kartu'] ?> - <?= $k['nama_karyawan'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tgl_prod_rosso" class="form-label">Tanggal Produksi Rosso</label>
+                        <input type="date" class="form-control" id="tgl_prod_rosso" name="tgl_prod_rosso" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qty_prod_rosso" class="form-label">Qty Produksi Rosso</label>
+                        <input type="number" class="form-control" id="qty_prod_rosso" name="qty_prod_rosso" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qty_bs" class="form-label">Qty BS</label>
+                        <input type="number" class="form-control" id="qty_bs" name="qty_bs" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn bg-gradient-info">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Edit-->
+<div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserLabel">Edit Data Rosso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <form action="" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label for="id_periode" class="form-label">Periode</label>
+                        <select class="form-select" name="id_periode" id="id_periode" required>
+                            <option value="">Pilih Periode</option>
+                            <?php foreach ($periode as $p) : ?>
+                                <option value="<?= $p['id_periode'] ?>">Periode <?= $p['nama_periode'] ?> (<?= $p['start_date'] ?> - <?= $p['end_date'] ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_karyawan" class="form-label">Kode Kartu</label>
+                        <select class="form-select" name="id_karyawan" id="id_karyawan" required>
+                            <option value="">Pilih Kode Kartu</option>
+                            <?php foreach ($karyawan as $k) : ?>
+                                <option value="<?= $k['id_karyawan'] ?>"><?= $k['kode_kartu'] ?> - <?= $k['nama_karyawan'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tgl_prod_rosso" class="form-label ">Tanggal Produksi Rosso</label>
+                        <input type="date" class="form-control" id="tgl_prod_rosso" name="tgl_prod_rosso" value="" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qty_prod_rosso" class="form-label">Qty Produksi Rosso</label>
+                        <input type="number" class="form-control" id="qty_prod_rosso" name="qty_prod_rosso" value="" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="qty_bs" class="form-label">Qty BS</label>
+                        <input type="number" class="form-control" id="qty_bs" name="qty_bs" value="" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn bg-gradient-info">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Tambahkan di bagian <head> -->
+<link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const kodeKartu = new Choices('#id_karyawan', {
+            searchPlaceholderValue: 'Cari kode kartu...',
+            shouldSort: false
+        });
+    });
+</script>
+
+
 <script>
     // button close alert
     const closeBtn = document.querySelectorAll('.btn-close');
@@ -186,7 +301,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/rossoDelete/') ?>" + id;
+                window.location.href = "<?= base_url('Monitoring/rossoDelete/') ?>" + id;
             }
         })
     }
@@ -221,6 +336,25 @@
         fileInput.files = event.dataTransfer.files;
         const fileName = event.dataTransfer.files[0] ? event.dataTransfer.files[0].name : "No file selected";
         uploadArea.querySelector('p').textContent = `Selected File: ${fileName}`;
+    });
+
+    $('.edit-btn').click(function() {
+        var id = $(this).data('id');
+        var idKar = $(this).data('idkar');
+        var idPeriode = $(this).data('idperiode');
+        var tglProdRosso = $(this).data('tglprodrosso');
+        var qtyProdRosso = $(this).data('qtyprodrosso');
+        var qtyBs = $(this).data('qtybs');
+
+
+        // console.log(id, idKar, idPeriode, tglProdRosso, qtyProdRosso, qtyBs);
+        $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/rossoUpdate') ?>/' + id);
+        $('#ModalEdit').find('#id_karyawan').val(idKar);
+        $('#ModalEdit').find('#id_periode').val(idPeriode);
+        $('#ModalEdit').find('#tgl_prod_rosso').val(tglProdRosso);
+        $('#ModalEdit').find('#qty_prod_rosso').val(qtyProdRosso);
+        $('#ModalEdit').find('#qty_bs').val(qtyBs);
+        $('#ModalEdit').modal('show'); // Show the modal
     });
 </script>
 

@@ -34,12 +34,10 @@
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h4 class="card-title">
                         Import Data Bs Mesin
                     </h4>
-                </div>
-                <div class="card-body">
                     <!-- form import  data absen -->
                     <form action="<?= base_url('monitoring/bsmcStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
@@ -63,14 +61,10 @@
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">
-                        Table Data Bs Mesin
-                    </h4>
-                </div>
                 <div class="card-body">
-
-
+                    <h4 class="card-title">
+                        Tabel Data Bs Mesin
+                    </h4>
                     <div class="table-responsive">
                         <table id="bsmcTable" class="table table-striped table-hover table-bordered w-100">
                             <thead>

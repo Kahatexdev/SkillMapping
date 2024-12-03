@@ -12,7 +12,7 @@
                             <h4 class="font-weight-bolder mb-0">
                                 <a href="" # class="btn bg-gradient-info">
                                     <!-- Icon Data Bagian -->
-                                    <i class="fas fa-solid fa-2x fa-briefcase"></i>
+                                    <i class="fas fa-briefcase text-lg opacity-10"></i>
                                 </a>
                                 Data Bagian
                             </h4>
@@ -23,7 +23,7 @@
                                     class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addBagian">
                                     <!-- Icon Tambah Bagian-->
                                     <i class="fas fa-plus text-lg opacity-10 me-1" aria-hidden="true"></i>
-                                    Data Bagian
+                                    Tambah Bagian
                                 </a>
                                 <div> &nbsp;</div>
                             </div>
@@ -33,15 +33,13 @@
             </div>
         </div>
     </div>
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h5 class="card-title">
                         Tabel Data Bagian
                     </h5>
-                </div>
-                <div class="card-body">
                     <div class="table-responsive">
                         <table id="bagianTable" class="table table-striped table-hover table-bordered">
                             <thead>
@@ -76,7 +74,7 @@
                                                     class="btn bg-gradient-danger btn-sm">
                                                     <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
                                                 </button>
-                                                <!-- <a href="<?= base_url('monitoring/jobroleCreate') ?>" class="btn bg-gradient-info btn-sm">
+                                                <!-- <a href="<?= base_url('Monitoring/jobroleCreate') ?>" class="btn bg-gradient-info btn-sm">
                                                     <i class="fas fa-plus text-lg opacity-10" aria-hidden="true"></i>
                                                     Job Role
                                                 </a> -->
@@ -85,7 +83,7 @@
                                     <?php endforeach ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="6" class="text-center">No bagian found</td>
+                                        <td colspan="6" class="text-center">Tidak Ada Data Bagian</td>
                                     </tr>
                                 <?php endif ?>
                             </tbody>
@@ -95,6 +93,7 @@
             </div>
         </div>
     </div>
+    <!-- Modal Tambah -->
     <div class="modal fade  bd-example-modal-lg" id="addBagian" tabindex="-1" role="dialog" aria-labelledby="addBagian" aria-hidden="true">
         <div class="modal-dialog  modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -119,7 +118,7 @@
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="area">Area</label>
-                                    <input type="text" class="form-control" name="area" id="area" required>
+                                    <input type="text" class="form-control" name="area" id="area">
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="keterangan">Keterangan</label>
@@ -137,6 +136,7 @@
             </div>
         </div>
     </div>
+    <!-- Modal Edit -->
     <div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
         <div class="modal-dialog  modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -147,8 +147,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<?= base_url($role . '/userStore'); ?>" method="post">
-
+                    <form action="<?= base_url($role . '/bagianUpdate' . $bagian['id_bagian']); ?>" method="post">
                         <div class="row">
                             <div class="col-lg-12 col-sm-12">
                                 <div class="form-group mb-2">
@@ -163,8 +162,7 @@
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="area">Area</label>
-                                    <input type="text" class="form-control" name="area" id="area" value=""
-                                        required>
+                                    <input type="text" class="form-control" name="area" id="area" value="">
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="keterangan">Keterangan</label>
@@ -173,9 +171,8 @@
                                 </div>
 
                             </div>
-
-
                         </div>
+                        <!-- Tombol Aksi -->
                         <div class="modal-footer">
                             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary">Save</button>
@@ -200,7 +197,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/bagianDelete/') ?>" + id;
+                window.location.href = "<?= base_url('Monitoring/bagianDelete/') ?>" + id;
             }
         })
     }
@@ -208,7 +205,7 @@
 <script>
     $(document).ready(function() {
         // Initialize DataTable with export options
-        $('#userTable').DataTable({});
+        $('#bagianTable').DataTable({});
 
         // Flash message SweetAlerts
         <?php if (session()->getFlashdata('success')) : ?>
@@ -234,7 +231,8 @@
         var areaUtama = $(this).data('areautama');
         var area = $(this).data('area');
         var ket = $(this).data('ket');
-        $('#ModalEdit').find('form').attr('action', '<?= base_url('monitoring/bagianUpdate/') ?>' + id);
+        // console.log(id, namaBag, areaUtama, area, ket);
+        $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/bagianUpdate/') ?>' + id);
         $('#ModalEdit').find('input[name="nama_bagian"]').val(namaBag);
         $('#ModalEdit').find('input[name="area_utama"]').val(areaUtama);
         $('#ModalEdit').find('input[name="area"]').val(area);

@@ -52,7 +52,7 @@ class UserController extends BaseController
             session()->setFlashdata('error', 'Data gagal ditambahkan');
         }
 
-        return redirect()->to('/monitoring/dataUser');
+        return redirect()->to('/Monitoring/dataUser');
     }
 
     public function edit($id)
@@ -93,7 +93,7 @@ class UserController extends BaseController
             session()->setFlashdata('error', 'Data gagal diubah');
         }
 
-        return redirect()->to('/monitoring/dataUser');
+        return redirect()->to('/Monitoring/dataUser');
     }
 
     public function delete($id)
@@ -107,6 +107,6 @@ class UserController extends BaseController
             session()->setFlashdata('error', 'Data gagal dihapus');
         }
 
-        return redirect()->to('/monitoring/dataUser');
+        return redirect()->to('/Monitoring/dataUser');
     }
 }

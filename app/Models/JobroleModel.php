@@ -73,6 +73,17 @@ class JobroleModel extends Model
             ->getRowArray();  // Gunakan getRowArray() jika hanya ingin mengambil satu baris
     }
 
+    // Mengambil data job role berdasarkan ID job role
+    public function getJobRolesByJobRoleId($id_jobrole)
+    {
+        return $this->db->table('job_role')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian,bagian.area_utama, bagian.area')
+            ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
+            ->where('job_role.id_jobrole', $id_jobrole)
+            ->get()
+            ->getRowArray();  // Gunakan getRowArray() jika hanya ingin mengambil satu baris
+    }
+
     public function safeJsonDecode($data = '')
     {
         $decoded = json_decode($data, true);

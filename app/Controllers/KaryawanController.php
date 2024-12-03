@@ -117,7 +117,7 @@ class KaryawanController extends BaseController
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $fileType = $file->getClientMimeType();
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', 'Invalid file type. Please upload an Excel file.');
+                return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
@@ -176,12 +176,20 @@ class KaryawanController extends BaseController
                     }
                 }
 
+                // Validasi shift
+                if (empty($shift)) {
+                    continue;
+                }
+                // validasi libur
+                if (empty($libur)) {
+                    continue;
+                }
                 // Validasi tangal lahir
                 if (empty($tanggalLahir)) {
                     $isValid = false;
                     $errorMessage .= "Tanggal Lahir harus diisi. ";
                 } else {
-                    $tanggalLahir = date_create_from_format('Y/m/d', $tanggalLahir);
+                    $tanggalLahir = date_create_from_format('m/d/Y', $tanggalLahir);
                     // dd ($tanggalLahir);
                     if (!$tanggalLahir) {
                         $isValid = false;
@@ -194,7 +202,7 @@ class KaryawanController extends BaseController
                     $isValid = false;
                     $errorMessage .= "Tanggal Masuk harus diisi. ";
                 } else {
-                    $tanggalMasuk = date_create_from_format('Y/m/d', $tanggalMasuk);
+                    $tanggalMasuk = date_create_from_format('m/d/Y', $tanggalMasuk);
                     // dd($tanggalMasuk);
                     if (!$tanggalMasuk) {
                         $isValid = false;
@@ -216,6 +224,11 @@ class KaryawanController extends BaseController
                         $isValid = false;
                         $errorMessage .= "Nama Bagian tidak ditemukan. ";
                     }
+                }
+
+                // status aktif
+                if (empty($statusAktif)) {
+                    continue;
                 }
 
                 // dd ($isValid);
@@ -253,12 +266,12 @@ class KaryawanController extends BaseController
             // Jika ada data yang gagal disimpan
             if ($errorCount > 0) {
                 $errorMessages = implode("<br>", $errorMessages);
-                return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
             } else {
-                return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', "{$successCount} data berhasil disimpan.");
+                return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', "{$successCount} data berhasil disimpan.");
             }
         } else {
-            return redirect()->to(base_url('monitoring/datakaryawan'))->with('error', 'Invalid file.');
+            return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', 'Invalid file.');
         }
     }
 
@@ -321,7 +334,7 @@ class KaryawanController extends BaseController
 
         $karyawanModel->insert($data);
 
-        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil disimpan.');
+        return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil disimpan.');
     }
 
     public function edit($id)
@@ -384,7 +397,7 @@ class KaryawanController extends BaseController
 
         $karyawanModel->update($id, $data);
 
-        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');
+        return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');
     }
 
     public function delete($id)
@@ -392,6 +405,6 @@ class KaryawanController extends BaseController
         $karyawanModel = new \App\Models\KaryawanModel();
         $karyawanModel->delete($id);
 
-        return redirect()->to(base_url('monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dihapus.');
+        return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dihapus.');
     }
 }

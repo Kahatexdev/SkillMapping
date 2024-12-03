@@ -12,19 +12,21 @@
                             <h4 class="font-weight-bolder">
                                 Data Penilaian Mandor
                             </h4>
-                            <h5 class="card-title"><?= $penilaian[0]['nama_bagian'] .' '. $penilaian[0]['area_utama'] . ' ' . $penilaian[0]['area'] . ' Periode ' . $penilaian[0]['nama_periode'] ?></h5>
+                            <h5 class="card-title"><?= $penilaian[0]['nama_bagian'] .' - '. $penilaian[0]['area_utama'] . ' - ' . $penilaian[0]['area'] ?></h5>
+                            <h5 class="card-title"><?= $penilaian[0]['nama_batch'] ?> Periode <?= $penilaian[0]['nama_periode'] ?></h5>
+                            <h6><?= $penilaian[0]['start_date'] ?> s/d <?= $penilaian[0]['end_date'] ?></h6>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
                                 <!-- download report excel -->
-                                <a href="<?= base_url('monitoring/penilaianExcel/' . $penilaian[0]['id_bagian'] . '/' . $penilaian[0]['id_periode'] . '/' . $penilaian[0]['id_jobrole']) ?>" class="btn bg-gradient-success me-2">
+                                <a href="<?= base_url('Monitoring/penilaianExcel/' . $penilaian[0]['id_bagian'] . '/' . $penilaian[0]['id_periode'] . '/' . $penilaian[0]['id_jobrole']) ?>" class="btn bg-gradient-success me-2">
                                     <i class="fas fa-file-excel text-lg me-2"></i>Download Excel
                                 </a>
-                                <a href="<?= base_url('monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary ">
+                                <a href="<?= base_url('Monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary ">
                                     <i class="fas fa-solid fa-arrow-left text-lg opacity-10"></i>
                                     Kembali
                                 </a>
-                                <!-- <a href="<?= base_url('monitoring/penilaianEdit/' . $penilaian[0]['id_penilaian']) ?>" class="btn bg-gradient-warning">Edit</a> -->
+                                <!-- <a href="<?= base_url('Monitoring/penilaianEdit/' . $penilaian[0]['id_penilaian']) ?>" class="btn bg-gradient-warning">Edit</a> -->
                                 <div> &nbsp;</div>
                             </div>
                         </div>

@@ -50,4 +50,12 @@ class PeriodeModel extends Model
             ->join('batch', 'batch.id_batch = periode.id_batch')
             ->findAll();
     }
+
+    public function checkPeriode($id_periode)
+    {
+        return $this->select('*, batch.nama_batch')
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->where('id_periode', $id_periode)
+            ->first();
+    }
 }

@@ -17,7 +17,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Monitoring</h6>
                 <!-- Dashboard -->
                 <li class="nav-item">
-                    <a class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>" href="<?= base_url('monitoring') ?>">
+                    <a class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>" href="<?= base_url('Monitoring') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 40" version="1.1"
@@ -57,7 +57,7 @@
                 <!-- User -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'User' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataUser') ?>">
+                        href="<?= base_url('Monitoring/dataUser') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- icon user -->
@@ -81,7 +81,7 @@
                 <!-- Bagian -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Bagian' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataBagian') ?>">
+                        href="<?= base_url('Monitoring/dataBagian') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
@@ -110,7 +110,7 @@
                 <!-- Karyawan -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/datakaryawan') ?>">
+                        href="<?= base_url('Monitoring/datakaryawan') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- icon karyawan -->
@@ -136,7 +136,7 @@
                 <!-- batch -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Batch' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataBatch') ?>">
+                        href="<?= base_url('Monitoring/dataBatch') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- svg batch icon -->
@@ -156,7 +156,7 @@
                 <!-- periode -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Periode' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataPeriode') ?>">
+                        href="<?= base_url('Monitoring/dataPeriode') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- svg calendar -->
@@ -177,7 +177,7 @@
                 <!-- Job Role -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Job Role' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataJob') ?>">
+                        href="<?= base_url('Monitoring/dataJob') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
@@ -207,7 +207,7 @@
                 <!-- bsmc -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Bs Mesin' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataBsmc') ?>">
+                        href="<?= base_url('Monitoring/dataBsmc') ?>">
                         <!-- icon bs mesin -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -238,7 +238,7 @@
                 <!--  rosso -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Rosso' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataRosso') ?>">
+                        href="<?= base_url('Monitoring/dataRosso') ?>">
                         <!-- icon summary rosso -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -274,7 +274,7 @@
                 <!-- Absen -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Absen' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataAbsen') ?>">
+                        href="<?= base_url('Monitoring/dataAbsen') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
@@ -303,7 +303,7 @@
                 <!-- penilaian -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Penilaian Mandor' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataPenilaian') ?>">
+                        href="<?= base_url('Monitoring/dataPenilaian') ?>">
                         <!-- icon Penilaian -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -333,7 +333,7 @@
                 <!-- report penilaian -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Report Penilaian' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/reportpenilaian') ?>">
+                        href="<?= base_url('Monitoring/reportpenilaian') ?>">
                         <!-- icon Penilaian -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -365,7 +365,7 @@
                 <!-- summary rosso -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Report Summary Rosso' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/reportSummaryRosso') ?>">
+                        href="<?= base_url('Monitoring/reportSummaryRosso') ?>">
                         <!-- icon summary rosso -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
