@@ -56,11 +56,12 @@ class PenilaianModel extends Model
     public function getPenilaian()
     {
         return $this->db->table('penilaian')
-            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, periode.nama_periode')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date')
             ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
             ->join('periode', 'periode.id_periode=penilaian.id_periode')
+            ->join('batch', 'batch.id_batch=periode.id_batch')
             ->groupBy('bagian.id_bagian')
             // group by batch.id_batch
             ->groupBy('penilaian.id_periode')
@@ -71,7 +72,7 @@ class PenilaianModel extends Model
     public function getPenilaianByIdBagian($id_bagian, $id_periode, $id_jobrole)
     {
         return $this->db->table('penilaian')
-            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, periode.id_periode, periode.nama_periode, periode.id_batch, periode.start_date, periode.end_date, batch.nama_batch, job_role.jobdesc')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.tgl_masuk, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, periode.id_periode, periode.nama_periode, periode.id_batch, periode.start_date, periode.end_date, batch.nama_batch, job_role.jobdesc')
             ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')

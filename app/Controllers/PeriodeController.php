@@ -46,6 +46,7 @@ class PeriodeController extends BaseController
         $idBatch = $this->request->getPost('nama_batch');
         $startDate = $this->request->getPost('start_date');
         $endDate = $this->request->getPost('end_date');
+        $jml_libur = $this->request->getPost('jml_libur');
         // dd($namaPeriode, $idBatch, $startDate, $endDate);
         $errors = [];
 
@@ -73,7 +74,8 @@ class PeriodeController extends BaseController
                 'nama_periode' => $namaPeriode,
                 'id_batch' => $idBatch,
                 'start_date' => $startDate,
-                'end_date' => $endDate
+                'end_date' => $endDate,
+                'jml_libur' => $jml_libur
             ]);
             session()->setFlashdata('success', 'Data berhasil ditambahkan');
             return redirect()->to(base_url('Monitoring/dataPeriode'));
@@ -106,6 +108,7 @@ class PeriodeController extends BaseController
         $idBatch = $this->request->getPost('nama_batch');
         $startDate = $this->request->getPost('start_date');
         $endDate = $this->request->getPost('end_date');
+        $jml_libur = $this->request->getPost('jml_libur');
 
         $errors = [];
 
@@ -133,7 +136,8 @@ class PeriodeController extends BaseController
                 'nama_periode' => $namaPeriode,
                 'id_batch' => $idBatch,
                 'start_date' => $startDate,
-                'end_date' => $endDate
+                'end_date' => $endDate,
+                'jml_libur' => $jml_libur
             ]);
             session()->setFlashdata('success', 'Data berhasil diubah');
             return redirect()->to(base_url('Monitoring/dataPeriode'));

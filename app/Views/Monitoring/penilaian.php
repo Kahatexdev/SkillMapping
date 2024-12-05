@@ -88,8 +88,6 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Bagian</th>
-                                    <th>Area Utama</th>
-                                    <th>Area</th>
                                     <th>Periode</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -100,10 +98,8 @@
                                     <?php foreach ($penilaian as $periode) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><?= $periode['nama_bagian'] ?></td>
-                                            <td><?= $periode['area_utama'] ?></td>
-                                            <td><?= $periode['area'] ?></td>
-                                            <td><?= $periode['nama_periode'] ?></td>
+                                            <td><?= $periode['nama_bagian'] ."-". $periode['area_utama'] ."-". $periode['area'] ?></td>
+                                            <td><?= $periode['nama_batch'] . " Periode ". $periode['nama_periode']. "(" . $periode['start_date'] . " S/d " . $periode['end_date'] .")" ?></td>
                                             <td>
                                                 <a href="<?= base_url('Monitoring/penilaianDetail/' . $periode['id_bagian'] . '/' . $periode['id_periode'] . '/' . $periode['id_jobrole']) ?>" class="btn bg-gradient-info btn-sm">
                                                     <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>

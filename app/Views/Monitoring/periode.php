@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
@@ -48,6 +48,7 @@
                                 <th>Nama Batch</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>Jml Libur(Hari)</th>
                                 <th>Aksi</th>
                             </thead>
                             <tbody>
@@ -59,11 +60,13 @@
                                             <td><?= $periode['nama_batch'] ?></td>
                                             <td><?= $periode['start_date'] ?></td>
                                             <td><?= $periode['end_date'] ?></td>
+                                            <td><?= $periode['jml_libur'] ?></td>
                                             <td>
                                                 <a href="#"
                                                     class="btn btn-warning edit-btn" data-id="<?= $periode['id_periode'] ?>"
                                                     data-nama="<?= $periode['nama_periode'] ?>" data-idbatch="<?= $periode['nama_batch'] ?>"
                                                     data-startdate="<?= $periode['start_date'] ?>" data-enddate="<?= $periode['end_date'] ?>"
+                                                    data-jmllibur="<?= $periode['jml_libur'] ?>"
                                                     data-bs-toggle=" modal" data-bs-target="#editUser">
                                                     <i class=" fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
@@ -76,7 +79,7 @@
                                     <?php endforeach ?>
                                 <?php else : ?>
                                     <tr>
-                                        <td colspan="6" class="text-center">Tidak Ada Data Periode</td>
+                                        <td colspan="7" class="text-center">Tidak Ada Data Periode</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -127,6 +130,10 @@
                             <div class="form-group mb-2">
                                 <label for="keterangan">End Date</label>
                                 <input type="date" class="form-control" name="end_date" id="end_date" required>
+                            </div>
+                            <div class="form-group mb-2">
+                                <label for="jml_hari">Jumlah Libur(Hari)</label>
+                                <input type="number" class="form-control" name="jml_hari" id="jml_hari" required>
                             </div>
                         </div>
                     </div>
@@ -180,6 +187,11 @@
                                 <label for="keterangan">End Date</label>
                                 <input type="date" class="form-control" name="end_date" id="end_date" required>
                             </div>
+                            <div class="form-group mb-2">
+                                <label for="jml_hari">Jumlah Libur(Hari)</label>
+                                <input type="number" class="form-control" name="jml_libur" id="jml_libur" required>
+                            </div>
+
                         </div>
                     </div>
                     <!-- Tombol Aksi -->
@@ -240,12 +252,15 @@
         var idBatch = $(this).data('idbatch');
         var startDate = $(this).data('startdate');
         var endDate = $(this).data('enddate');
+        var jmlLibur = $(this).data('jmllibur');
+
 
         $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/periodeUpdate/') ?>' + id);
         $('#ModalEdit').find('#nama_periode').val(namaPeriode);
         $('#ModalEdit').find('#id_batch').val(idBatch);
         $('#ModalEdit').find('#start_date').val(startDate);
         $('#ModalEdit').find('#end_date').val(endDate);
+        $('#ModalEdit').find('#jml_libur').val(jmlLibur);
         $('#ModalEdit').modal('show'); // Show the modal
     });
 </script>
