@@ -12,6 +12,9 @@ use App\Models\PeriodeModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 
 
 class PenilaianController extends BaseController
@@ -47,6 +50,14 @@ class PenilaianController extends BaseController
         $map = ['A' => 4, 'B' => 3, 'C' => 2, 'D' => 1];
         return $map[$grade] ?? 0;
     }
+
+    // fungsi untuk mengubah index_nilai ke tempSkor
+    private function indexToSkor($index_nilai)
+    {
+        $map = ['A' => 4, 'B' => 3, 'C' => 2, 'D' => 1];
+        return $map[$index_nilai] ?? 0;
+    }
+
 
     public function __construct()
     {
@@ -269,9 +280,6 @@ class PenilaianController extends BaseController
         ]);
     }
 
-
-
-
     public function store()
     {
         // Dump all POST data to verify inputs
@@ -423,213 +431,303 @@ class PenilaianController extends BaseController
             ];
         }
 
-        // Mengelompokkan data berdasarkan 'keterangan' (JOB dan 6S) dalam setiap id_jobrole
-        $groupedData = [];
-
-        foreach ($dataArray as $id_jobrole => $jobData) {
-            $groupedData[$id_jobrole] = [
-                'KNITTER' => [],
-                'C.O' => [],
-                'Ringan' => [],
-                'Standar' => [],
-                'Sulit' => [],
-                'JOB' => [],
-                'ROSSO' => [],
-                'SETTING' => [],
-                'Potong Manual' => [],
-                'Overdeck' => [],
-                'Obras' => [],
-                'Single Needle' => [],
-                'Mc Lipat' => [],
-                'Mc Kancing' => [],
-                'Mc Press' => [],
-                '6S' => []
-            ];
-
-            foreach ($jobData as $data) {
-                foreach ($data['jobdesc'] as $index => $jobdesc) {
-                    $keterangan = $data['keterangan'][$index];
-                    $groupedData[$id_jobrole][$keterangan][] = $jobdesc;
-                }
-            }
-        }
-
-        // Mapping bobot_nilai
-        $bobot_nilai_map = [
-            1 => 15,
-            2 => 30,
-            3 => 45,
-            4 => 60,
-            5 => 85,
-            6 => 100
-        ];
+        // dd($dataArray);
 
         // Membuat file Excel
-        $filename = 'Penilaian-' . date('m-d-Y') . '.xlsx';
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Header utama
-        $sheet->mergeCells('A1:Z1');
-        if ($bagian[0]['area_utama'] == 'KK1') {
-            $sheet->setCellValue('A1', 'AREA KK1');
-        } else {
-            $sheet->setCellValue('A1', 'AREA KK2');
+        // Header
+        $sheet->mergeCells('A1:J1');
+        $sheet->setCellValue('A1', 'LAPORAN PENILAIAN MANDOR');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A1')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        
+        $sheet->mergeCells('A2:J2');
+        $sheet->setCellValue('A2', 'SHIFT ' . $shift);
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle('A2')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        
+        $sheet->getStyle('A4')->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle('A4')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        // Header kolom
+        $sheet->setCellValue('A6', 'NO');
+        $sheet->setCellValue('B6', 'KODE KARTU');
+        $sheet->setCellValue('C6', 'NAMA KARYAWAN');
+        $sheet->setCellValue('D6', 'L/P');
+        $sheet->setCellValue('E6', 'TGL. MASUK KERJA');
+        $sheet->setCellValue('F6', 'BAGIAN');
+
+        // Header kolom jobdesc
+        $jobdesc = $dataArray[$id_jobrole][0]['jobdesc'];
+        $jobdescCount = count($jobdesc);
+        $jobdescStartCol = 6;
+
+        foreach ($jobdesc as $index => $desc) {
+            $colLetter = Coordinate::stringFromColumnIndex($jobdescStartCol + $index + 1);
+            $sheet->setCellValue($colLetter . '6', $desc);
         }
+        // dd ($colLetter);
 
-        // Header kolom utama
-        $headers = ['NO', 'KODE KARTU BARU', 'NAMA LENGKAP', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'BEFORE'];
-        $startColumn = 'A'; // Kolom awal
+        // Header kolom nilai
+        $nilaiCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount);
+        $sheet->setCellValue($nilaiCol . '6', 'NILAI');
 
-        // Tambahkan kolom header berdasarkan jobdesc
-        $verticalStartColumn = chr(ord($startColumn) + count($headers)); // Kolom pertama untuk jobdesc
-        foreach ($groupedData[$id_jobrole] as $category => $tasks) {
-            foreach ($tasks as $task) {
-                $headers[] = $task; // Menambahkan jobdesc ke header
-            }
-        }
-        $totalTasks = count(array_merge(...array_values($groupedData[$id_jobrole])));
+        // Header kolom rata-rata
+        $averageCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount + 1);
+        $sheet->setCellValue($averageCol . '6', 'RATA-RATA');
 
-        // Tambahkan kolom tambahan untuk Rata-Rata, Total, Grade, Skor
-        array_push($headers, 'RATA-RATA', 'TOTAL', 'GRADE', 'SKOR');
+        $gradeCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount + 2);
+        $sheet->setCellValue($gradeCol . '6', 'GRADE');
 
-        // Tulis header ke Excel
-        $sheet->fromArray($headers, null, 'A3');
-
-        // Format hanya jobdesc agar tampil vertikal
-        $verticalStartIndex = ord($verticalStartColumn) - 64; // Mengubah huruf kolom awal ke indeks (A=1, B=2, ...)
-        $verticalEndIndex = $verticalStartIndex + $totalTasks - 1; // Indeks kolom akhir
-        $verticalEndColumn = $this->getColumnName($verticalEndIndex); // Mengubah indeks ke huruf kolom
-        $verticalHeaderRange = $verticalStartColumn . '3:' . $verticalEndColumn . '3';
-
-
-        // Terapkan rotasi teks untuk jobdesc agar vertikal
-        $sheet->getStyle($verticalHeaderRange)->getAlignment()->setTextRotation(90);
-        $sheet->getStyle($verticalHeaderRange)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        // terapkan text wrap agar teks jobdesc bisa tampil semua
-        $sheet->getStyle($verticalHeaderRange)->getAlignment()->setWrapText(true);
-        // terapkan agar text jobdesc rata tengah
-        $sheet->getStyle($verticalHeaderRange)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-
-        // Format kolom tambahan (Rata-rata, Total, Grade, Skor)
-        $extraHeadersStartColumn = chr(ord($verticalEndColumn) + 3);
-        // dd($extraHeadersStartColumn);
-        $tempheader = $this->getColumnName(ord($extraHeadersStartColumn) + 4);
-        // dd ($tempheader);
-        $extraHeadersRange = $extraHeadersStartColumn . '3:' . $tempheader . '3';
-
-        // Format untuk semua header (center align, bold)
-        $sheet->getStyle('A3:' . $tempheader . '3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A3:' . $tempheader. '3')->getFont()->setBold(true);
-        // text rata tengah
-        $sheet->getStyle('A3:' . $tempheader. '3')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-
-        $row = 4; // Mulai dari baris ke-4
-        $no = 1; // Nomor urut
-
-        // Urutkan data berdasarkan shift
-        usort($penilaian, function ($a, $b) {
-            return strcmp($a['shift'], $b['shift']);
-        });
-
-        $shift = null; // Variabel untuk menyimpan shift sebelumnya
+        // Data
+        $row = 7;
+        $no = 1;
 
         foreach ($penilaian as $p) {
-            // Tambahkan header SHIFT jika berganti shift
-            if ($p['shift'] !== $shift) {
-                $shift = $p['shift'];
-                $sheet->mergeCells('A' . $row . ':F' . $row); // Sesuaikan jumlah kolom akhir jika lebih dari Z
-                $sheet->setCellValue('A' . $row, 'SHIFT ' . $shift);
-                $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-                $sheet->getStyle('A' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                $row++;
+            $data = [
+                $no,
+                $p['kode_kartu'],
+                $p['nama_karyawan'],
+                $p['jenis_kelamin'],
+                $p['tgl_masuk'],
+                $p['nama_bagian']
+            ];
+
+            $nilai = json_decode($p['bobot_nilai'], true);
+            $totalNilai = 0;
+            $totalBobot = 0;
+
+            foreach ($nilai as $value) {
+                $totalNilai += $value;
+                $totalBobot += self::bobot_nilai[$value];
             }
 
-            // Ambil nilai penilaian
-            $bobot_nilai = json_decode($p['bobot_nilai'], true) ?? [];
-            // konversi nilai ke bobot_nilai_map
-            
-            $nilai_total = 0;
-            $count_total = 0;
+            $average = $totalBobot / count($nilai);
+            $grade = $this->calculateGrade($average);
 
-            // Data awal untuk setiap karyawan
-            $data = [
+            foreach ($nilai as $value) {
+                $data[] = $value;
+            }
+
+            $data[] = $average;
+            $data[] = $grade;
+
+            $sheet->fromArray($data, null, 'A' . $row);
+            $row++;
+            $no++;
+        }
+
+        // Style
+        $sheet->getStyle('A6:' . $gradeCol . '6')->getFont()->setBold(true);
+
+        // Set auto size for all columns
+        foreach (range('A', $gradeCol) as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+
+
+        // Set filename
+        $filename = 'Laporan Penilaian Mandor '. date('m-d-y'). '.xlsx';
+
+        // Redirect output to a client’s web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit();
+    }
+
+    public function exelReportBatch($id_batch, $area_utama)
+    {
+        $id_batch = (int)$id_batch;
+
+        // Ambil data penilaian
+        $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndAreaByIdBatch($id_batch, $area_utama);
+        $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
+        $getAreaUtama = $this->bagianmodel->getAreaGroupByAreaUtama();
+
+        // Ambil daftar bagian unik
+        $bagianList = array_unique(array_column($reportbatch, 'nama_bagian'));
+
+        // Membuat file Excel
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        foreach ($bagianList as $bagian) {
+            $dataBagian = array_filter($reportbatch, function ($item) use ($bagian) {
+                return $item['nama_bagian'] === $bagian;
+            });
+
+            $sheet = $spreadsheet->createSheet();
+            $sheet->setTitle($bagian);
+
+            // Header utama
+            $sheet->mergeCells('A1:L1');
+            $sheet->setCellValue('A1', 'REPORT PENILAIAN ' . $bagian . ' AREA ' . $area_utama);
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+            $sheet->getStyle('A1')->getAlignment()
+                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+            // Header kolom tetap
+            $sheet->mergeCells('A3:A4'); // NO
+            $sheet->setCellValue('A3', 'NO');
+            $sheet->mergeCells('B3:B4');
+            $sheet->setCellValue('B3', 'KODE KARTU BARU');
+            $sheet->mergeCells('C3:C4');
+            $sheet->setCellValue('C3', 'NAMA LENGKAP');
+            $sheet->mergeCells('D3:D4');
+            $sheet->setCellValue('D3', 'L/P');
+            $sheet->mergeCells('E3:E4');
+            $sheet->setCellValue('E3', 'TGL. MASUK KERJA');
+            $sheet->mergeCells('F3:F4');
+            $sheet->setCellValue('F3', 'BAGIAN');
+
+            // Header kolom bulan
+            $headerStartCol = 'G';
+            $bulanHeaders = [];
+            foreach ($getBulan as $b) {
+                $bulanHeaders[] = date('M', strtotime($b['end_date']));
+            }
+            $endColBulan = chr(ord($headerStartCol) + count($bulanHeaders) - 1);
+
+            $sheet->mergeCells($headerStartCol . '3:' . $endColBulan . '3');
+            $sheet->setCellValue($headerStartCol . '3', 'BULAN');
+            foreach ($bulanHeaders as $index => $bulan) {
+                $sheet->setCellValue(chr(ord($headerStartCol) + $index) . '4', $bulan);
+            }
+
+            // Tambahan kolom untuk "POINT OBSERVASI", "RATA-RATA POINT AREA", dan "GRADE"
+            $sheet->mergeCells(chr(ord($endColBulan) + 1) . '3:' . chr(ord($endColBulan) + 1) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 1) . '3', 'POINT OBSERVASI');
+            $sheet->mergeCells(chr(ord($endColBulan) + 2) . '3:' . chr(ord($endColBulan) + 2) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 2) . '3', 'RATA-RATA POINT AREA');
+            $sheet->mergeCells(chr(ord($endColBulan) + 3) . '3:' . chr(ord($endColBulan) + 3) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 3) . '3', 'GRADE');
+
+            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 3) . '4')
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            // Tulis data
+            $row = 5;
+            $no = 1;
+
+            foreach ($dataBagian as $p) {
+                $data = [
                     $no,
                     $p['kode_kartu'],
                     $p['nama_karyawan'],
                     $p['jenis_kelamin'],
                     $p['tgl_masuk'],
-                    $p['nama_bagian'],
-                    '' // Before kosong
+                    $p['nama_bagian']
                 ];
 
-            // Tambahkan nilai yang sudah dikonversikan ke bobot_nilai_map untuk setiap task berdasarkan groupedData
-            foreach ($groupedData[$id_jobrole] as $category => $tasks) {
-                foreach ($tasks as $task) {
-                    $nilai = $bobot_nilai[$task] ?? 0;
-                    $data[] = $nilai;
-                    $nilai_total += $nilai;
-                    $count_total++;
+                $total = 0;
+                $count = 0;
+
+                // Get bulan untuk masing-masing karyawan
+                // Get bulan untuk masing-masing karyawan
+                $getBulanData = $this->penilaianmodel->getPenilaianGroupByBulan($p['id_karyawan'], $p['id_batch'], $p['id_jobrole']);
+
+                // Set nilai default untuk kolom G, H, dan I
+                $periodeAwal = $periodeTengah = $periodeAkhir = '';
+
+                // Proses data untuk setiap periode
+                foreach ($getBulanData as $b) {
+                    $hurufNilai = $b['index_nilai'] ?? ''; // Pastikan nilai default jika tidak ada
+                    $angkaNilai = $this->convertHurufToAngka($hurufNilai);
+
+                    // Tentukan kolom sesuai dengan periode
+                    if ($b['nama_periode'] == 'Awal') {
+                        $periodeAwal = ($angkaNilai !== null && $angkaNilai != 0) ? $angkaNilai : '';
+                    } elseif ($b['nama_periode'] == 'Tengah') {
+                        $periodeTengah = ($angkaNilai !== null && $angkaNilai != 0) ? $angkaNilai : '';
+                    } elseif ($b['nama_periode'] == 'Akhir') {
+                        $periodeAkhir = ($angkaNilai !== null && $angkaNilai != 0) ? $angkaNilai : '';
+                    }
+
+                    // Hitung total dan jumlah untuk rata-rata
+                    if ($angkaNilai > 0) {
+                        $total += $angkaNilai;
+                        $count++;
+                    }
                 }
+
+                // Tambahkan nilai periode ke data dalam urutan tetap
+                $data[] = $periodeAwal;  // Kolom G
+                $data[] = $periodeTengah; // Kolom H
+                $data[] = $periodeAkhir; // Kolom I
+
+                // dd ($data);
+                // Hitung rata-rata dan grade
+                $average = round($total / $count, 2);
+                $grade = $this->calculateGradeBatch($average);
+
+                // Tambahkan kolom rata-rata dan grade ke data
+                $data[] = ''; // Kolom tambahan (bisa untuk catatan)
+                $data[] = $average;
+                $data[] = $grade;
+
+                $sheet->fromArray($data, null, 'A' . $row);
+                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 3) . $row)
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $row++;
+                $no++;
+                
+            }
+            // var_dump($data[$no]);
+            // print_r($data[$no]);
+            // dd($data);
+            // Tambahkan total karyawan
+            $sheet->mergeCells('A' . $row . ':B' . $row);
+            $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
+            $sheet->setCellValue('C' . $row, $no - 1);
+            $sheet->setCellValue('D' . $row, 'org');
+
+            $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 3) . $row)
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            // Atur kolom yang harus di tengah
+            $columnsCenter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+            foreach ($columnsCenter as $col) {
+                $sheet->getStyle($col . '1:' . $col . $row)
+                    ->getAlignment()
+                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
             }
 
-            // Perhitungan rata-rata, total, grade, skor
-            // rata-rata = nilai dihitung berdasarkan bobot_nilai_map 
-            $bobot_nilai = array_map(function ($nilai) use ($bobot_nilai_map) {
-                return $bobot_nilai_map[$nilai] ?? 0;
-            }, $bobot_nilai);
+            // Atur ukuran kolom
+            $sheet->getColumnDimension('A')->setWidth(7);
+            $sheet->getColumnDimension('B')->setWidth(10);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(5);
+            $sheet->getColumnDimension('E')->setWidth(15);
+            $sheet->getColumnDimension('J')->setWidth(10);
+            $sheet->getColumnDimension('K')->setWidth(10);
 
-            $rata_rata = array_sum($bobot_nilai) / count($bobot_nilai);
-            $index_nilai = $p['index_nilai'];
-            $skor = $this->calculateSkor($index_nilai);
-
-            // Tambahkan data hasil perhitungan
-            array_push($data, round($rata_rata, 2), $nilai_total, $index_nilai, $skor);
-
-            // Tulis data ke baris Excel
-            $sheet->fromArray($data, null, 'A' . $row);
-
-            // Format border untuk setiap baris
-            $sheet->getStyle('A' . $row . ':' . $tempheader . $row) // Sesuaikan jumlah kolom
-            ->getBorders()
-            ->getAllBorders()
-            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-            // Tinggi baris otomatis
-            $sheet->getRowDimension($row)->setRowHeight(-1);
-
-            $row++; // Pindah ke baris berikutnya
-            $no++; // Increment nomor urut
+            // Wrap text
+            $sheet->getStyle('B3:B4')->getAlignment()->setWrapText(true);
+            $sheet->getStyle('C3:C4')->getAlignment()->setWrapText(true);
+            $sheet->getStyle('E3:E4')->getAlignment()->setWrapText(true);
+            $sheet->getStyle('J3:J4')->getAlignment()->setWrapText(true);
+            $sheet->getStyle('K3:K4')->getAlignment()->setWrapText(true);
         }
 
-        $row++; // Baris kosong sebelum menulis total karyawan
-
-        // Menambahkan total karyawan
-        $sheet->mergeCells('A' . $row . ':B' . $row); // Kolom dari A sampai F
-        $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
-        $sheet->mergeCells('C'. $row . ':F' . $row);
-        $sheet->setCellValue('C' . $row, $no - 1); // Jumlah total karyawan
-        $sheet->getStyle('A' . $row . ':C' . $row)->getFont()->setBold(true);
-        $sheet->getStyle('A' . $row . ':C' . $row)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-
-        // Format border untuk baris total
-        $sheet->getStyle('A' . $row . ':' . $tempheader . $row) // Sesuaikan jumlah kolom
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-        // Format tabel (judul dan isi)
-        $sheet->getStyle('A3:' . chr(ord($extraHeadersStartColumn) + 3) . $row) // Sesuaikan jumlah kolom
-        ->getAlignment()
-        ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-        $sheet->getStyle('A1:' . chr(ord($extraHeadersStartColumn) + 3) . '1') // Sesuaikan jumlah kolom
-        ->getFont()
-        ->setBold(true);
-
         // Simpan file Excel
+        $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -637,5 +735,31 @@ class PenilaianController extends BaseController
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('php://output');
         exit();
+    }
+
+
+
+
+
+    // Fungsi untuk konversi huruf ke angka
+    private function convertHurufToAngka($huruf)
+    {
+        $konversi = [
+            'A' => 4,
+            'B' => 3,
+            'C' => 2,
+            'D' => 1
+        ];
+        return $konversi[$huruf] ?? 0; // Jika huruf tidak dikenali, kembalikan 0
+    }
+
+    // Fungsi untuk menghitung grade
+    private function calculateGradeBatch($average)
+    {
+        if (!is_numeric($average)) return '-';
+        if ($average >= 3.5) return 'A';
+        if ($average >= 2.5) return 'B';
+        if ($average >= 1.5) return 'C';
+        return 'D';
     }
 }

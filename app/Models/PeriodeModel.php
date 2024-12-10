@@ -12,7 +12,7 @@ class PeriodeModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_periode', 'nama_periode', 'id_batch', 'start_date', 'end_date', 'jml_;ibur'];
+    protected $allowedFields    = ['id_periode', 'nama_periode', 'id_batch', 'start_date', 'end_date', 'jml_libur'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

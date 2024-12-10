@@ -439,6 +439,32 @@ class MonitoringController extends BaseController
         // dd ($absen);
         return view(session()->get('role') . '/reportpenilaian', $data);
     }
+    public function reportbatch()
+    {
+        $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
+        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
+        // dd($reportbatch);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Report Batch',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'active9' => 'active',
+            'reportbatch' => $reportbatch,
+            'getArea' => $getArea,
+            'getBatch' => $getBatch
+            // 'area' => $area
+        ];
+        // dd ($getBatch);
+        return view(session()->get('role') . '/reportbatch', $data);
+    }
     public function reportSummaryRosso()
     {
         $summaryRosso = $this->summaryRosso->getRossoGroupByPeriode();

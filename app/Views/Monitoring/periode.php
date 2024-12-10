@@ -124,16 +124,16 @@
                                 </select>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="area">Start Date</label>
+                                <label for="start_date">Start Date</label>
                                 <input type="date" class="form-control" name="start_date" id="start_date">
                             </div>
                             <div class="form-group mb-2">
-                                <label for="keterangan">End Date</label>
+                                <label for="end_date">End Date</label>
                                 <input type="date" class="form-control" name="end_date" id="end_date" required>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="jml_hari">Jumlah Libur(Hari)</label>
-                                <input type="number" class="form-control" name="jml_hari" id="jml_hari" required>
+                                <label for="jml_libur">Jumlah Libur(Hari)</label>
+                                <input type="number" class="form-control" name="jml_libur" id="jml_libur" required>
                             </div>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
                                 <input type="date" class="form-control" name="end_date" id="end_date" required>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="jml_hari">Jumlah Libur(Hari)</label>
+                                <label for="jml_libur">Jumlah Libur(Hari)</label>
                                 <input type="number" class="form-control" name="jml_libur" id="jml_libur" required>
                             </div>
 
@@ -253,7 +253,6 @@
         var startDate = $(this).data('startdate');
         var endDate = $(this).data('enddate');
         var jmlLibur = $(this).data('jmllibur');
-
 
         $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/periodeUpdate/') ?>' + id);
         $('#ModalEdit').find('#nama_periode').val(namaPeriode);
