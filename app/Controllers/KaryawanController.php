@@ -262,13 +262,23 @@ class KaryawanController extends BaseController
                 }
                 // dd ($data);
             }
+            $role = session()->get('role');
+
 
             // Jika ada data yang gagal disimpan
             if ($errorCount > 0) {
                 $errorMessages = implode("<br>", $errorMessages);
-                return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                if ($role === 'Monitoring') {
+                    return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                } else {
+                    return redirect()->to(base_url('TrainingSchool/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                }
             } else {
-                return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', "{$successCount} data berhasil disimpan.");
+                if ($role === 'Monitoring') {
+                    return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', "{$successCount} data berhasil disimpan.");
+                } else {
+                    return redirect()->to(base_url('TrainingSchool/datakaryawan'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+                }
             }
         } else {
             return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', 'Invalid file.');
@@ -333,8 +343,13 @@ class KaryawanController extends BaseController
         ];
 
         $karyawanModel->insert($data);
+        $role = session()->get('role');
 
-        return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil disimpan.');
+        if ($role === 'Monitoring') {
+            return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil disimpan.');
+        } elseif ($role === "TrainingSchool") {
+            return redirect()->to(base_url('TrainingSchool/'))->with('success', 'Data karyawan berhasil diubah.');
+        }
     }
 
     public function edit($id)
@@ -396,15 +411,25 @@ class KaryawanController extends BaseController
         ];
 
         $karyawanModel->update($id, $data);
-
-        return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');
+        $role = session()->get('role');
+        if ($role === 'Monitoring') {
+            return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');
+        } elseif ($role === "TrainingSchool") {
+            return redirect()->to(base_url('TrainingSchool/'))->with('success', 'Data karyawan berhasil diubah.');
+        }
     }
+
 
     public function delete($id)
     {
         $karyawanModel = new \App\Models\KaryawanModel();
         $karyawanModel->delete($id);
+        $role = session()->get('role');
 
-        return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dihapus.');
+        if ($role === 'Monitoring') {
+            return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil dihapus.');
+        } elseif ($role === "TrainingSchool") {
+            return redirect()->to(base_url('TrainingSchool/'))->with('success', 'Data karyawan berhasil dihapus.');
+        }
     }
 }

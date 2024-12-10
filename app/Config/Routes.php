@@ -137,8 +137,13 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
 
 $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes){
     $routes->get('', 'TrainingSchoolController::karyawan');
-
     $routes->get('dataKaryawan', 'TrainingSchoolController::karyawan');
+    $routes->post('karyawanStoreImport', 'KaryawanController::upload'); 
+    $routes->get('karyawanCreate', 'KaryawanController::create');
+    $routes->post('karyawanStore', 'KaryawanController::store');
+    $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
+    $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
+    $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
 });
 
 

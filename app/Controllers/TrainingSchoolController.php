@@ -51,6 +51,8 @@ class TrainingSchoolController extends BaseController
     public function karyawan()
     {
         $karyawan = $this->karyawanmodel->getBagian();
+        $bagianModel = new \App\Models\BagianModel();
+        $bagian = $bagianModel->findAll();
         // dd($karyawan);
         $data = [
             'role' => session()->get('role'),
@@ -58,7 +60,9 @@ class TrainingSchoolController extends BaseController
             'active1' => 'active',
             'active2' => '',
             'active3' => '',
-            'karyawan' => $karyawan
+            'karyawan' => $karyawan,
+            'bagian' => $bagian
+
         ];
         return view(session()->get('role') . '/karyawan', $data);
     }
