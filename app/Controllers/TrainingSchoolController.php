@@ -30,7 +30,7 @@ class TrainingSchoolController extends BaseController
 
     public function __construct()
     {
-
+        // test
         $this->karyawanmodel = new KaryawanModel();
         $this->bagianmodel = new BagianModel();
         $this->usermodel = new UserModel();
