@@ -5,7 +5,7 @@
     <!-- Row for Cards -->
     <div class="row mb-5">
         <!-- Card for Monthly Evaluation -->
-</div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

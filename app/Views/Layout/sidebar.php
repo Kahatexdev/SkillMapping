@@ -518,7 +518,7 @@
             <?php if ($role == 'TrainingSchool'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
-                        href="<?= base_url('trainingschool/dataKaryawan') ?>">
+                        href="<?= base_url('TrainingSchool/dataKaryawan') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 42" version="1.1"
