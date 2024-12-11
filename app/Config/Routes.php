@@ -11,7 +11,7 @@ $routes->post('authverify', 'AuthController::login');
 $routes->get('logout', 'AuthController::logout');
 // $routes->get('/pengguna', 'UserController::index');
 
-$routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
+$routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('', 'MonitoringController::index');
     // $routes->post('inputbagian', 'MonitoringController::inputbagian');
     $routes->get('datakaryawan', 'MonitoringController::karyawan');
@@ -27,12 +27,16 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('dataBatch', 'MonitoringController::batch');
     $routes->get('batchCreate', 'BatchController::create');
     $routes->post('batchStore', 'BatchController::store');
+    $routes->get('batchEdit/(:num)', 'BatchController::edit/$1');
+    $routes->post('batchUpdate/(:num)', 'BatchController::update/$1');
+    $routes->get('batchDelete/(:num)', 'BatchController::delete/$1');
     // periode
     $routes->get('dataPeriode', 'MonitoringController::periode');
     $routes->get('periodeCreate', 'PeriodeController::create');
     $routes->post('periodeStore', 'PeriodeController::store');
     $routes->get('periodeEdit/(:num)', 'PeriodeController::edit/$1');
     $routes->post('periodeUpdate/(:num)', 'PeriodeController::update/$1');
+    $routes->get('periodeDelete/(:num)', 'PeriodeController::delete/$1');
     // user
     $routes->get('dataUser', 'MonitoringController::user');
     $routes->get('userCreate', 'UserController::create');
@@ -98,11 +102,13 @@ $routes->group('/monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('penilaianDetail/(:num)/(:num)/(:num)', 'PenilaianController::show/$1/$2/$3');
     $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
     $routes->get('reportpenilaian', 'MonitoringController::reportpenilaian');
-
+    $routes->get('reportBatch', 'MonitoringController::reportBatch');
+    // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
+    $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 
 });
 
-$routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
+$routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('', 'MandorController::karyawan');
 
     $routes->get('dataKaryawan', 'MandorController::karyawan');
@@ -129,10 +135,15 @@ $routes->group('/mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('dataPenilaian', 'MandorController::penilaian');
 });
 
-$routes->group('/trainingschool', ['filter' => 'TrainingSchool'], function ($routes){
+$routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes){
     $routes->get('', 'TrainingSchoolController::karyawan');
-
     $routes->get('dataKaryawan', 'TrainingSchoolController::karyawan');
+    $routes->post('karyawanStoreImport', 'KaryawanController::upload'); 
+    $routes->get('karyawanCreate', 'KaryawanController::create');
+    $routes->post('karyawanStore', 'KaryawanController::store');
+    $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
+    $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
+    $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
 });
 
 

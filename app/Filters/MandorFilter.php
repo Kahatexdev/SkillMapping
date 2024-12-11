@@ -25,7 +25,7 @@ class MandorFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (!session('role') || session('role') !== 'mandor') {
+        if (!session('role') || session('role') !== 'Mandor') {
             return redirect()->to(base_url('/login'))->with('error', 'Unauthorized access');
         }
     }

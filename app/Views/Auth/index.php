@@ -4,18 +4,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="<?= base_url('assets/img/apple-icon.png') ?>">
-  <link rel="icon" type="image/png" href="<?= base_url('assets/img/favicon.png') ?>">
+  <link rel="icon" sizes="76x76" href="<?= base_url('assets/img/key.png') ?>">
   <title>
     Login | Skill Mapping
   </title>
   <!--     Fonts and icons     -->
-  <link href=" https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
+  <link href="<?php echo base_url('assets/css/open_sans_family.css'); ?>" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="<?= base_url('assets/css/nucleo-icons.css') ?>" rel="stylesheet" />
+  <link href="<?= base_url('assets/css/nucleo-svg.css') ?>" rel="stylesheet" />
   <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <script src="<?= base_url('assets/fa/js/fontawesome.js') ?>"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="<?= base_url('assets/css/soft-ui-dashboard.css?v=1.1.0') ?>" rel="stylesheet" />
   <!-- Nepcha Analytics (nepcha.com) -->
@@ -49,8 +48,9 @@
                       <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon" name="username">
                     </div>
                     <label>Password</label>
-                    <div class="mb-3">
-                      <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon" name="password">
+                    <div class="mb-3 position-relative">
+                      <input type="password" class="form-control" placeholder="Password" aria-label="Password"
+                        aria-describedby="password-addon" name="password" id="password">
                     </div>
                     <div class="text-center">
                       <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
@@ -61,7 +61,8 @@
             </div>
             <div class="col-md-6">
               <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('<?= base_url('assets/img/curved-images/curved6.jpg') ?>')"></div>
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('<?= base_url('assets/img/rating.jpg') ?>')"></div>
+                <!-- https://www.freepik.com/free-photo/closeup-doctor-checking-patient-daily-report-checklist_2767783.htm#fromView=search&page=1&position=36&uuid=fd47a838-0f65-41de-bf11-dab96bbb68db -->
               </div>
             </div>
           </div>

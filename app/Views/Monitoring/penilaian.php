@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <h4>
                         Pilih Batch Penilaian</h4>
-                    <form action="<?= base_url('monitoring/penilaianCreate') ?>" method="get">
+                    <form action="<?= base_url('Monitoring/penilaianCreate') ?>" method="get">
                         <div class="row">
                             <div class="col-md-3 mb-3">
                                 <label for="id_periode">Batch Penilaian</label>
@@ -68,7 +68,7 @@
                                     <option value="">Pilih Area</option>
                                 </select>
                             </div>
-                                <input type="hidden" class="form-control" id="id_jobrole" name="id_jobrole" required>
+                            <input type="hidden" class="form-control" id="id_jobrole" name="id_jobrole" required>
                         </div>
                         <button type="submit" class="btn bg-gradient-info w-100">Buat Batch Penilaian</button>
                     </form>
@@ -88,8 +88,6 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Bagian</th>
-                                    <th>Area Utama</th>
-                                    <th>Area</th>
                                     <th>Periode</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -100,12 +98,12 @@
                                     <?php foreach ($penilaian as $periode) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><?= $periode['nama_bagian'] ?></td>
-                                            <td><?= $periode['area_utama'] ?></td>
-                                            <td><?= $periode['area'] ?></td>
-                                            <td><?= $periode['nama_periode'] ?></td>
+                                            <td><?= $periode['nama_bagian'] . "-" . $periode['area_utama'] . "-" . $periode['area'] ?></td>
+                                            <td><?= $periode['nama_batch'] . " Periode " . $periode['nama_periode'] . "(" . $periode['start_date'] . " S/d " . $periode['end_date'] . ")" ?></td>
                                             <td>
-                                                <a href="<?= base_url('monitoring/penilaianDetail/' . $periode['id_bagian'] . '/' . $periode['id_periode'] . '/' . $periode['id_jobrole']) ?>" class="btn bg-gradient-info btn-sm">Detail</a>
+                                                <a href="<?= base_url('Monitoring/penilaianDetail/' . $periode['id_bagian'] . '/' . $periode['id_periode'] . '/' . $periode['id_jobrole']) ?>" class="btn bg-gradient-info btn-sm">
+                                                    <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -121,9 +119,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
 <script>
     // datatable
     $(document).ready(function() {
@@ -161,7 +157,7 @@
             $("#id_jobrole").val(''); // Reset id_jobrole field
 
             $.ajax({
-                url: '<?= base_url('monitoring/getAreaUtama') ?>',
+                url: '<?= base_url('Monitoring/getAreaUtama') ?>',
                 type: 'post',
                 data: {
                     nama_bagian: nama_bagian
@@ -186,7 +182,7 @@
             var nama_bagian = $('#nama_bagian').val();
 
             $.ajax({
-                url: '<?= base_url('monitoring/getArea') ?>',
+                url: '<?= base_url('Monitoring/getArea') ?>',
                 type: 'post',
                 data: {
                     area_utama: area_utama,
@@ -214,7 +210,7 @@
             var area = $('#area').val();
 
             $.ajax({
-                url: '<?= base_url('monitoring/getJobRole') ?>',
+                url: '<?= base_url('Monitoring/getJobRole') ?>',
                 type: 'post',
                 data: {
                     area_utama: area_utama,

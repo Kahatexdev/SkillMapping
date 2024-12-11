@@ -84,7 +84,7 @@
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-                                <a href="<?= base_url('monitoring/dataJob') ?>"
+                                <a href="<?= base_url('Monitoring/dataJob') ?>"
                                     class="btn bg-gradient-secondary btn-sm">
                                     <!-- icon-->
                                     <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
@@ -103,7 +103,7 @@
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <form action="<?= base_url('monitoring/jobroleUpdate/' . $jobrole['id_jobrole']) ?>" method="post">
+                    <form action="<?= base_url('Monitoring/jobroleUpdate/' . $jobrole['id_jobrole']) ?>" method="post">
                         <!-- Pilihan Nama Bagian -->
                         <div class="form-group mb-2">
                             <label for="id_bagian">Nama Bagian <small class="text-danger">*</small></label>
@@ -111,7 +111,7 @@
                                 <option value="">Pilih Bagian</option>
                                 <?php foreach ($bagians as $bagian) : ?>
                                     <option value="<?= $bagian['id_bagian'] ?>" <?= $jobrole['id_bagian'] == $bagian['id_bagian'] ? 'selected' : '' ?>>
-                                        <?= $bagian['nama_bagian'] ?> - <?= $bagian['area'] ?>
+                                        <?= $bagian['nama_bagian'] ?> - <?= $bagian['area_utama'] ?> - <?= $bagian['area'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -126,6 +126,7 @@
                                         <select name="keterangan[]" class="form-control mr-2" required>
                                             <option value="">Pilih Keterangan</option>
                                             <option value="KNITTER" <?= $keterangan === 'KNITTER' ? 'selected' : '' ?>>KNITTER</option>
+                                            <option value="OPERATOR" <?= $keterangan === 'OPERATOR' ? 'selected' : '' ?>>OPERATOR</option>
                                             <option value="C.O" <?= $keterangan === 'C.O' ? 'selected' : '' ?>>C.O</option>
                                             <option value="Ringan" <?= $keterangan === 'Ringan' ? 'selected' : '' ?>>Ringan</option>
                                             <option value="Standar" <?= $keterangan === 'Standar' ? 'selected' : '' ?>>Standar</option>
@@ -172,6 +173,7 @@
                     <select name="keterangan[]" class="form-control mr-2" required>
                         <option value="">Pilih Keterangan</option>
                         <option value="KNITTER">KNITTER</option>
+                        <option value="OPERATOR">OPERATOR</option>
                         <option value="C.O">C.O</option>
                         <option value="Ringan">Ringan</option>
                         <option value="Standar">Standar</option>

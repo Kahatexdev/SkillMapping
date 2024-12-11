@@ -61,8 +61,7 @@ class AbsenController extends BaseController
 
         $data = [
             'id_karyawan' => $this->request->getPost('id_karyawan'),
-            'bulan' => $this->request->getPost('bulan'),
-            'tanggal' => $this->request->getPost('tanggal'),
+            'id_periode' => $this->request->getPost('id_periode'),
             'izin' => $this->request->getPost('izin'),
             'sakit' => $this->request->getPost('sakit'),
             'mangkir' => $this->request->getPost('mangkir'),
@@ -76,7 +75,7 @@ class AbsenController extends BaseController
             session()->setFlashdata('error', 'Data gagal ditambahkan');
         }
 
-        return redirect()->to('/monitoring/dataAbsen');
+        return redirect()->to('/Monitoring/dataAbsen');
     }
 
     public function edit($id)
@@ -109,7 +108,7 @@ class AbsenController extends BaseController
 
         $data = [
             'id_karyawan' => $this->request->getPost('id_karyawan'),
-            'bulan' => $this->request->getPost('bulan'),
+            'id_periode' => $this->request->getPost('id_periode'),
             'izin' => $this->request->getPost('izin'),
             'sakit' => $this->request->getPost('sakit'),
             'mangkir' => $this->request->getPost('mangkir'),
@@ -126,7 +125,7 @@ class AbsenController extends BaseController
         } else {
             session()->setFlashdata('error', 'Data gagal diubah');
         }
-        return redirect()->to('/monitoring/dataAbsen');
+        return redirect()->to('/Monitoring/dataAbsen');
     }
 
     public function delete($id)
@@ -139,7 +138,7 @@ class AbsenController extends BaseController
             session()->setFlashdata('error', 'Data gagal dihapus');
         }
 
-        return redirect()->to('/monitoring/dataAbsen');
+        return redirect()->to('/Monitoring/dataAbsen');
     }
 
     public function import()
@@ -212,7 +211,7 @@ class AbsenController extends BaseController
 
             // Validate the file type
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return redirect()->to(base_url('monitoring/karyawanImport'))->with('error', 'Invalid file type. Please upload an Excel file.');
+                return redirect()->to(base_url('Monitoring/karyawanImport'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
             // Load the spreadsheet
@@ -237,7 +236,6 @@ class AbsenController extends BaseController
                 // Get cell values
                 $kodeKartu = $dataSheet->getCell('A' . $row)->getFormattedValue();
                 $namaKaryawan = $dataSheet->getCell('D' . $row)->getValue();
-                $bulan = $dataSheet->getCell('I1')->getValue();
                 $sakit = $dataSheet->getCell('I' . $row)->getValue();
                 $izin = $dataSheet->getCell('J' . $row)->getValue();
                 $cuti = $dataSheet->getCell('K' . $row)->getValue();
@@ -245,13 +243,14 @@ class AbsenController extends BaseController
                 $idUser = session()->get('id_user');
 
                 
-                // dd ($kodeKartu, $namaKaryawan, $bulan, $sakit, $izin, $cuti, $mangkir, $idUser);
+                // dd ($kodeKartu, $namaKaryawan, $id_periode, $sakit, $izin, $cuti, $mangkir, $idUser);
                 // Validate data
                 // Validasi tangal 
-                if (empty($bulan)) {
+                $id_periode = $this->request->getPost('id_periode');
+                if (empty($id_periode)) {
                     $isValid = false;
-                    $errorMessage .= "bulan harus diisi. ";
-                } 
+                    $errorMessage .= "Periode is required. ";
+                }
                 if (empty($namaKaryawan)) {
                     $isValid = false;
                     $errorMessage .= "Nama Karyawan is required. ";
@@ -269,7 +268,7 @@ class AbsenController extends BaseController
                         // Prepare the data for saving
                         $data = [
                             'id_karyawan' => $karyawan['id_karyawan'],
-                            'bulan' => $bulan,
+                            'id_periode' => $id_periode,
                             'sakit' => $sakit,
                             'izin' => $izin,
                             'cuti' => $cuti,
@@ -310,9 +309,9 @@ class AbsenController extends BaseController
                 }
                 $message .= "</ul>";
             }
-            return redirect()->to(base_url('monitoring/dataAbsen'))->with('success', $message);
+            return redirect()->to(base_url('Monitoring/dataAbsen'))->with('success', $message);
         } else {
-            return redirect()->to(base_url('monitoring/dataAbsen'))->with('error', 'Invalid file. Please upload an Excel file.');
+            return redirect()->to(base_url('Monitoring/dataAbsen'))->with('error', 'Invalid file. Please upload an Excel file.');
         }
         
     }
@@ -385,8 +384,14 @@ class AbsenController extends BaseController
 
     public function empty()
     {
-        $absenModel = new \App\Models\AbsenModel();
-        $absenModel->truncate();
-        return redirect()->to(base_url('monitoring/dataAbsen'))->with('success', 'Data absen berhasil dikosongkan.');
+        $absen = new AbsenModel();
+
+        if ($absen->truncate()) {
+            session()->setFlashdata('success', 'Data berhasil dihapus');
+        } else {
+            session()->setFlashdata('error', 'Data gagal dihapus');
+        }
+
+        return redirect()->to('/Monitoring/dataAbsen');
     }
 }

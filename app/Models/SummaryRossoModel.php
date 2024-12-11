@@ -81,10 +81,23 @@ class SummaryRossoModel extends Model
 
     public function getRossoByPeriode($id_periode)
     {
-        return $this->select('SUM(qty_prod_rosso) as total_qty_prod_rosso, SUM(qty_bs) as total_qty_bs, karyawan.id_bagian, bagian.nama_bagian, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk')
+        return $this->select(
+            'karyawan.id_bagian, 
+             bagian.nama_bagian, 
+             karyawan.kode_kartu, 
+             karyawan.nama_karyawan, 
+             karyawan.jenis_kelamin, 
+             karyawan.tgl_masuk, 
+             periode.start_date, 
+             periode.end_date,
+             periode.jml_libur,
+             SUM(qty_prod_rosso) as total_qty_prod_rosso, 
+             SUM(qty_bs) as total_qty_bs'
+        )
             ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->where('id_periode', $id_periode)
+            ->join('periode', 'periode.id_periode = summary_rosso.id_periode')
+            ->where('summary_rosso.id_periode', $id_periode)
             ->groupBy('summary_rosso.id_karyawan')
             ->get()->getResultArray();
     }

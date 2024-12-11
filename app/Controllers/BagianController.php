@@ -44,7 +44,7 @@ class BagianController extends BaseController
 
         $this->bagianModel->insert($data);
         session()->setFlashdata('success', 'Data Bagian Berhasil Ditambahkan');
-        return redirect()->to(base_url('monitoring/dataBagian'));
+        return redirect()->to(base_url('Monitoring/dataBagian'));
     }
 
     public function edit($id)
@@ -74,13 +74,13 @@ class BagianController extends BaseController
 
         $this->bagianModel->update($id, $data);
         session()->setFlashdata('success', 'Data Bagian Berhasil Diubah');
-        return redirect()->to(base_url('monitoring/dataBagian'));
+        return redirect()->to(base_url('Monitoring/dataBagian'));
     }
 
     public function delete($id){
         $bagianModel = new \App\Models\BagianModel();
         $bagianModel->delete($id);
 
-        return redirect()->to(base_url('monitoring/dataBagian'))->with('success', 'Data bagian berhasil dihapus.');
+        return redirect()->to(base_url('Monitoring/dataBagian'))->with('success', 'Data bagian berhasil dihapus.');
     }
 }

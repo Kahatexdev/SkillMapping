@@ -68,7 +68,7 @@ class JobroleController extends BaseController
             }
         }
 
-        return view('monitoring/coba', [
+        return view('Monitoring/coba', [
             'role' => session()->get('role'),
             'title' => 'Job Role',
             'active1' => '',
@@ -134,7 +134,7 @@ class JobroleController extends BaseController
         // Attempt to save the data
         if ($jobroleModel->insert($data)) {
             // If successful, redirect to a success page
-            return redirect()->to(base_url('monitoring/dataJob'))->with('success', 'Job role Berhasil Ditambahkan.');
+            return redirect()->to(base_url('Monitoring/dataJob'))->with('success', 'Job role Berhasil Ditambahkan.');
         } else {
             // If not successful, redirect back with an error
             return redirect()->back()->withInput()->with('error', 'Gagal Menyimpan Data Job Role.');
@@ -180,7 +180,6 @@ class JobroleController extends BaseController
         // Get form data
         $data = [
             'id_bagian' => $this->request->getPost('id_bagian'),
-            'status' => $this->request->getPost('status'),
             'jobdesc' => $this->request->getPost('jobdesc'),
             'keterangan' => $this->request->getPost('keterangan'),
         ];
@@ -196,7 +195,7 @@ class JobroleController extends BaseController
         // Attempt to update the record
         if ($jobroleModel->update($id, $data)) {
             // If successful, redirect to the success page
-            return redirect()->to(base_url('monitoring/dataJob'))->with('success', 'Job role updated successfully.');
+            return redirect()->to(base_url('Monitoring/dataJob'))->with('success', 'Job role updated successfully.');
         } else {
             // If not successful, redirect back with an error message
             return redirect()->back()->withInput()->with('error', 'Failed to update job role.');
@@ -214,6 +213,6 @@ class JobroleController extends BaseController
             session()->setFlashdata('error', 'Data gagal dihapus');
         }
 
-        return redirect()->to('/monitoring/dataJob');
+        return redirect()->to('/Monitoring/dataJob');
     }
 }

@@ -1,9 +1,9 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-<div class="container-fluid py-4">
 
-    <div class="row">
-        <div class="col-xl-12 col-sm-12 mb-xl-0">
+<div class="container-fluid">
+    <div class="row my-2">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2">
             <div class="card">
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between">
@@ -19,20 +19,19 @@
                         <div>
                             <div class="d-flex justify-content-between">
 
-                                <a href="<?= base_url('monitoring/downloadTemplateKaryawan') ?>"
+                                <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
                                     class="btn bg-gradient-success btn-sm me-2">
                                     <!-- icon download -->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
                                 </a>
-                                <a href="<?= base_url('monitoring/karyawanCreate') ?>"
+                                <a href="<?= base_url('Monitoring/karyawanCreate') ?>"
                                     class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addKaryawan">
                                     <!-- icon tambah karyawan-->
                                     <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
                                     Data Karyawan
                                 </a>
                                 <div> &nbsp;</div>
-
                             </div>
                         </div>
                     </div>
@@ -50,7 +49,6 @@
                     </div>
                     <div class="modal-body">
                         <form action="<?= base_url($role . '/karyawanStore'); ?>" method="post">
-
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
                                     <div class="form-group mb-2">
@@ -125,7 +123,7 @@
                                             <option value="">Pilih Bagian</option>
                                             <?php foreach ($bagian as $row) : ?>
                                                 <option value="<?= $row['id_bagian'] ?>">
-                                                    <?= $row['nama_bagian'] . ' - ' . $row['area'] ?></option>
+                                                    <?= $row['nama_bagian'] . ' - ' . $row['area_utama'] . ' - ' . $row['area'] ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -153,14 +151,12 @@
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h5 class="card-title">
                         Import Data Karyawan
                     </h5>
-                </div>
-                <div class="card-body">
                     <!-- form import  data karyawan -->
-                    <form action="<?= base_url('monitoring/karyawanStoreImport') ?>" method="post"
+                    <form action="<?= base_url('Monitoring/karyawanStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="upload-container">
                             <div class="upload-area" id="upload-area">
@@ -182,13 +178,10 @@
     <div class="row mt-1">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h4 class="card-title">
                         Tabel Data Karyawan
                     </h4>
-                </div>
-                <div class="card-body">
-
                     <div class="table-responsive">
                         <table id="karyawanTable" class="table table-striped table-hover table-bordered w-100">
                             <thead>
@@ -212,7 +205,7 @@
 
                                             <td><?= $karyawan['warna_baju'] ?></td>
 
-                                            <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area'] ?></td>
+                                            <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area_utama'] . ' - ' . $karyawan['area'] ?></td>
                                             <td><?= $karyawan['status_aktif'] ?></td>
                                             <td>
                                                 <a class="btn btn-warning edit-btn"
@@ -221,6 +214,7 @@
                                                     data-nama="<?= $karyawan['nama_karyawan'] ?>"
                                                     data-shift="<?= $karyawan['shift'] ?>"
                                                     data-jenis_kelamin="<?= $karyawan['jenis_kelamin'] ?>"
+                                                    data-areaUtama="<?= $karyawan['area_utama'] ?>"
                                                     data-area="<?= $karyawan['area'] ?>"
                                                     data-libur="<?= $karyawan['libur'] ?>"
                                                     data-libur_tambahan="<?= $karyawan['libur_tambahan'] ?>"
@@ -230,7 +224,7 @@
                                                     data-tgl_masuk="<?= $karyawan['tgl_masuk'] ?>"
                                                     data-nama_bagian="<?= $karyawan['nama_bagian'] ?>"
                                                     data-status_aktif="<?= $karyawan['status_aktif'] ?>"
-                                                    data-bs-toggle=" modal" data-bs-target="#editUser">
+                                                    data-bs-toggle="modal" data-bs-target="#editUser">
                                                     <!-- icon edit -->
                                                     <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
@@ -265,28 +259,28 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<?= base_url($role . '/'); ?>" method="post">
+                    <form action="" method="post">
 
                         <div class="row">
                             <div class="col-lg-12 col-sm-12">
                                 <div class="form-group mb-2">
                                     <label for="kode_kartu">Kode Kartu</label>
                                     <input type="text" class="form-control" name="kode_kartu" id="kode_kartu"
-                                        value="<?= $karyawan['kode_kartu'] ?>" required>
+                                        value="" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="nama_karyawan">Nama Karyawan</label>
                                     <input type="text" class="form-control" name="nama_karyawan" id="nama_karyawan"
-                                        value="<?= $karyawan['nama_karyawan'] ?>" required>
+                                        value="" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="shift">Shift</label>
                                     <select name="shift" id="shift" class="form-control" required>
                                         <option value="">Pilih Shift</option>
-                                        <option value="A" <?= $karyawan['shift'] == 'A' ? 'selected' : '' ?>>Pagi</option>
-                                        <option value="B" <?= $karyawan['shift'] == 'B' ? 'selected' : '' ?>>Siang</option>
-                                        <option value="C" <?= $karyawan['shift'] == 'C' ? 'selected' : '' ?>>Malam</option>
-                                        <option value="Non Shift" <?= $karyawan['shift'] == 'Non Shift' ? 'selected' : '' ?>>Non
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="Non Shift">Non
                                             Shift</option>
                                     </select>
                                 </div>
@@ -294,38 +288,38 @@
                                     <label for="jenis_kelamin">Jenis Kelamin</label>
                                     <select name="jenis_kelamin" id="jenis_kelamin" class="form-control" required>
                                         <option value="">Pilih Jenis Kelamin</option>
-                                        <option value="L" <?= $karyawan['jenis_kelamin'] == 'L' ? 'selected' : '' ?>>Laki-laki
+                                        <option value="L">Laki-laki
                                         </option>
-                                        <option value="P" <?= $karyawan['jenis_kelamin'] == 'P' ? 'selected' : '' ?>>Perempuan
+                                        <option value="P">Perempuan
                                         </option>
                                     </select>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="libur">Libur</label>
                                     <input type="text" class="form-control" name="libur" id="libur"
-                                        value="<?= $karyawan['libur'] ?>" required>
+                                        value="" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="libur_tambahan">Libur Tambahan</label>
                                     <input type="text" class="form-control" name="libur_tambahan" id="libur_tambahan"
-                                        value="<?= $karyawan['libur_tambahan'] ?>" required>
+                                        value="" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="warna_baju">Warna Baju</label>
                                     <select name="warna_baju" id="warna_baju" class="form-control" required>
                                         <option value="">Pilih Warna Baju</option>
-                                        <option value="Merah" <?= $karyawan['warna_baju'] == 'Merah' ? 'selected' : '' ?>>Merah
+                                        <option value="Merah">Merah
                                         </option>
-                                        <option value="Biru" <?= $karyawan['warna_baju'] == 'Biru' ? 'selected' : '' ?>>Biru
+                                        <option value="Biru">Biru
                                         </option>
-                                        <option value="Hijau" <?= $karyawan['warna_baju'] == 'Hijau' ? 'selected' : '' ?>>Hijau
+                                        <option value="Hijau">>Hijau
                                         </option>
-                                        <option value="Kuning" <?= $karyawan['warna_baju'] == 'Kuning' ? 'selected' : '' ?>>
+                                        <option value="Kuning">
                                             Kuning
                                         </option>
-                                        <option value="Putih" <?= $karyawan['warna_baju'] == 'Putih' ? 'selected' : '' ?>>Putih
+                                        <option value="Putih">Putih
                                         </option>
-                                        <option value="Hitam" <?= $karyawan['warna_baju'] == 'Hitam' ? 'selected' : '' ?>>Hitam
+                                        <option value="Hitam">Hitam
                                         </option>
                                     </select>
                                 </div>
@@ -333,57 +327,52 @@
                                     <label for="status_baju">Status Baju</label>
                                     <select name="status_baju" id="status_baju" class="form-control" required>
                                         <option value="">Pilih Status Baju</option>
-                                        <option value="Harian" <?= $karyawan['status_baju'] == 'Harian' ? 'selected' : '' ?>>
+                                        <option value="Harian">
                                             Harian
                                         </option>
-                                        <option value="Training"
-                                            <?= $karyawan['status_baju'] == 'Training' ? 'selected' : '' ?>>
+                                        <option value="Training">
                                             Training</option>
-                                        <option value="Magang" <?= $karyawan['status_baju'] == 'Magang' ? 'selected' : '' ?>>
+                                        <option value="Magang">
                                             Magang
                                         </option>
-                                        <option value="Karyawan"
-                                            <?= $karyawan['status_baju'] == 'Karyawan' ? 'selected' : '' ?>>
+                                        <option value="Karyawan">
                                             Karyawan</option>
-                                        <option value="Staff" <?= $karyawan['status_baju'] == 'Staff' ? 'selected' : '' ?>>Staff
+                                        <option value="Staff">Staff
                                         </option>
                                     </select>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="tgl_lahir">Tanggal Lahir</label>
                                     <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir"
-                                        value="<?= $karyawan['tgl_lahir'] ?>" required>
+                                        value="" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="tgl_masuk">Tanggal Masuk</label>
                                     <input type="date" class="form-control" name="tgl_masuk" id="tgl_masuk"
-                                        value="<?= $karyawan['tgl_masuk'] ?>" required>
+                                        value="" required>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="bagian">Bagian</label>
                                     <select name="bagian" id="bagian" class="form-control" required>
-                                        <option value=""><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area'] ?></option>
-                                        <?php foreach ($bagian as $bagian) : ?>
-                                            <option value="<?= $bagian['id_bagian'] ?>">
-                                                <?= $bagian['nama_bagian'] . ' - ' . $bagian['area'] ?></option>
-                                        <?php endforeach ?>
+                                        <option value="">Pilih Bagian</option>
+                                        <?php foreach ($bagian as $row) : ?>
+                                            <option value="<?= $row['id_bagian'] ?>">
+                                                <?= $row['nama_bagian'] . ' - ' . $row['area_utama'] . ' - ' . $row['area'] ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="status_aktif">Status Aktif</label>
                                     <select name="status_aktif" id="status_aktif" class="form-control" required>
                                         <option value="">Pilih Status Aktif</option>
-                                        <option value="Aktif" <?= $karyawan['status_aktif'] == 'Aktif' ? 'selected' : '' ?>>
+                                        <option value="Aktif">
                                             Aktif
                                         </option>
-                                        <option value="Tidak Aktif"
-                                            <?= $karyawan['status_aktif'] == 'Tidak Aktif' ? 'selected' : '' ?>>Tidak Aktif
+                                        <option value="Tidak Aktif">Tidak Aktif
                                         </option>
                                     </select>
                                 </div>
                             </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
@@ -396,28 +385,6 @@
     </div>
 </div>
 <script type="text/javascript">
-    $('.edit-btn').click(function() {
-        var id = $(this).data('id');
-        var nama = $(this).data('nama');
-        var shift = $(this).data('shift');
-        var kode_kartu = $(this).data('kode_kartu');
-        var jenis_kelamin = $(this).data('jenis_kelamin');
-        var area = $(this).data('area');
-        var libur = $(this).data('libur');
-        var libur_tambahan = $(this).data('libur_tambahan');
-        var warna_baju = $(this).data('warna_baju');
-        var status_baju = $(this).data('status_baju');
-        var tgl_lahir = $(this).data('tgl_lahir');
-        var tgl_masuk = $(this).data('tgl_masuk');
-        var nama_bagian = $(this).data('nama_bagian');
-        var status_aktif = $(this).data('status_aktif');
-        console.log(nama)
-        $('#ModalEdit').find('form').attr('action', '<?= base_url('monitoring/karyawanUpdate/') ?>' + id);
-        $('#ModalEdit').find('input[name="nama_karyawan"]').val(nama);
-
-        $('#ModalEdit').modal('show'); // Show the modal
-    });
-
     function confirmDelete(id) {
         Swal.fire({
             title: 'Apakah Anda yakin?',
@@ -430,7 +397,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/karyawanDelete/') ?>" + id;
+                window.location.href = "<?= base_url('Monitoring/karyawanDelete/') ?>" + id;
             }
         })
     }
@@ -489,6 +456,7 @@
         var shift = $(this).data('shift');
         var kode_kartu = $(this).data('kode_kartu');
         var jenis_kelamin = $(this).data('jenis_kelamin');
+        var areaUtama = $(this).data('areaUtama');
         var area = $(this).data('area');
         var libur = $(this).data('libur');
         var libur_tambahan = $(this).data('libur_tambahan');
@@ -499,11 +467,21 @@
         var nama_bagian = $(this).data('nama_bagian');
         var status_aktif = $(this).data('status_aktif');
 
-        $('#ModalEdit').find('form').attr('action', '<?= base_url('monitoring/karyawanUpdate/') ?>' + id);
-        $('#ModalEdit').find('input[name="nama_bagian"]').val(namaBag);
-        $('#ModalEdit').find('input[name="area_utama"]').val(areaUtama);
-        $('#ModalEdit').find('input[name="area"]').val(area);
-        $('#ModalEdit').find('input[name="keterangan"]').val(ket);
+        $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/karyawanUpdate/') ?>' + id);
+        $('#ModalEdit').find('#kode_kartu').val(kode_kartu);
+        $('#ModalEdit').find('#nama_karyawan').val(nama);
+        $('#ModalEdit').find('#shift').val(shift);
+        $('#ModalEdit').find('#jenis_kelamin').val(jenis_kelamin);
+        $('#ModalEdit').find('#areaUtama').val(areaUtama);
+        $('#ModalEdit').find('#area').val(area);
+        $('#ModalEdit').find('#libur').val(libur);
+        $('#ModalEdit').find('#libur_tambahan').val(libur_tambahan);
+        $('#ModalEdit').find('#warna_baju').val(warna_baju);
+        $('#ModalEdit').find('#status_baju').val(status_baju);
+        $('#ModalEdit').find('#tgl_lahir').val(tgl_lahir);
+        $('#ModalEdit').find('#tgl_masuk').val(tgl_masuk);
+        $('#ModalEdit').find('#bagian').val(nama_bagian);
+        $('#ModalEdit').find('#status_aktif').val(status_aktif);
         $('#ModalEdit').modal('show'); // Show the modal
     });
 </script>

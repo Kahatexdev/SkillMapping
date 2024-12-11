@@ -29,6 +29,10 @@ class PeriodeTable extends Migration
             'end_date' => [
                 'type' => 'DATE',
             ],
+            'jml_libur' => [
+                'type' => 'INT',
+                'constraint' => 11,
+            ],
         ]);
 
         // Tambah Primary Key

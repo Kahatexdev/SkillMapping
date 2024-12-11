@@ -75,7 +75,7 @@
                                         <td><?= $r['start_date'] ?></td>
                                         <td><?= $r['end_date'] ?></td>
                                         <td>
-                                            <a href="<?= base_url('monitoring/rossoDetail/' . $r['id_periode']) ?>" class="btn bg-gradient-info btn-sm">
+                                            <a href="<?= base_url('Monitoring/rossoDetail/' . $r['id_periode']) ?>" class="btn bg-gradient-info btn-sm">
                                                 <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>
                                             </a>
                                         </td>
@@ -112,7 +112,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/rossoDelete/') ?>" + id;
+                window.location.href = "<?= base_url('Monitoring/rossoDelete/') ?>" + id;
             }
         })
     }

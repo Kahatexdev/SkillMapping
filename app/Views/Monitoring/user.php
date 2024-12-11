@@ -1,7 +1,7 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 
-<div class="container-fluid ">
+<div class="container-fluid">
     <div class="row my-2">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2">
             <div class="card">
@@ -19,11 +19,12 @@
                         <div>
                             <div class="d-flex justify-content-between">
                                 <a href="#"
-                                    class="btn btn-success add-btn" data-bs-toggle="modal" data-bs-target="#addUser"></i>
+                                    class="btn bg-gradient-info add-btn" data-bs-toggle="modal data-bs-toggle=" modal" data-bs-target="#addUser"></i>
+                                    <!-- Icon Tambah Bagian-->
+                                    <i class="fas fa-plus text-lg opacity-10 me-1" aria-hidden="true"></i>
                                     Tambah User
                                 </a>
                                 <div> &nbsp;</div>
-
                             </div>
                         </div>
                     </div>
@@ -31,17 +32,19 @@
             </div>
         </div>
     </div>
-    <div class="row mt-4">
+    <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-body">
+                    <h5 class="card-title">
+                        Tabel Data User
+                    </h5>
                     <div class="table-responsive">
                         <table id="userTable" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Username</th>
-
                                     <th>Role</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -106,8 +109,9 @@
                                     <label for="role">Role</label>
                                     <select name="role" id="role" class="form-control" required>
                                         <option value="">Pilih Role</option>
-                                        <option value="mandor">mandor</option>
-                                        <option value="monitoring">Monitoring</option>
+                                        <option value="Mandor">Mandor</option>
+                                        <option value="Monitoring">Monitoring</option>
+                                        <option value="TrainingSchool">Training School</option>
                                     </select>
                                 </div>
 
@@ -134,7 +138,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<?= base_url($role . '/userStore'); ?>" method="post">
+                    <form action="<?= base_url('Monitoring/userUpdate' . $user['id_user']); ?>" method="post">
 
                         <div class="row">
                             <div class="col-lg-12 col-sm-12">
@@ -150,8 +154,9 @@
                                     <label for="role">Role</label>
                                     <select name="role" id="role" class="form-control" required>
                                         <option value="">Pilih Role</option>
-                                        <option value="mandor">mandor</option>
-                                        <option value="monitoring">Monitoring</option>
+                                        <option value="Mandor">Mandor</option>
+                                        <option value="Monitoring">Monitoring</option>
+                                        <option value="TrainingSchool">Training School</option>
                                     </select>
                                 </div>
 
@@ -184,7 +189,7 @@
                 cancelButtonText: 'Batal',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "<?= base_url('monitoring/userDelete/') ?>" + id;
+                    window.location.href = "<?= base_url('Monitoring/userDelete/') ?>" + id;
                 }
             })
         }
@@ -217,7 +222,7 @@
             var username = $(this).data('usn');
             var pass = $(this).data('pass');
             var area = $(this).data('area');
-            $('#ModalEdit').find('form').attr('action', '<?= base_url('monitoring/userUpdate/') ?>' + id);
+            $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/userUpdate/') ?>' + id);
             $('#ModalEdit').find('input[name="username"]').val(username);
             $('#ModalEdit').find('input[name="password"]').val(pass);
             $('#ModalEdit').modal('show'); // Show the modal

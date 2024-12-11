@@ -11,14 +11,13 @@
     </div>
     <hr class="horizontal dark mt-0">
     <!-- Dashboard -->
-
     <div class="collapse navbar-collapse  h-auto w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            <?php if ($role == 'monitoring'): ?>
+            <?php if ($role == 'Monitoring'): ?>
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Monitoring</h6>
                 <!-- Dashboard -->
                 <li class="nav-item">
-                    <a class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>" href="<?= base_url('monitoring') ?>">
+                    <a class="nav-link <?= $title == 'Dashboard' ? 'active' : '' ?>" href="<?= base_url('Monitoring') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 40" version="1.1"
@@ -46,7 +45,6 @@
                                     </g>
                                 </g>
                             </svg>
-
                         </div>
                         <span class="nav-link-text ms-1">Dashboard</span>
                     </a>
@@ -59,7 +57,7 @@
                 <!-- User -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'User' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataUser') ?>">
+                        href="<?= base_url('Monitoring/dataUser') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- icon user -->
@@ -83,7 +81,7 @@
                 <!-- Bagian -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Bagian' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataBagian') ?>">
+                        href="<?= base_url('Monitoring/dataBagian') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
@@ -112,7 +110,7 @@
                 <!-- Karyawan -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/datakaryawan') ?>">
+                        href="<?= base_url('Monitoring/datakaryawan') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- icon karyawan -->
@@ -138,7 +136,7 @@
                 <!-- batch -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Batch' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataBatch') ?>">
+                        href="<?= base_url('Monitoring/dataBatch') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- svg batch icon -->
@@ -158,7 +156,7 @@
                 <!-- periode -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Periode' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataPeriode') ?>">
+                        href="<?= base_url('Monitoring/dataPeriode') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <!-- svg calendar -->
@@ -179,21 +177,25 @@
                 <!-- Job Role -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Job Role' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataJob') ?>">
+                        href="<?= base_url('Monitoring/dataJob') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg width="12px" height="12px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <title>job-role-construction</title>
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g fill="#FFFFFF" fill-rule="nonzero">
-                                        <!-- Helm Proyek -->
-                                        <path class="color-foreground" d="M23,4 C29,4 34,9 34,15 L12,15 C12,9 17,4 23,4 Z"></path>
-
-                                        <!-- Kepala -->
-                                        <circle cx="23" cy="20" r="6" class="color-background"></circle>
-
-                                        <!-- Badan -->
-                                        <path class="color-background" d="M17,29 C15,29 12,30.5 12,33 L12,40 C12,40.553 12.447,41 13,41 L33,41 C33.553,41 34,40.553 34,40 L34,33 C34,30.5 31,29 29,29 H17 Z"></path>
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>office</title>
+                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Rounded-Icons" transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
+                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+                                            <g id="office" transform="translate(153.000000, 2.000000)">
+                                                <path class="color-background"
+                                                    d="M12.25,17.5 L8.75,17.5 L8.75,1.75 C8.75,0.78225 9.53225,0 10.5,0 L31.5,0 C32.46775,0 33.25,0.78225 33.25,1.75 L33.25,12.25 L29.75,12.25 L29.75,3.5 L12.25,3.5 L12.25,17.5 Z"
+                                                    id="Path" opacity="0.6"></path>
+                                                <path class="color-background"
+                                                    d="M40.25,14 L24.5,14 C23.53225,14 22.75,14.78225 22.75,15.75 L22.75,38.5 L19.25,38.5 L19.25,22.75 C19.25,21.78225 18.46775,21 17.5,21 L1.75,21 C0.78225,21 0,21.78225 0,22.75 L0,40.25 C0,41.21775 0.78225,42 1.75,42 L40.25,42 C41.21775,42 42,41.21775 42,40.25 L42,15.75 C42,14.78225 41.21775,14 40.25,14 Z M12.25,36.75 L7,36.75 L7,33.25 L12.25,33.25 L12.25,36.75 Z M12.25,29.75 L7,29.75 L7,26.25 L12.25,26.25 L12.25,29.75 Z M35,36.75 L29.75,36.75 L29.75,33.25 L35,33.25 L35,36.75 Z M35,29.75 L29.75,29.75 L29.75,26.25 L35,26.25 L35,29.75 Z M35,22.75 L29.75,22.75 L29.75,19.25 L35,19.25 L35,22.75 Z">
+                                                </path>
+                                            </g>
+                                        </g>
                                     </g>
                                 </g>
                             </svg>
@@ -205,25 +207,26 @@
                 <!-- bsmc -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Bs Mesin' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataBsmc') ?>">
+                        href="<?= base_url('Monitoring/dataBsmc') ?>">
                         <!-- icon bs mesin -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <title>machine</title>
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g fill="#FFFFFF" fill-rule="nonzero">
-                                        <!-- Gear outer circle -->
-                                        <circle cx="23" cy="23" r="10" class="color-foreground" opacity="0.8"></circle>
-
-                                        <!-- Gear teeth -->
-                                        <path class="color-background" d="M23,3 L24.5,3 C24.9,3 25,3.3 25,3.5 L25,8 C25,8.2 24.7,8.5 24.5,8.5 L23,8.5 C22.6,8.5 22.5,8.2 22.5,8 L22.5,3.5 C22.5,3.3 22.7,3 23,3 Z"></path>
-                                        <path class="color-background" d="M23,38 L24.5,38 C24.9,38 25,38.3 25,38.5 L25,43 C25,43.2 24.7,43.5 24.5,43.5 L23,43.5 C22.6,43.5 22.5,43.2 22.5,43 L22.5,38.5 C22.5,38.3 22.7,38 23,38 Z"></path>
-                                        <path class="color-background" d="M3,22 L8,22 C8.2,22 8.5,22.3 8.5,22.5 L8.5,24 C8.5,24.2 8.2,24.5 8,24.5 L3.5,24.5 C3.3,24.5 3,24.3 3,24 L3,22.5 C3,22.3 3.3,22 3.5,22 Z"></path>
-                                        <path class="color-background" d="M38,22 L43,22 C43.2,22 43.5,22.3 43.5,22.5 L43.5,24 C43.5,24.2 43.2,24.5 43,24.5 L38.5,24.5 C38.3,24.5 38,24.3 38,24 L38,22.5 C38,22.3 38.3,22 38.5,22 Z"></path>
-
-                                        <!-- Center gear inner circle -->
-                                        <circle cx="23" cy="23" r="6" class="color-background"></circle>
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>office</title>
+                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Rounded-Icons" transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
+                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+                                            <g id="office" transform="translate(153.000000, 2.000000)">
+                                                <path class="color-background"
+                                                    d="M12.25,17.5 L8.75,17.5 L8.75,1.75 C8.75,0.78225 9.53225,0 10.5,0 L31.5,0 C32.46775,0 33.25,0.78225 33.25,1.75 L33.25,12.25 L29.75,12.25 L29.75,3.5 L12.25,3.5 L12.25,17.5 Z"
+                                                    id="Path" opacity="0.6"></path>
+                                                <path class="color-background"
+                                                    d="M40.25,14 L24.5,14 C23.53225,14 22.75,14.78225 22.75,15.75 L22.75,38.5 L19.25,38.5 L19.25,22.75 C19.25,21.78225 18.46775,21 17.5,21 L1.75,21 C0.78225,21 0,21.78225 0,22.75 L0,40.25 C0,41.21775 0.78225,42 1.75,42 L40.25,42 C41.21775,42 42,41.21775 42,40.25 L42,15.75 C42,14.78225 41.21775,14 40.25,14 Z M12.25,36.75 L7,36.75 L7,33.25 L12.25,33.25 L12.25,36.75 Z M12.25,29.75 L7,29.75 L7,26.25 L12.25,26.25 L12.25,29.75 Z M35,36.75 L29.75,36.75 L29.75,33.25 L35,33.25 L35,36.75 Z M35,29.75 L29.75,29.75 L29.75,26.25 L35,26.25 L35,29.75 Z M35,22.75 L29.75,22.75 L29.75,19.25 L35,19.25 L35,22.75 Z">
+                                                </path>
+                                            </g>
+                                        </g>
                                     </g>
                                 </g>
                             </svg>
@@ -235,25 +238,26 @@
                 <!--  rosso -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Rosso' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataRosso') ?>">
+                        href="<?= base_url('Monitoring/dataRosso') ?>">
                         <!-- icon summary rosso -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <title>machine</title>
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g fill="#FFFFFF" fill-rule="nonzero">
-                                        <!-- Gear outer circle -->
-                                        <circle cx="23" cy="23" r="10" class="color-foreground" opacity="0.8"></circle>
-
-                                        <!-- Gear teeth -->
-                                        <path class="color-background" d="M23,3 L24.5,3 C24.9,3 25,3.3 25,3.5 L25,8 C25,8.2 24.7,8.5 24.5,8.5 L23,8.5 C22.6,8.5 22.5,8.2 22.5,8 L22.5,3.5 C22.5,3.3 22.7,3 23,3 Z"></path>
-                                        <path class="color-background" d="M23,38 L24.5,38 C24.9,38 25,38.3 25,38.5 L25,43 C25,43.2 24.7,43.5 24.5,43.5 L23,43.5 C22.6,43.5 22.5,43.2 22.5,43 L22.5,38.5 C22.5,38.3 22.7,38 23,38 Z"></path>
-                                        <path class="color-background" d="M3,22 L8,22 C8.2,22 8.5,22.3 8.5,22.5 L8.5,24 C8.5,24.2 8.2,24.5 8,24.5 L3.5,24.5 C3.3,24.5 3,24.3 3,24 L3,22.5 C3,22.3 3.3,22 3.5,22 Z"></path>
-                                        <path class="color-background" d="M38,22 L43,22 C43.2,22 43.5,22.3 43.5,22.5 L43.5,24 C43.5,24.2 43.2,24.5 43,24.5 L38.5,24.5 C38.3,24.5 38,24.3 38,24 L38,22.5 C38,22.3 38.3,22 38.5,22 Z"></path>
-
-                                        <!-- Center gear inner circle -->
-                                        <circle cx="23" cy="23" r="6" class="color-background"></circle>
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>office</title>
+                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Rounded-Icons" transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
+                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+                                            <g id="office" transform="translate(153.000000, 2.000000)">
+                                                <path class="color-background"
+                                                    d="M12.25,17.5 L8.75,17.5 L8.75,1.75 C8.75,0.78225 9.53225,0 10.5,0 L31.5,0 C32.46775,0 33.25,0.78225 33.25,1.75 L33.25,12.25 L29.75,12.25 L29.75,3.5 L12.25,3.5 L12.25,17.5 Z"
+                                                    id="Path" opacity="0.6"></path>
+                                                <path class="color-background"
+                                                    d="M40.25,14 L24.5,14 C23.53225,14 22.75,14.78225 22.75,15.75 L22.75,38.5 L19.25,38.5 L19.25,22.75 C19.25,21.78225 18.46775,21 17.5,21 L1.75,21 C0.78225,21 0,21.78225 0,22.75 L0,40.25 C0,41.21775 0.78225,42 1.75,42 L40.25,42 C41.21775,42 42,41.21775 42,40.25 L42,15.75 C42,14.78225 41.21775,14 40.25,14 Z M12.25,36.75 L7,36.75 L7,33.25 L12.25,33.25 L12.25,36.75 Z M12.25,29.75 L7,29.75 L7,26.25 L12.25,26.25 L12.25,29.75 Z M35,36.75 L29.75,36.75 L29.75,33.25 L35,33.25 L35,36.75 Z M35,29.75 L29.75,29.75 L29.75,26.25 L35,26.25 L35,29.75 Z M35,22.75 L29.75,22.75 L29.75,19.25 L35,19.25 L35,22.75 Z">
+                                                </path>
+                                            </g>
+                                        </g>
                                     </g>
                                 </g>
                             </svg>
@@ -261,18 +265,10 @@
                         <span class="nav-link-text ms-1">Rosso</span>
                     </a>
                 </li>
-
-
-
-                <hr class="horizontal dark mt-3 mb-1">
-
-                <li class="nav-item mt-3  ">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Penilaian</h6>
-                </li>
                 <!-- Absen -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Absen' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataAbsen') ?>">
+                        href="<?= base_url('Monitoring/dataAbsen') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
@@ -298,74 +294,16 @@
                         <span class="nav-link-text ms-1">Absen</span>
                     </a>
                 </li>
-                <!-- penilaian -->
-                <li class="nav-item">
-                    <a class="nav-link <?= $title == 'Penilaian Mandor' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/dataPenilaian') ?>">
-                        <!-- icon Penilaian -->
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <title>document</title>
-                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
-                                        fill-rule="nonzero">
-                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
-                                            <g id="document" transform="translate(154.000000, 300.000000)">
-                                                <path class="color-background"
-                                                    d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
-                                                    id="Path" opacity="0.603585379"></path>
-                                                <path class="color-background"
-                                                    d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
-                                                    id="Shape"></path>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
 
+                <hr class="horizontal dark mt-3 mb-1">
 
-                        </div>
-                        <span class="nav-link-text ms-1">Penilaian Mandor</span>
-                    </a>
-                </li>
-                <!-- report penilaian -->
-                <li class="nav-item">
-                    <a class="nav-link <?= $title == 'Report Penilaian' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/reportpenilaian') ?>">
-                        <!-- icon Penilaian -->
-                        <div
-                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <title>document</title>
-                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
-                                        fill-rule="nonzero">
-                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
-                                            <g id="document" transform="translate(154.000000, 300.000000)">
-                                                <path class="color-background"
-                                                    d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
-                                                    id="Path" opacity="0.603585379"></path>
-                                                <path class="color-background"
-                                                    d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
-                                                    id="Shape"></path>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-
-
-                        </div>
-                        <span class="nav-link-text ms-1">Report Penilaian</span>
-                    </a>
+                <li class="nav-item mt-3  ">
+                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Penilaian</h6>
                 </li>
                 <!-- summary rosso -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Report Summary Rosso' ? 'active' : '' ?>"
-                        href="<?= base_url('monitoring/reportSummaryRosso') ?>">
+                        href="<?= base_url('Monitoring/reportSummaryRosso') ?>">
                         <!-- icon summary rosso -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -391,10 +329,102 @@
                         <span class="nav-link-text ms-1">Summary Rosso</span>
                     </a>
                 </li>
+                <!-- penilaian -->
+                <li class="nav-item">
+                    <a class="nav-link <?= $title == 'Penilaian Mandor' ? 'active' : '' ?>"
+                        href="<?= base_url('Monitoring/dataPenilaian') ?>">
+                        <!-- icon Penilaian -->
+                        <div
+                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>document</title>
+                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
+                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+                                            <g id="document" transform="translate(154.000000, 300.000000)">
+                                                <path class="color-background"
+                                                    d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
+                                                    id="Path" opacity="0.603585379"></path>
+                                                <path class="color-background"
+                                                    d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
+                                                    id="Shape"></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <span class="nav-link-text ms-1">Penilaian Mandor</span>
+                    </a>
+                </li>
+                <!-- report penilaian -->
+                <li class="nav-item">
+                    <a class="nav-link <?= $title == 'Report Penilaian' ? 'active' : '' ?>"
+                        href="<?= base_url('Monitoring/reportpenilaian') ?>">
+                        <!-- icon Penilaian -->
+                        <div
+                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>document</title>
+                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
+                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+                                            <g id="document" transform="translate(154.000000, 300.000000)">
+                                                <path class="color-background"
+                                                    d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
+                                                    id="Path" opacity="0.603585379"></path>
+                                                <path class="color-background"
+                                                    d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
+                                                    id="Shape"></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <span class="nav-link-text ms-1">Report Penilaian</span>
+                    </a>
+                </li>
+
+                <!-- report Batch -->
+                <li class="nav-item">
+                    <a class="nav-link <?= $title == 'Report Batch' ? 'active' : '' ?>"
+                        href="<?= base_url('Monitoring/reportBatch') ?>">
+                        <!-- icon Penilaian -->
+                        <div
+                            class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>document</title>
+                                <g id="Basic-Elements" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Rounded-Icons" transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF"
+                                        fill-rule="nonzero">
+                                        <g id="Icons-with-opacity" transform="translate(1716.000000, 291.000000)">
+                                            <g id="document" transform="translate(154.000000, 300.000000)">
+                                                <path class="color-background"
+                                                    d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
+                                                    id="Path" opacity="0.603585379"></path>
+                                                <path class="color-background"
+                                                    d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
+                                                    id="Shape"></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <span class="nav-link-text ms-1">Report Batch</span>
+                    </a>
+                </li>
+
                 <hr class="horizontal dark mt-3 mb-1">
             <?php endif; ?>
 
-            <?php if ($role == 'mandor'): ?>
+            <?php if ($role == 'Mandor'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
                         href="<?= base_url('mandor/dataKaryawan') ?>">
@@ -485,10 +515,10 @@
                 </li>
             <?php endif; ?>
 
-            <?php if ($role == 'trainingschool'): ?>
+            <?php if ($role == 'TrainingSchool'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
-                        href="<?= base_url('mandor/dataKaryawan') ?>">
+                        href="<?= base_url('trainingschool/dataKaryawan') ?>">
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 46 42" version="1.1"

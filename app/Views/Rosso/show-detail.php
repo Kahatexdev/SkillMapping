@@ -34,11 +34,18 @@
                             <h4 class="font-weight-bolder">
                                 Report Summary Rosso
                             </h4>
+                            <h5>
+                                <?= $periode['nama_batch'] ?> Periode <?= $periode['nama_periode'] ?>
+                            </h5>
+                            <h6>
+                                <?= $periode['start_date'] ?> s/d <?= $periode['end_date'] ?>
+                            </h6>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-                                <a href="" class="btn bg-gradient-info">
-                                    <i class="fas fa-cogs text-lg opacity-10" aria-hidden="true"></i>
+                                <a href="<?= base_url('Monitoring/reportSummaryRosso') ?>" class="btn bg-gradient-secondary btn-sm">
+                                        <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
+                                        Kembali
                                 </a>
                                 <div> &nbsp;</div>
                             </div>
@@ -68,9 +75,9 @@
                                 <th>PRODUKSI (PCS)</th>
                             </thead>
                             <tbody>
-                                <?php if (!empty($summaryRosso)) : ?>
+                                <?php if (!empty($SummaryRosso)) : ?>
                                     <?php $no = 1;
-                                    foreach ($summaryRosso as $r) : ?>
+                                    foreach ($SummaryRosso as $r) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
                                             <td><?= $r['kode_kartu'] ?></td>
@@ -78,8 +85,8 @@
                                             <td><?= $r['jenis_kelamin'] ?></td>
                                             <td><?= $r['tgl_masuk'] ?></td>
                                             <td><?= $r['nama_bagian'] ?></td>
-                                            <td><?= $r['total_qty_bs'] / 20 ?></td>
-                                            <td><?= $r['total_qty_prod_rosso'] / 20 ?></td>
+                                            <td><?= number_format($r['avg_qty_bs'], 2) ?></td>
+                                            <td><?= number_format($r['avg_qty_prod_rosso'], 2) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else : ?>
@@ -88,6 +95,7 @@
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
+
                         </table>
                     </div>
                 </div>

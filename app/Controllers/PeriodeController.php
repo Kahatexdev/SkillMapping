@@ -46,7 +46,8 @@ class PeriodeController extends BaseController
         $idBatch = $this->request->getPost('nama_batch');
         $startDate = $this->request->getPost('start_date');
         $endDate = $this->request->getPost('end_date');
-
+        $jml_libur = $this->request->getPost('jml_libur');
+        // dd($namaPeriode, $idBatch, $startDate, $endDate);
         $errors = [];
 
         $tempNamaPeriode = $this->periodeModel->where('nama_periode', $namaPeriode)->where('id_batch', $idBatch)->first();
@@ -67,17 +68,19 @@ class PeriodeController extends BaseController
 
         if ($errors) {
             session()->setFlashdata('errors', $errors);
-            return redirect()->to(base_url('monitoring/periodeCreate'));
+            return redirect()->to(base_url('Monitoring/periodeCreate'));
         } else {
             $this->periodeModel->save([
                 'nama_periode' => $namaPeriode,
                 'id_batch' => $idBatch,
                 'start_date' => $startDate,
-                'end_date' => $endDate
+                'end_date' => $endDate,
+                'jml_libur' => $jml_libur
             ]);
             session()->setFlashdata('success', 'Data berhasil ditambahkan');
-            return redirect()->to(base_url('monitoring/dataPeriode'));
+            return redirect()->to(base_url('Monitoring/dataPeriode'));
         }
+        
     }
 
     public function edit($id)
@@ -105,6 +108,7 @@ class PeriodeController extends BaseController
         $idBatch = $this->request->getPost('nama_batch');
         $startDate = $this->request->getPost('start_date');
         $endDate = $this->request->getPost('end_date');
+        $jml_libur = $this->request->getPost('jml_libur');
 
         $errors = [];
 
@@ -126,17 +130,24 @@ class PeriodeController extends BaseController
 
         if ($errors) {
             session()->setFlashdata('errors', $errors);
-            return redirect()->to(base_url('monitoring/periodeEdit/' . $id));
+            return redirect()->to(base_url('Monitoring/periodeEdit/' . $id));
         } else {
             $this->periodeModel->update($id, [
                 'nama_periode' => $namaPeriode,
                 'id_batch' => $idBatch,
                 'start_date' => $startDate,
-                'end_date' => $endDate
+                'end_date' => $endDate,
+                'jml_libur' => $jml_libur
             ]);
             session()->setFlashdata('success', 'Data berhasil diubah');
-            return redirect()->to(base_url('monitoring/dataPeriode'));
+            return redirect()->to(base_url('Monitoring/dataPeriode'));
         }
     }
 
+    public function delete($id)
+    {
+        $this->periodeModel->delete($id);
+        session()->setFlashdata('success', 'Data periode berhasil dihapus');
+        return redirect()->to(base_url('Monitoring/dataPeriode'));
+    }
 }

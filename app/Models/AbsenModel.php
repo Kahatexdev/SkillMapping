@@ -12,7 +12,7 @@ class AbsenModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_absen', 'id_karyawan', 'bulan', 'izin', 'sakit', 'mangkir', 'cuti', 'id_user', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_absen', 'id_karyawan', 'id_periode', 'izin', 'sakit', 'mangkir', 'cuti', 'id_user', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -54,7 +54,7 @@ class AbsenModel extends Model
 
     public function getdata()
     {
-        return $this->select('absen.*, karyawan.nama_karyawan, user.username, 
+        return $this->select('absen.*, karyawan.nama_karyawan, user.username, periode.nama_periode, batch.nama_batch,
         (absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3) as jml_hari_tidak_masuk_kerja, 
         ((31 - ((absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3))) / 31) * 100 as persentase_kehadiran,
         CASE 
@@ -62,6 +62,8 @@ class AbsenModel extends Model
             ELSE 0
         END as accumulasi_absensi')
         ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
+        ->join('periode', 'periode.id_periode = absen.id_periode')
+        ->join('batch', 'batch.id_batch = periode.id_batch')
         ->join('user', 'user.id_user = absen.id_user')
         ->findAll();
     }

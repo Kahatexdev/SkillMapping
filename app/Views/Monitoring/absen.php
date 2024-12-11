@@ -1,8 +1,8 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="row my-4">
-        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2">
             <div class="card">
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between">
@@ -18,12 +18,12 @@
                         <div>
                             <div class="d-flex justify-content-between">
                                 <!-- download report excel -->
-                                <a href="<?= base_url('monitoring/absenReport/') ?>" class="btn bg-gradient-success me-2">
+                                <a href="<?= base_url('Monitoring/absenReport/') ?>" class="btn bg-gradient-success me-2">
                                     <i class="fas fa-file-excel text-lg me-2"></i>Report Absen
                                 </a>
-                                <a href="<?= base_url('monitoring/absenCreate') ?>" class="btn bg-gradient-info me-2">
-                                    <!-- Icon Tambah Absen-->
-                                    <i class="fas fa-plus text-lg opacity-10 me-1" aria-hidden="true"></i>
+                                <a class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addAbsen">
+                                    <!-- icon tambah Absen-->
+                                    <i class="fas fa-plus text-lg opacity-10" aria-hidden="true"></i>
                                     Data Absen
                                 </a>
                                 <div> &nbsp;</div>
@@ -37,15 +37,27 @@
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h4 class="card-title">
                         Import Data Absen
                     </h4>
-                </div>
-                <div class="card-body">
                     <!-- form import  data absen -->
-                    <form action="<?= base_url('monitoring/absenStoreImport') ?>" method="post"
+                    <form action="<?= base_url('Monitoring/absenStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="id_periode">Periode</label>
+                                    <select class="form-select" name="id_periode" id="id_periode" required>
+                                        <option value="">Pilih Periode</option>
+                                        <?php foreach ($periode as $p) : ?>
+                                            <option value="<?= $p['id_periode'] ?>">Periode <?= $p['nama_periode'] ?> (<?= $p['start_date'] ?> - <?= $p['end_date'] ?>)</option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
                         <div class="upload-container">
                             <div class="upload-area" id="upload-area">
                                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
@@ -66,18 +78,16 @@
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
                     <h4 class="card-title">
                         Tabel Data Absen
                     </h4>
-                </div>
-                <div class="card-body">
                     <div class="table-responsive">
                         <table id="absenTable" class="table table-striped table-hover table-bordered">
                             <thead>
                                 <th>No</th>
                                 <th>Nama Karyawan</th>
-                                <th>Bulan</th>
+                                <th>Periode</th>
                                 <th>SI(Sakit)</th>
                                 <th>MI(Izin)</th>
                                 <th>M(Mangkir )</th>
@@ -92,7 +102,7 @@
                                         <tr>
                                             <td><?= $absen['id_absen'] ?></td>
                                             <td><?= $absen['nama_karyawan'] ?></td>
-                                            <td><?= $absen['bulan'] ?></td>
+                                            <td><?= $absen['nama_batch'] ?> - <?= $absen['nama_periode'] ?></br></td>
                                             <?php if ($absen['sakit'] == 0) : ?>
                                                 <td></td>
                                             <?php else : ?>
@@ -115,10 +125,19 @@
                                             <?php endif; ?>
                                             <td><?= $absen['username'] ?></td>
                                             <td>
-                                                <a href="<?= base_url('monitoring/absenEdit/' . $absen['id_absen']) ?>"
-                                                    class="btn bg-gradient-warning btn-sm">
+                                                <a class="btn btn-warning edit-btn"
+                                                    data-id="<?= $absen['id_absen'] ?>"
+                                                    data-karyawan="<?= $absen['id_karyawan'] ?>"
+                                                    data-idperiode="<?= $absen['id_periode'] ?>"
+                                                    data-sakit="<?= $absen['sakit'] ?>"
+                                                    data-izin="<?= $absen['izin'] ?>"
+                                                    data-mangkir="<?= $absen['mangkir'] ?>"
+                                                    data-cuti="<?= $absen['cuti'] ?>"
+                                                    data-user="<?= $absen['id_user'] ?>"
+                                                    data-toggle="modal" data-target="#editAbsen">
                                                     <!-- icon edit -->
-                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i></a>
+                                                    <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
+                                                </a>
                                                 <button class="btn bg-gradient-danger btn-sm"
                                                     onclick="confirmDelete('<?= $absen['id_absen'] ?>')">
                                                     <!-- icon hapus -->
@@ -141,6 +160,148 @@
     </div>
 </div>
 
+<!-- Modal Add Absen -->
+<div class="modal fade  bd-example-modal-lg" id="addAbsen" tabindex="-1" role="dialog" aria-labelledby="addAbsen" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Form Absen Karyawan</h5>
+                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url($role . '/absenStore') ?>" method="post">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="id_karyawan">Nama Karyawan <small class="text-danger">*</small></label>
+                                <select name="id_karyawan" id="id_karyawan" class="form-select" required>
+                                    <option value="">Pilih Karyawan</option>
+                                    <?php foreach ($karyawan as $kar) : ?>
+                                        <option value="<?= $kar['id_karyawan'] ?>"><?= $kar['kode_kartu'] ?> - <?= $kar['nama_karyawan'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="id_periode">Periode <small class="text-danger">*</small></label>
+                                <select name="id_periode" id="id_periode" class="form-select" required>
+                                    <option value="">Pilih Periode</option>
+                                    <?php foreach ($periode as $period) : ?>
+                                        <option value="<?= $period['id_periode'] ?>"><?= $period['nama_batch'] ?> - <?= $period['nama_periode'] ?> (<?= $period['start_date'] ?> - <?= $period['end_date'] ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="sakit">Sakit</label>
+                                <input type="number" name="sakit" id="sakit" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="izin">Izin</label>
+                                <input type="number" name="izin" id="izin" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="mangkir">Mangkir</label>
+                                <input type="number" name="mangkir" id="mangkir" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="cuti">Cuti</label>
+                                <input type="number" name="cuti" id="cuti" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id_user" value="<?= session()->get('id_user') ?>">
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-gradient-info">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Absen -->
+<div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Form Edit Absen Karyawan</h5>
+                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="id_karyawan">Nama Karyawan <small class="text-danger">*</small></label>
+                                <select name="id_karyawan" id="id_karyawan" class="form-select" required>
+                                    <option value="">Pilih Karyawan</option>
+                                    <?php foreach ($karyawan as $karyawan) : ?>
+                                        <option value="<?= $karyawan['id_karyawan'] ?>"><?= $karyawan['kode_kartu'] . ' - ' . $karyawan['nama_karyawan'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="id_periode">Periode <small class="text-danger">*</small></label>
+                                <select name="id_periode" id="id_periode" class="form-select" required>
+                                    <option value="">Pilih Periode</option>
+                                    <?php foreach ($periode as $periode) : ?>
+                                        <option value="<?= $periode['id_periode'] ?>"><?= $periode['nama_batch'] ?> - <?= $periode['nama_periode'] ?> (<?= $periode['start_date'] ?> - <?= $periode['end_date'] ?>)</option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="sakit">Sakit</label>
+                                <input type="number" name="sakit" id="sakit" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="izin">Izin</label>
+                                <input type="number" name="izin" id="izin" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="mangkir">Mangkir</label>
+                                <input type="number" name="mangkir" id="mangkir" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-2">
+                                <label for="cuti">Cuti</label>
+                                <input type="number" name="cuti" id="cuti" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id_absen" id="id_absen">
+                    <input type="hidden" name="id_user" value="<?= session()->get('id_user') ?>">
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-gradient-info">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     function confirmDelete(id) {
         Swal.fire({
@@ -154,7 +315,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('monitoring/absenDelete/') ?>" + id;
+                window.location.href = "<?= base_url('Monitoring/absenDelete/') ?>" + id;
             }
         })
     }
@@ -205,6 +366,31 @@
         fileInput.files = event.dataTransfer.files;
         const fileName = event.dataTransfer.files[0] ? event.dataTransfer.files[0].name : "No file selected";
         uploadArea.querySelector('p').textContent = `Selected File: ${fileName}`;
+    });
+
+    // Edit Absen
+    $('.edit-btn').on('click', function() {
+        const id = $(this).data('id');
+        const karyawan = $(this).data('karyawan');
+        const idperiode = $(this).data('id_periode');
+        const sakit = $(this).data('sakit');
+        const izin = $(this).data('izin');
+        const mangkir = $(this).data('mangkir');
+        const cuti = $(this).data('cuti');
+        const user = $(this).data('user');
+
+        // console.log(id, karyawan, bulan, sakit, izin, mangkir, cuti, user);
+        $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/absenUpdate') ?>' + '/' + id);
+        $('#ModalEdit').find('select[name="id_karyawan"]').val(karyawan);
+        $('#ModalEdit').find('input[name="id_periode"]').val(idperiode);
+        $('#ModalEdit').find('input[name="sakit"]').val(sakit);
+        $('#ModalEdit').find('input[name="izin"]').val(izin);
+        $('#ModalEdit').find('input[name="mangkir"]').val(mangkir);
+        $('#ModalEdit').find('input[name="cuti"]').val(cuti);
+        $('#ModalEdit').find('input[name="id_absen"]').val(id);
+        $('#ModalEdit').find('input[name="id_user"]').val(user);
+        $('#ModalEdit').modal('show');
+
     });
 </script>
 

@@ -12,7 +12,7 @@ class PeriodeModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_periode', 'nama_periode', 'id_batch', 'start_date', 'end_date'];
+    protected $allowedFields    = ['id_periode', 'nama_periode', 'id_batch', 'start_date', 'end_date', 'jml_libur'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -46,8 +46,16 @@ class PeriodeModel extends Model
 
     public function getPeriode()
     {
-        return $this->select('periode.id_periode, periode.nama_periode, batch.nama_batch, periode.start_date, periode.end_date')
+        return $this->select('periode.id_periode, periode.nama_periode, batch.nama_batch, periode.start_date, periode.end_date, periode.jml_libur')
             ->join('batch', 'batch.id_batch = periode.id_batch')
             ->findAll();
+    }
+
+    public function checkPeriode($id_periode)
+    {
+        return $this->select('*, batch.nama_batch')
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->where('id_periode', $id_periode)
+            ->first();
     }
 }
