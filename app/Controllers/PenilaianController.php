@@ -9,6 +9,7 @@ use App\Models\PenilaianModel;
 use App\Models\BatchModel;
 use App\Models\KaryawanModel;
 use App\Models\PeriodeModel;
+use App\Models\AbsenModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -25,6 +26,7 @@ class PenilaianController extends BaseController
     protected $batchmodel;
     protected $karyawanmodel;
     protected $periodeModel;
+    protected $absenmodel;
 
     const bobot_nilai = [
         1 => 15,
@@ -412,63 +414,94 @@ class PenilaianController extends BaseController
         // Hitung panjang kolom (jumlah kolom total, termasuk tambahan jobdesc dan lainnya)
         $jobdesc = $this->getJobDesc($id_jobrole);
         $jobdescCount = count($jobdesc);
-        $totalColumns = 6 + $jobdescCount + 3; // 6 kolom awal + jobdesc + nilai, rata-rata, grade
+        $totalColumns = 7 + $jobdescCount + 2; // 7 kolom awal + jobdesc + nilai, rata-rata, grade
         $lastColumn = Coordinate::stringFromColumnIndex($totalColumns);
 
-        // Header utama dengan border dan teks rata kiri
-        $sheet->mergeCells("A1:{$lastColumn}1");
-        $sheet->setCellValue('A1', 'LAPORAN PENILAIAN MANDOR');
+        // Header utama
+        $sheet->mergeCells("A1:{$lastColumn}2");
+        $sheet->setCellValue('A1', 'LAPORAN PENILAIAN MANDOR BAGIAN ' . $penilaian[0]['nama_bagian'].' AREA '.$penilaian[0]['area_utama'].'-'.$penilaian[0]['area']);
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A1')->getAlignment()
-            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
-            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $this->setStyles($sheet, 'A1', "{$lastColumn}1");
+        
+
+        // Header ABSEN
+        $starabsenColumn = Coordinate::stringFromColumnIndex(2 + $totalColumns);
+        $absenColumn = Coordinate::stringFromColumnIndex(1 + $totalColumns + 9);
+        // merge cell untuk absen dari baris $starabsenColumn1 : $absenColumn3
+        // dd ($starabsenColumn, $absenColumn);
+        $sheet->mergeCells("{$starabsenColumn}1:{$absenColumn}2");
+        $sheet->setCellValue($starabsenColumn . '1', 'ABSEN');
+        $sheet->getStyle($starabsenColumn . '1')->getFont()->setBold(true)->setSize(12);
+        $this->setStyles($sheet, $starabsenColumn . '1', $absenColumn . '2');
 
         $row = 3;
 
+        // **Header Kolom (Hanya sekali diatur di sini, sebelum iterasi shift)**
+        $this->setColumnHeaders($sheet, $row);
+        $this->setJobDescHeaders($sheet, $jobdesc, 7, $row);
+        $this->setAdditionalHeaders($sheet, 7, $jobdescCount, $row);
+
+        $endHeaderCol = Coordinate::stringFromColumnIndex(7 + $jobdescCount + 2);
+        // dd ($endHeaderCol);
+        // kurang 1 karena kolom terakhir tidak perlu border kanan
+        $this->setStyles($sheet, "A{$row}", "$endHeaderCol{$row}"); // Border untuk header kolom
+        
+        $row++; // Mulai baris data setelah header
+
         foreach ($penilaianByShift as $shift => $dataPerShift) {
-            // Shift header dengan merge sesuai panjang kolom dan teks rata kiri
+            // Shift header dengan merge sesuai panjang kolom
             $sheet->mergeCells("A{$row}:{$lastColumn}{$row}");
             $sheet->setCellValue("A{$row}", "SHIFT $shift");
             $sheet->getStyle("A{$row}")->getFont()->setBold(true)->setSize(12);
-            $sheet->getStyle("A{$row}")->getAlignment()
-                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
-                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-            $this->setStyles($sheet, "A{$row}", "{$lastColumn}{$row}");
-
-            $row++;
-            $startHeaderRow = $row;
-
-            // Header kolom
-            $this->setColumnHeaders($sheet, $row);
-            $this->setJobDescHeaders($sheet, $jobdesc, 6, $row);
-            $this->setAdditionalHeaders($sheet, 6, $jobdescCount, $row);
-
-            $endHeaderCol = Coordinate::stringFromColumnIndex(6 + $jobdescCount + 3);
-            $this->setStyles($sheet, "A{$row}", "$endHeaderCol{$row}"); // Border untuk header kolom
 
             $row++;
             $no = 1;
             $startRow = $row;
 
             foreach ($dataPerShift as $p) {
-                $row = $this->setRowData($sheet, $p, $row, $no++, 6, $jobdescCount);
+                $row = $this->setRowData($sheet, $p, $row, $no++, 7, $jobdescCount);
             }
 
             $endRow = $row - 1;
-
+            // dd ($endRow);
             // Border untuk data shift
-            $this->setStyles($sheet, "A$startRow", "$endHeaderCol$endRow");
+            // $this->setStyles($sheet, "A$startRow", "$endHeaderCol$endRow");
 
             $row++; // Spasi antar shift
         }
 
         // Auto-size columns
-        foreach (range('A', $endHeaderCol) as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
-        }
+        // foreach (range('A', $endHeaderCol) as $col) {
+        //     $sheet->getColumnDimension($col)->setAutoSize(true);
+        // }
+
+        // Tambahkan border di seluruh area yang digunakan
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        // convert column index to number
+        $highestColumn = Coordinate::columnIndexFromString($highestColumn);
+        // dd ($highestRow, $highestColumn);
+        $highestColumn = $highestColumn - 1; // Kurangi 1 kolom karena kolom terakhir tidak perlu border kanan
+        // convert column number to index
+        $highestColumn = $this->getColumnName($highestColumn);
+        // dd ($highestColumn);
+        // $this->setFullBorder($sheet, "A1:{$highestColumn}{$highestRow}");
 
         $this->outputExcel($spreadsheet);
+        exit();
+    }
+
+
+
+    private function setFullBorder($sheet, string $range)
+    {
+        // $sheet->getStyle($range)->applyFromArray([
+        //     'borders' => [
+        //         'allBorders' => [
+        //             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+        //             'color' => ['argb' => '000000'], // Warna hitam
+        //         ],
+        //     ],
+        // ]);
     }
 
     private function setStyles($sheet, string $startCell, string $endCell)
@@ -480,37 +513,48 @@ class PenilaianController extends BaseController
                     'color' => ['argb' => '000000'],
                 ],
             ],
+
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+
+            'font' => [
+                'size' => 12,
+            ],
+
         ]);
 
-        $sheet->getStyle("$startCell:$endCell")->getAlignment()
-            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
-            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        // Set auto-size for columns
+        $sheet->getColumnDimension('A')->setWidth(5); // NO
+        $sheet->getColumnDimension('B')->setWidth(15); // KODE KARTU
+        $sheet->getColumnDimension('C')->setWidth(25); // NAMA KARYAWAN
+        $sheet->getColumnDimension('D')->setWidth(5); // L/P
+        $sheet->getColumnDimension('E')->setWidth(10); // TGL. MASUK KERJA
+        $sheet->getColumnDimension('F')->setWidth(15); // BAGIAN
+        $sheet->getColumnDimension('G')->setWidth(10); // BEFORE
+
+        // Set auto-size for jobdesc columns
+        $jobdescStartCol = Coordinate::columnIndexFromString('H');
+        $jobdescEndCol = Coordinate::columnIndexFromString('H') + count($this->getJobDesc(1)) - 1;
+        dd (Coordinate::columnIndexFromString('H'), count($this->getJobDesc(1)), $jobdescEndCol, $this->getJobDesc(1));
+        $jobdescEndCol = $this->getColumnName($jobdescEndCol);
+        $sheet->getColumnDimension('H')->setWidth(5); // JOBDESC
+        $sheet->getColumnDimension($jobdescEndCol)->setWidth(5); // JOBDESC
+
     }
 
     private function groupByShift(array $penilaian): array
     {
         $penilaianByShift = [];
+        // sort by shift
         foreach ($penilaian as $p) {
             $penilaianByShift[$p['shift']][] = $p;
         }
+        // Sort groups by shift key in ascending order
+        ksort($penilaianByShift);
+
         return $penilaianByShift;
-    }
-
-    private function setMainHeader($sheet)
-    {
-        $sheet->mergeCells('A1:J1');
-        $sheet->setCellValue('A1', 'LAPORAN PENILAIAN MANDOR');
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-    }
-
-    private function setShiftHeader($sheet, string $shift, int $row): int
-    {
-        $sheet->mergeCells("A{$row}:J{$row}");
-        $sheet->setCellValue("A{$row}", "SHIFT $shift");
-        $sheet->getStyle("A{$row}")->getFont()->setBold(true)->setSize(12);
-        $sheet->getStyle("A{$row}")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        return ++$row;
     }
 
     private function setColumnHeaders($sheet, int $row)
@@ -521,6 +565,12 @@ class PenilaianController extends BaseController
         $sheet->setCellValue("D{$row}", 'L/P');
         $sheet->setCellValue("E{$row}", 'TGL. MASUK KERJA');
         $sheet->setCellValue("F{$row}", 'BAGIAN');
+        $sheet->setCellValue("G{$row}", 'BEFORE');
+
+        // Set styles for header columns
+        $this->setStyles($sheet, 'A' . $row, 'G' . $row);
+
+       
     }
 
     private function getJobDesc(int $id_jobrole): array
@@ -549,66 +599,133 @@ class PenilaianController extends BaseController
                 ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
                 ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
-            // Set auto-size agar kolom pas untuk teks vertikal
-            $sheet->getColumnDimension($colLetter)->setWidth(5); // Atur manual lebar kolom
         }
 
         // Tambahkan border pada header jobdesc
-        $lastJobdescCol = Coordinate::stringFromColumnIndex($jobdescStartCol + count($jobdesc));
-        $this->setStyles($sheet, "{$colLetter}{$row}", "$lastJobdescCol{$row}");
+        $lastJobdescCol = Coordinate::stringFromColumnIndex($jobdescStartCol + count($jobdesc) - 1);
+        // dd ($lastJobdescCol);
+        // $this->setStyles($sheet, "{$colLetter}{$row}", "$lastJobdescCol{$row}");
     }
 
 
 
-    private function setAdditionalHeaders($sheet, int $jobdescStartCol, int $jobdescCount, int $row)
+    private function setAdditionalHeaders($sheet, int $jobdescStartCol, int $jobdescCount, int $row): void
     {
-        $nilaiCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount);
-        $sheet->setCellValue($nilaiCol . $row, 'NILAI');
+        $gradeCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount + 1);
+        $sheet->setCellValue("{$gradeCol}{$row}", 'GRADE');
 
-        $averageCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount + 1);
-        $sheet->setCellValue($averageCol . $row, 'RATA-RATA');
+        $skorCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount + 2);
+        $sheet->setCellValue("{$skorCol}{$row}", 'SKOR');
 
-        $gradeCol = Coordinate::stringFromColumnIndex($jobdescStartCol + $jobdescCount + 2);
-        $sheet->setCellValue($gradeCol . $row, 'GRADE');
+        // Tambahkan header ABSEN
+        $absenStartCol = $jobdescStartCol + $jobdescCount + 4;
+        $indexAbsen = Coordinate::stringFromColumnIndex($absenStartCol);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol) . "$row", 'SI');
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 1) . "$row", 'MI');
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 2) . "$row", 'M');
+        // style M background warna merah
+        $sheet->getStyle(Coordinate::stringFromColumnIndex($absenStartCol + 2) . "$row")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
+
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 3) . "$row", 'TOTAL');
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 4) . "$row", 'KEHADIRAN');
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 5) . "$row", 'ACCUMULASI');
+
+        // Tambahkan header HASIL AKHIR, GRADE, dan TRACKING
+        $resultStartCol = $absenStartCol + 6;
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($resultStartCol) . "$row", 'HASIL AKHIR');
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($resultStartCol + 1) . "$row", 'GRADE');
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($resultStartCol + 2) . "$row", 'TRACKING');
+
+        // Tambahkan border pada header tambahan
+        $lastAdditionalCol = Coordinate::stringFromColumnIndex($resultStartCol + 2);
+        // dd ($indexAbsen, $lastAdditionalCol);
+
+        $this->setStyles($sheet, "{$indexAbsen}{$row}", "$lastAdditionalCol{$row}");
+
     }
 
     private function setRowData($sheet, array $p, int $row, int $no, int $jobdescStartCol, int $jobdescCount): int
     {
+        // Set static columns
         $sheet->setCellValue("A{$row}", $no);
         $sheet->setCellValue("B{$row}", $p['kode_kartu']);
         $sheet->setCellValue("C{$row}", $p['nama_karyawan']);
         $sheet->setCellValue("D{$row}", $p['jenis_kelamin']);
         $sheet->setCellValue("E{$row}", $p['tgl_masuk']);
-        $sheet->setCellValue("F{$row}", $p['nama_bagian']);
+        $sheet->setCellValue("F{$row}", $p['nama_bagian']); // Perbaiki duplikasi
+        $sheet->setCellValue("G{$row}", 0); // Pindahkan kolom kedua ke G
 
+        // Decode and calculate scores
         $nilai = json_decode($p['bobot_nilai'] ?? '[]', true);
         $totalNilai = 0;
         $totalBobot = 0;
 
-        if (is_array($nilai)) {
+        if (is_array($nilai) && count($nilai) > 0) {
             foreach ($nilai as $value) {
                 $totalNilai += $value;
-                $totalBobot += self::bobot_nilai[$value];
+                $totalBobot += self::bobot_nilai[$value] ?? 0; // Pastikan nilai default jika key tidak ditemukan
             }
 
             $average = $totalBobot / count($nilai);
-            $grade = $this->calculateGrade($average);
+            $grade = $p['index_nilai'] ?? '-'; // Default grade jika tidak ada
+            $skor = $this->calculateSkor($grade);
 
+            // Set job description and additional columns
             $colIndex = $jobdescStartCol + 1;
             foreach ($nilai as $value) {
                 $colLetter = Coordinate::stringFromColumnIndex($colIndex++);
-                $sheet->setCellValue($colLetter . $row, $value);
+                $sheet->setCellValue("{$colLetter}{$row}", $value);
             }
 
+            // Set grade and score columns
             $colLetter = Coordinate::stringFromColumnIndex($colIndex++);
-            $sheet->setCellValue($colLetter . $row, $average);
+            $sheet->setCellValue("{$colLetter}{$row}", $grade);
 
             $colLetter = Coordinate::stringFromColumnIndex($colIndex);
-            $sheet->setCellValue($colLetter . $row, $grade);
+            $sheet->setCellValue("{$colLetter}{$row}", $skor);
         }
+        // Data Kehadiran
+        // dd($absen);
+        $sakit = $p['sakit'] ?? 0;
+        $izin = $p['izin'] ?? 0;
+        $mangkir = $p['mangkir'] ?? 0;
+        // sakit * 1, izin * 2, mangkir * 3
+        $totalAbsen = ($sakit * 1) + ($izin * 2) + ($mangkir * 3);
+        $kehadiran = 100 - $totalAbsen;
+        // =IF(BW9<0.94,"-1",IF(BW9>0.93,"0"))
+        $accumulasi = $kehadiran < 94 ? -1 : 0;
 
-        return ++$row;
+        // hasil akhir = skor + accumulasi
+        $hasil_akhir = $skor + $accumulasi;
+        $grade_akhir = $this->calculateGradeBatch($hasil_akhir);
+        // dd ($grade_akhir);
+        $trakcing = $grade . $grade_akhir;
+        // dd ($sakit);
+        $absenStartCol = $jobdescStartCol + $jobdescCount + 4;
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol) . $row, $sakit);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 1) . $row, $izin);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 2) . $row, $mangkir);
+
+        // Data Kehadiran 
+        $absenStartCol = $jobdescStartCol + $jobdescCount + 7;
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol) . $row, $totalAbsen);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 1) . $row, $kehadiran);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($absenStartCol + 2) . $row, $accumulasi);
+
+        // Data Hasil Akhir 
+        
+        $resultStartCol = $absenStartCol + 3;
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($resultStartCol) . $row, $hasil_akhir);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($resultStartCol + 1) . $row, $grade_akhir);
+        $sheet->setCellValue(Coordinate::stringFromColumnIndex($resultStartCol + 2) . $row, $trakcing);
+
+        // Set styles for data columns
+        $this->setStyles($sheet, "A{$row}", Coordinate::stringFromColumnIndex($resultStartCol + 2) . $row);
+
+
+        return $row + 1; // Pindah ke baris berikutnya
     }
+
 
     private function outputExcel($spreadsheet)
     {

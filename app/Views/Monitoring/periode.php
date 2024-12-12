@@ -58,13 +58,14 @@
                                             <td><?= $periode['id_periode'] ?></td>
                                             <td><?= $periode['nama_periode'] ?></td>
                                             <td><?= $periode['nama_batch'] ?></td>
+                                            <input type="hidden" id="id_batch" value="<?= $periode['id_batch'] ?>">
                                             <td><?= $periode['start_date'] ?></td>
                                             <td><?= $periode['end_date'] ?></td>
                                             <td><?= $periode['jml_libur'] ?></td>
                                             <td>
                                                 <a href="#"
                                                     class="btn btn-warning edit-btn" data-id="<?= $periode['id_periode'] ?>"
-                                                    data-nama="<?= $periode['nama_periode'] ?>" data-idbatch="<?= $periode['nama_batch'] ?>"
+                                                    data-nama="<?= $periode['nama_periode'] ?>" data-idbatch="<?= $periode['id_batch'] ?>"
                                                     data-startdate="<?= $periode['start_date'] ?>" data-enddate="<?= $periode['end_date'] ?>"
                                                     data-jmllibur="<?= $periode['jml_libur'] ?>"
                                                     data-bs-toggle=" modal" data-bs-target="#editUser">
@@ -256,7 +257,7 @@
 
         $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/periodeUpdate/') ?>' + id);
         $('#ModalEdit').find('#nama_periode').val(namaPeriode);
-        $('#ModalEdit').find('#id_batch').val(idBatch);
+        $('#ModalEdit').find('#nama_batch').val(idBatch);
         $('#ModalEdit').find('#start_date').val(startDate);
         $('#ModalEdit').find('#end_date').val(endDate);
         $('#ModalEdit').find('#jml_libur').val(jmlLibur);
