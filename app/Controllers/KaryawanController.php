@@ -348,7 +348,7 @@ class KaryawanController extends BaseController
         if ($role === 'Monitoring') {
             return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil disimpan.');
         } elseif ($role === "TrainingSchool") {
-            return redirect()->to(base_url('TrainingSchool/'))->with('success', 'Data karyawan berhasil diubah.');
+            return redirect()->to(base_url('TrainingSchool/'))->with('success', 'Data karyawan berhasil disimpan.');
         }
     }
 

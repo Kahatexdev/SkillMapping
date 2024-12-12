@@ -105,7 +105,6 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
-
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -135,10 +134,12 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('dataPenilaian', 'MandorController::penilaian');
 });
 
-$routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes){
-    $routes->get('', 'TrainingSchoolController::karyawan');
-    $routes->get('dataKaryawan', 'TrainingSchoolController::karyawan');
-    $routes->post('karyawanStoreImport', 'KaryawanController::upload'); 
+$routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes) {
+    $routes->get('', 'TrainingSchoolController::index');
+    $routes->get('dataKaryawan', 'TrainingSchoolController::listArea');
+    $routes->get('dataKaryawan/(:any)', 'TrainingSchoolController::detailKaryawanPerArea/$1');
+    $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
+    $routes->post('karyawanStoreImport', 'KaryawanController::upload');
     $routes->get('karyawanCreate', 'KaryawanController::create');
     $routes->post('karyawanStore', 'KaryawanController::store');
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
@@ -154,6 +155,6 @@ $routes->group('api', function ($routes) {
     $routes->put('karyawan/(:segment)', 'Api\KaryawanController::update/$1');
     $routes->delete('karyawan/(:segment)', 'Api\KaryawanController::delete/$1');
 
-    $routes->get('area_utama/(:segment)','Api\KaryawanController::getKaryawanByAreaUtama/$1');
-    $routes->get('area/(:segment)','Api\KaryawanController::getKaryawanByArea/$1');
+    $routes->get('area_utama/(:segment)', 'Api\KaryawanController::getKaryawanByAreaUtama/$1');
+    $routes->get('area/(:segment)', 'Api\KaryawanController::getKaryawanByArea/$1');
 });

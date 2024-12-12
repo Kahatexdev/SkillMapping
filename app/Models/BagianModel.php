@@ -92,4 +92,11 @@ class BagianModel extends Model
             ->groupBy('area_utama')
             ->findAll();
     }
+    public function getAreaOnly()
+    {
+        return $this->select('GROUP_CONCAT(DISTINCT area) AS area')
+            ->where('area IS NOT NULL')
+            ->groupBy('area')
+            ->findAll();
+    }
 }
