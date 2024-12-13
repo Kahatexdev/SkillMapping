@@ -7,16 +7,22 @@ use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Week;
+use PhpOffice\PhpSpreadsheet\Style\{Border, Alignment, Fill};
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 use App\Models\KaryawanModel;
 
 class KaryawanController extends BaseController
 {
     protected $request;
+    protected $karyawanModel;
 
     public function __construct()
     {
         $this->request = \Config\Services::request();
+        $this->karyawanModel = new KaryawanModel();
     }
     public function index() {}
 
@@ -419,7 +425,6 @@ class KaryawanController extends BaseController
         }
     }
 
-
     public function delete($id)
     {
         $karyawanModel = new \App\Models\KaryawanModel();
@@ -431,5 +436,152 @@ class KaryawanController extends BaseController
         } elseif ($role === "TrainingSchool") {
             return redirect()->to(base_url('TrainingSchool/'))->with('success', 'Data karyawan berhasil dihapus.');
         }
+    }
+
+    public function export($area)
+    {
+        $dataKaryawan = $this->karyawanModel->exportKaryawanByArea($area);
+        // dd($dataKaryawan);
+
+        // Buat spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Style
+        $styleTitle = [
+            'font' => [
+                'size' => 12,
+                'bold' => true,
+                'name' => 'Arial',
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Alignment rata tengah
+                'vertical' => Alignment::VERTICAL_CENTER, // Alignment rata tengah
+            ],
+        ];
+        $styleHeader = [
+            'font' => [
+                'size' => 10,
+                'bold' => true,
+                'name' => 'Arial',
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER, // Alignment rata tengah
+                'vertical' => Alignment::VERTICAL_CENTER, // Alignment rata tengah
+            ],
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => Border::BORDER_THIN, // Gaya garis tipis
+                    'color' => ['argb' => 'FF000000'],    // Warna garis hitam
+                ],
+            ],
+        ];
+
+        $styleAlignCenter = [
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        $sheet->setCellValue('A1', 'DATA KARYAWAN');
+        $sheet->mergeCells('A1:K1')->getStyle('A1:K1')->applyFromArray($styleTitle);
+
+        $sheet->setCellValue('A3', 'No');
+        $sheet->getStyle('A3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('B3', 'Kode Kartu');
+        $sheet->getStyle('B3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('C3', 'Nama Karyawan');
+        $sheet->getStyle('C3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('D3', 'Shift');
+        $sheet->getStyle('D3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('E3', 'Jenis Kelamin');
+        $sheet->getStyle('E3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('F3', 'Libur');
+        $sheet->getStyle('F3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('G3', 'Libur Tambahan');
+        $sheet->getStyle('G3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('H3', 'Warna Baju');
+        $sheet->getStyle('H3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('I3', 'Status Baju');
+        $sheet->getStyle('I3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('J3', 'Tanggal Lahir');
+        $sheet->getStyle('J3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('K3', 'Tanggal Masuk');
+        $sheet->getStyle('K3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('L3', 'Nama Bagian');
+        $sheet->getStyle('L3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('M3', 'Area Utama');
+        $sheet->getStyle('M3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('N3', 'Area');
+        $sheet->getStyle('N3')->applyFromArray($styleHeader);
+
+        $sheet->setCellValue('O3', 'Status Aktif');
+        $sheet->getStyle('O3')->applyFromArray($styleHeader);
+
+        $styleData = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $row = 4;
+        $no = 1;
+        foreach ($dataKaryawan as $key => $id) {
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, $id['kode_kartu']);
+            $sheet->setCellValue('C' . $row, $id['nama_karyawan']);
+            $sheet->setCellValue('D' . $row, $id['shift']);
+            $sheet->setCellValue('E' . $row, $id['jenis_kelamin']);
+            $sheet->setCellValue('F' . $row, $id['libur']);
+            $sheet->setCellValue('G' . $row, $id['libur_tambahan']);
+            $sheet->setCellValue('H' . $row, $id['warna_baju']);
+            $sheet->setCellValue('I' . $row, $id['status_baju']);
+            $sheet->setCellValue('J' . $row, $id['tgl_lahir']);
+            $sheet->setCellValue('K' . $row, $id['tgl_masuk']);
+            $sheet->setCellValue('L' . $row, $id['nama_bagian']);
+            $sheet->setCellValue('M' . $row, $id['area_utama']);
+            $sheet->setCellValue('N' . $row, $id['area']);
+            $sheet->setCellValue('O' . $row, $id['status_aktif']);
+            $row++;
+        }
+        // Terapkan gaya border ke seluruh data
+        $dataRange = 'A4:O' . ($row - 1); // Dari baris 4 sampai baris terakhir
+        $sheet->getStyle($dataRange)->applyFromArray($styleData);
+
+        // Terapkan alignment rata-tengah ke seluruh data
+        $sheet->getStyle($dataRange)->applyFromArray($styleAlignCenter);
+
+        // Autosize untuk setiap kolom
+        foreach (range('A', 'O') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        // Set judul file dan header untuk download
+        $filename = 'Data Karyawan ' . $area . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        // Tulis file excel ke output
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 }

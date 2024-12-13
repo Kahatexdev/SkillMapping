@@ -95,7 +95,6 @@ class BagianModel extends Model
     public function getAreaOnly()
     {
         return $this->select('GROUP_CONCAT(DISTINCT area) AS area')
-            ->where('area IS NOT NULL')
             ->groupBy('area')
             ->findAll();
     }
