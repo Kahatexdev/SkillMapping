@@ -156,5 +156,22 @@ class AbsenModel extends Model
     }
 
 
+    public function getAbsenByBagianBatch($id_batch, $id_bagian)
+    {
+        return $this->select('absen.*, karyawan.nama_karyawan, user.username, periode.nama_periode, batch.nama_batch,
+        (absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3) as jml_hari_tidak_masuk_kerja, 
+        ((31 - ((absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3))) / 31) * 100 as persentase_kehadiran,
+        CASE 
+            WHEN (((31 - ((absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3))) / 31) * 100) < 94 THEN -1
+            ELSE 0
+        END as accumulasi_absensi')
+        ->join('karyawan', 'karyawan.id_karyawan = absen.id_karyawan')
+        ->join('periode', 'periode.id_periode = absen.id_periode')
+        ->join('batch', 'batch.id_batch = periode.id_batch')
+        ->join('user', 'user.id_user = absen.id_user')
+        ->where('batch.id_batch', $id_batch)
+        ->where('karyawan.id_bagian', $id_bagian)
+        ->findAll();
+    }
 
 }

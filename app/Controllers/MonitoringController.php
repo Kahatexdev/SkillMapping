@@ -93,6 +93,8 @@ class MonitoringController extends BaseController
             'karyawan' => $karyawan,
             'bagian' => $bagian
         ];
+
+        // dd ($karyawan, $bagian);    
         return view(session()->get('role') . '/karyawan', $data);
     }
     public function batch()
@@ -388,12 +390,40 @@ class MonitoringController extends BaseController
     }
     public function penilaian()
     {
+        // Ambil data filter dari request
+        $nama_bagian = $this->request->getGet('nama_bagian');
+        $area_utama = $this->request->getGet('area_utama');
+        $area = $this->request->getGet('area');
+
+        // Default filter untuk karyawan
+        $karyawanQuery = $this->karyawanmodel->select('karyawan.*')
+        ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join dengan tabel bagian
+
+        // Tambahkan filter berdasarkan nama_bagian
+        if ($nama_bagian) {
+            $karyawanQuery->where('bagian.nama_bagian', $nama_bagian);
+        }
+
+        // Tambahkan filter berdasarkan area_utama
+        if ($area_utama) {
+            $karyawanQuery->where('bagian.area_utama', $area_utama);
+        }
+
+        // Tambahkan filter berdasarkan area
+        if ($area) {
+            $karyawanQuery->where('bagian.area', $area);
+        }
+
+        // Ambil data karyawan yang difilter
+        $karyawan = $karyawanQuery->findAll();
+
+        // Data lainnya
         $batch = $this->batchmodel->findAll();
         $namabagian = $this->bagianmodel->getBagian();
         $penilaian = $this->penilaianmodel->getPenilaian();
         $periode = $this->periodeModel->getPeriode();
 
-        // dd($area);
+        // Siapkan data untuk view
         $data = [
             'role' => session()->get('role'),
             'title' => 'Penilaian Mandor',
@@ -409,13 +439,13 @@ class MonitoringController extends BaseController
             'batch' => $batch,
             'namabagian' => $namabagian,
             'periode' => $periode,
-            'penilaian' => $penilaian
-            // 'area' => $area
-
+            'penilaian' => $penilaian,
+            'karyawan' => $karyawan // Karyawan yang difilter
         ];
-        // dd($penilaian);
+
         return view(session()->get('role') . '/penilaian', $data);
     }
+
     public function reportpenilaian()
     {
         $absen = $this->absenmodel->getReportPenilaian();
@@ -439,8 +469,32 @@ class MonitoringController extends BaseController
         // dd ($absen);
         return view(session()->get('role') . '/reportpenilaian', $data);
     }
+
     public function reportbatch()
     {
+        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $sort = [
+            'KK1',
+            'KK2',
+            'KK5',
+            'KK7',
+            'KK8',
+            'KK9'
+        ];
+        // dd($tampilperarea);
+        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+        // Urutkan data menggunakan usort
+        usort($tampilperarea, function ($a, $b) use ($sort) {
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
+
+            // Jika tidak ditemukan, letakkan di akhir
+            $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
+            $pos_b = ($pos_b === false) ? PHP_INT_MAX : $pos_b;
+
+            return $pos_a - $pos_b;
+        });
+
         $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
         $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
         $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
@@ -459,7 +513,8 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             'reportbatch' => $reportbatch,
             'getArea' => $getArea,
-            'getBatch' => $getBatch
+            'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea
             // 'area' => $area
         ];
         // dd ($getBatch);

@@ -184,11 +184,11 @@ class KaryawanController extends BaseController
 
                 // Validasi shift
                 if (empty($shift)) {
-                    continue;
+                    $shift = '-';
                 }
                 // validasi libur
                 if (empty($libur)) {
-                    continue;
+                    $libur = '-';
                 }
                 // Validasi tangal lahir
                 if (empty($tanggalLahir)) {
@@ -225,7 +225,8 @@ class KaryawanController extends BaseController
                         $area = null;
                     }
                     $bagian = $bagianModel->where('nama_bagian', $namaBagian)->where('area_utama', $areaUtama)->where('area', $area)->first();
-                    // dd ($bagian, $namaBagian, $areaUtama, $area);
+                    // var_dump($bagian, $namaBagian, $areaUtama, $area);
+                    // dd($bagian, $namaBagian, $areaUtama, $area);
                     if (!$bagian) {
                         $isValid = false;
                         $errorMessage .= "Nama Bagian tidak ditemukan. ";

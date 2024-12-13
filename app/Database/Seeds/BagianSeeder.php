@@ -171,7 +171,7 @@ class BagianSeeder extends Seeder
             ['nama_bagian' => 'SEWING', 'area_utama' => 'KK11', 'area' => NULL, 'keterangan' => ''],
             ['nama_bagian' => 'SEWING', 'area_utama' => 'KK11', 'area' => 'KK11', 'keterangan' => ''],
             // data kosong
-            ['nama_bagian' => 'SEWING', 'area_utama' => '-', 'area' => '-', 'keterangan' => ''],
+            ['nama_bagian' => '-', 'area_utama' => '-', 'area' => NULL, 'keterangan' => ''],
         ];
 
         $this->db->table('bagian')->insertBatch($data);

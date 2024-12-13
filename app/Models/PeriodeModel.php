@@ -46,14 +46,14 @@ class PeriodeModel extends Model
 
     public function getPeriode()
     {
-        return $this->select('periode.id_periode, periode.nama_periode, batch.nama_batch, periode.start_date, periode.end_date, periode.jml_libur')
+        return $this->select('periode.id_periode, periode.nama_periode, batch.id_batch, batch.nama_batch, periode.start_date, periode.end_date, periode.jml_libur')
             ->join('batch', 'batch.id_batch = periode.id_batch')
             ->findAll();
     }
 
     public function checkPeriode($id_periode)
     {
-        return $this->select('*, batch.nama_batch')
+        return $this->select('*, batch.id_batch, batch.nama_batch')
             ->join('batch', 'batch.id_batch = periode.id_batch')
             ->where('id_periode', $id_periode)
             ->first();
