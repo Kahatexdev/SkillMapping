@@ -75,11 +75,12 @@ class TrainingSchoolController extends BaseController
             'KK8D',
             'KK8F',
             'KK8J',
-            'KK9'
+            'KK9',
+            'KK10',
+            'KK11'
         ];
-        // dd($tampilperarea);
+
         // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
-        // Urutkan data menggunakan usort
         usort($tampilperarea, function ($a, $b) use ($sort) {
             $pos_a = array_search($a['area'], $sort);
             $pos_b = array_search($b['area'], $sort);
@@ -108,7 +109,12 @@ class TrainingSchoolController extends BaseController
     }
     public function detailKaryawanPerArea($area)
     {
-        $karyawan = $this->karyawanmodel->getKaryawanByArea($area);
+        if ($area === 'EMPTY') {
+            $karyawan = $this->karyawanmodel->getKaryawanTanpaArea();
+        } else {
+            $karyawan = $this->karyawanmodel->getKaryawanByArea($area);
+        }
+        // dd($area);
         $bagianModel = new \App\Models\BagianModel();
         $bagian = $bagianModel->findAll();
         // dd($karyawan);
@@ -119,11 +125,9 @@ class TrainingSchoolController extends BaseController
             'active2' => '',
             'active3' => '',
             'karyawan' => $karyawan,
+            'area' => $area,
             'bagian' => $bagian
         ];
         return view(session()->get('role') . '/detailKaryawan', $data);
     }
-    // public function detailKaryawanPerArea($area) {
-    //     $dataKaryawan = $this->karyawanmodel->;
-    // }
 }

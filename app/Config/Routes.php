@@ -144,6 +144,7 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('dataKaryawan/(:any)', 'TrainingSchoolController::detailKaryawanPerArea/$1');
     $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
     $routes->post('karyawanStoreImport', 'KaryawanController::upload');
+    $routes->get('exportKaryawan/(:any)', 'KaryawanController::export/$1');
     $routes->get('karyawanCreate', 'KaryawanController::create');
     $routes->post('karyawanStore', 'KaryawanController::store');
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
