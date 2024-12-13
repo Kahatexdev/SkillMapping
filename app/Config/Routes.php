@@ -93,16 +93,20 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
-    $routes->post('getAreaUtama', 'PenilaianController::getAreaUtama');
-    $routes->post('getArea', 'PenilaianController::getArea');
-    $routes->post('getJobRole', 'PenilaianController::getJobRole');
-    $routes->get('penilaianCreate', 'PenilaianController::create');
+    $routes->get('getAreaUtama', 'PenilaianController::getAreaUtama');
+    $routes->get('getArea', 'PenilaianController::getArea');
+    $routes->get('getJobRole', 'PenilaianController::getJobRole');
+    $routes->get('getKaryawan', 'PenilaianController::getKaryawan');
+    $routes->post('penilaianCreate', 'PenilaianController::create');
     $routes->post('cekPenilaian', 'PenilaianController::cekPenilaian');
     $routes->post('penilaianStore', 'PenilaianController::store');
     $routes->get('penilaianDetail/(:num)/(:num)/(:num)', 'PenilaianController::show/$1/$2/$3');
     $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
+
+    $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
     $routes->get('reportpenilaian', 'MonitoringController::reportpenilaian');
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
+
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 });

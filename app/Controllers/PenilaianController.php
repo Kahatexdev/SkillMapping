@@ -71,41 +71,66 @@ class PenilaianController extends BaseController
         $this->periodeModel = new PeriodeModel();
     }
 
+    // public function getAreaUtama()
+    // {
+    //     if ($this->request->isAJAX()) {
+    //         $nama_bagian = $this->request->getPost('nama_bagian');
+    //         // group by area_utama
+    //         $areaUtama = $this->bagianmodel
+    //             ->select('area_utama')
+    //             ->where('nama_bagian', $nama_bagian)
+    //             ->groupBy('area_utama')
+    //             ->findAll();
+
+    //         // Debug: Pastikan query berhasil
+    //         // dd($areaUtama);
+
+    //         return $this->response->setJSON($areaUtama);
+    //     }
+
+    //     return $this->response->setStatusCode(404);
+    // }
+
+    // public function getArea()
+    // {
+    //     if ($this->request->isAJAX()) {
+    //         $area_utama = $this->request->getPost('area_utama');
+    //         $nama_bagian = $this->request->getPost('nama_bagian');
+
+    //         $areaData = $this->bagianmodel
+    //             ->where('area_utama', $area_utama)
+    //             ->where('nama_bagian', $nama_bagian)
+    //             ->findAll();
+
+    //         return $this->response->setJSON($areaData);
+    //     }
+
+    //     return $this->response->setStatusCode(404);
+    // }
+
     public function getAreaUtama()
     {
-        if ($this->request->isAJAX()) {
-            $nama_bagian = $this->request->getPost('nama_bagian');
-            // group by area_utama
-            $areaUtama = $this->bagianmodel
-                ->select('area_utama')
-                ->where('nama_bagian', $nama_bagian)
-                ->groupBy('area_utama')
-                ->findAll();
-
-            // Debug: Pastikan query berhasil
-            // dd($areaUtama);
-
-            return $this->response->setJSON($areaUtama);
-        }
-
-        return $this->response->setStatusCode(404);
+        $namaBagian = $this->request->getGet('nama_bagian');
+        $areaUtama = $this->bagianmodel->getAreaUtamaByBagian($namaBagian);
+        // var_dump ($this->response->setJSON($areaUtama));
+        return $this->response->setJSON($areaUtama);
     }
 
     public function getArea()
     {
-        if ($this->request->isAJAX()) {
-            $area_utama = $this->request->getPost('area_utama');
-            $nama_bagian = $this->request->getPost('nama_bagian');
+        $namaBagian = $this->request->getGet('nama_bagian');
+        $areaUtama = $this->request->getGet('area_utama');
+        $area = $this->bagianmodel->getAreaByBagianAndUtama($namaBagian, $areaUtama);
+        return $this->response->setJSON($area);
+    }
 
-            $areaData = $this->bagianmodel
-                ->where('area_utama', $area_utama)
-                ->where('nama_bagian', $nama_bagian)
-                ->findAll();
-
-            return $this->response->setJSON($areaData);
-        }
-
-        return $this->response->setStatusCode(404);
+    public function getKaryawan()
+    {
+        $namaBagian = $this->request->getGet('nama_bagian');
+        $areaUtama = $this->request->getGet('area_utama');
+        $area = $this->request->getGet('area');
+        $karyawan = $this->karyawanmodel->getKaryawanByFilters($namaBagian, $areaUtama, $area);
+        return $this->response->setJSON($karyawan);
     }
 
     public function getJobRole()
@@ -163,23 +188,22 @@ class PenilaianController extends BaseController
     public function create()
     {
         // Get data from URL query parameters
-        $id_periode = $this->request->getGet('id_periode');
+        $id_periode = $this->request->getPost('id_periode');
 
         if (!$id_periode) {
             return redirect()->back()->with('error', 'Periode not found.');
         }
 
-        $nama_bagian = $this->request->getGet('nama_bagian');
-        $area_utama = $this->request->getGet('area_utama');
-        $area = $this->request->getGet('area');
+        $nama_bagian = $this->request->getPost('nama_bagian');
+        $area_utama = $this->request->getPost('area_utama');
+        $area = $this->request->getPost('area');
 
         if ($area == 'null') {
             $area = null;
         }
 
-
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
-        // dd ($id_bagian, $nama_bagian, $area_utama, $area);
+
         if (!$id_bagian) {
             return redirect()->back()->with('error', 'Bagian not found.');
         }
@@ -195,38 +219,25 @@ class PenilaianController extends BaseController
             return redirect()->back()->with('error', 'Job description not available.');
         }
 
-        // Filter karyawan based on area and shift by joining 'karyawan' and 'bagian' tables
-        $karyawanQuery = $this->karyawanmodel->select('karyawan.*')
-            ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join with bagian table
+        // Jika data karyawan dipilih dari form multiple select
+        $selected_karyawan_ids = $this->request->getPost('karyawan'); // Ambil data karyawan dari form POST
 
-        // Filter by area if available
-        if ($area) {
-            $karyawanQuery->where('bagian.area', $area);  // Use area from the 'bagian' table
+        // Jika tidak ada karyawan yang dipilih, tampilkan pesan error
+        if (empty($selected_karyawan_ids)) {
+            return redirect()->back()->with('error', 'Pilih minimal satu karyawan.');
         }
 
-        // Filter by shift if available
-        // if ($shift) {
-        //     $karyawanQuery->where('karyawan.shift', $shift);  // Use shift from the 'karyawan' table
-        // }
+        // Ambil detail karyawan berdasarkan ID yang dipilih
+        $karyawan = $this->karyawanmodel->whereIn('id_karyawan', $selected_karyawan_ids)->findAll();
 
-        // Filter by bagian if available
-        if ($id_bagian) {
-            $karyawanQuery->where('karyawan.id_bagian', $id_bagian['id_bagian']);  // Use id_bagian from the 'karyawan' table
+        if (empty($karyawan)) {
+            return redirect()->back()->with('error', 'Tidak ada data karyawan yang ditemukan.');
         }
-
-        // Fetch the filtered karyawan data
-        $karyawan = $karyawanQuery->findAll();
-
-        if (!$karyawan) {
-            return redirect()->back()->with('error', 'No employees found.');
-        }
-
 
         $id_user = session()->get('id_user') ?? 1; // Replace dummy data with session user if available
 
-        // if ($penilaian = $this->penilaianmodel->cekPenilaian($karyawan[0]['id_karyawan'], $id_periode['id_periode'], $id_jobrole['id_jobrole'], $id_user)) {
-        //     return redirect()->back()->with('error', 'Penilaian sudah ada.');
-        // }
+        // karyawan count
+        $karyawanCount = count($karyawan);
         $temp = [
             'id_periode' => $id_periode,
             'id_jobrole' => $id_jobrole['id_jobrole'],
@@ -235,9 +246,7 @@ class PenilaianController extends BaseController
             'id_bagian' => $id_bagian['id_bagian']
         ];
 
-
-        // dd($temp);
-
+        // dd ($temp);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Penilaian Mandor',
@@ -252,11 +261,15 @@ class PenilaianController extends BaseController
             'jobrole' => $id_jobrole,
             'jobdesc' => $jobdesc, // Pass jobdesc to view
             'karyawan' => $karyawan,
+            'karyawanCount' => $karyawanCount,
             'temp' => $temp
         ];
 
+        // dd ($data);
+
         return view('penilaian/create', $data);
     }
+
 
     // Controller method to handle AJAX request
     public function updateIndexNilai()
@@ -741,12 +754,34 @@ class PenilaianController extends BaseController
         exit();
     }
 
+    public function reportAreaperBatch($area_utama)
+    {
+        $batch = $this->penilaianmodel->getPenilaianWhereAreautamaGroupByBatch($area_utama);
+        // dd ($batch);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Report Batch',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'active9' => 'active',
+            'reportbatch' => $batch
+        ];
+
+        return view('penilaian/reportareaperbatch', $data);
+    }
     public function exelReportBatch($id_batch, $area_utama)
     {
         $id_batch = (int)$id_batch;
 
         // Ambil data penilaian
         $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndAreaByIdBatch($id_batch, $area_utama);
+        // getPenilaianGroupByBatchAndAreaByIdBatch
         $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
         $getAreaUtama = $this->bagianmodel->getAreaGroupByAreaUtama();
 

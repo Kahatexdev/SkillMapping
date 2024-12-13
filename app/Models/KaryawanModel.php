@@ -107,4 +107,15 @@ class KaryawanModel extends Model
             ->where('bagian.area', $area)
             ->findAll();
     }
+
+    public function getKaryawanByFilters($nama_bagian, $area_utama, $area)
+    {
+        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, bagian.keterangan, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->where('bagian.nama_bagian', $nama_bagian)
+            ->where('bagian.area_utama', $area_utama)
+            ->where('bagian.area', $area)
+            ->findAll();
+    }
+
 }
