@@ -449,6 +449,7 @@ class MonitoringController extends BaseController
     public function reportpenilaian()
     {
         $absen = $this->absenmodel->getReportPenilaian();
+        $penilaian = $this->penilaianmodel->getPenilaian();
 
         // dd($area);
         $data = [
@@ -463,7 +464,8 @@ class MonitoringController extends BaseController
             'active7' => '',
             'active8' => '',
             'active9' => 'active',
-            'absen' => $absen
+            'absen' => $absen,
+            'penilaian' => $penilaian
             // 'area' => $area
         ];
         // dd ($absen);

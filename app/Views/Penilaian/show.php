@@ -22,7 +22,7 @@
                                 <a href="<?= base_url('Monitoring/penilaianExcel/' . $penilaian[0]['id_bagian'] . '/' . $penilaian[0]['id_periode'] . '/' . $penilaian[0]['id_jobrole']) ?>" class="btn bg-gradient-success me-2">
                                     <i class="fas fa-file-excel text-lg me-2"></i>Download Excel
                                 </a>
-                                <a href="<?= base_url('Monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary ">
+                                <a href="<?= base_url('Monitoring/reportPenilaian') ?>" class="btn bg-gradient-secondary ">
                                     <i class="fas fa-solid fa-arrow-left text-lg opacity-10"></i>
                                     Kembali
                                 </a>

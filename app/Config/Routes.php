@@ -104,7 +104,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
 
     $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
-    $routes->get('reportpenilaian', 'MonitoringController::reportpenilaian');
+    $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
 
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1

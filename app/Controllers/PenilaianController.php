@@ -129,7 +129,12 @@ class PenilaianController extends BaseController
         $namaBagian = $this->request->getGet('nama_bagian');
         $areaUtama = $this->request->getGet('area_utama');
         $area = $this->request->getGet('area');
+        // dd ($namaBagian, $areaUtama, $area);
+        if($area == 'null') {
+            $area = null;
+        }
         $karyawan = $this->karyawanmodel->getKaryawanByFilters($namaBagian, $areaUtama, $area);
+        // dd ($karyawan);  
         return $this->response->setJSON($karyawan);
     }
 
@@ -148,40 +153,40 @@ class PenilaianController extends BaseController
         return $this->response->setJSON($jobRole);
     }
 
-    public function cekPenilaian()
-    {
-        $shift = $this->request->getPost('shift');
-        $bulan = $this->request->getPost('bulan');
-        $tahun = $this->request->getPost('tahun');
-        // dd($shift, $bulan, $tahun);
-        $id_batch = $this->batchmodel->getIdBatch($shift, $bulan, $tahun);
-        // dd($id_batch);
-        $nama_bagian = $this->request->getPost('nama_bagian');
-        $area_utama = $this->request->getPost('area_utama');
-        $area = $this->request->getPost('area');
+    // public function cekPenilaian()
+    // {
+    //     $shift = $this->request->getPost('shift');
+    //     $bulan = $this->request->getPost('bulan');
+    //     $tahun = $this->request->getPost('tahun');
+    //     // dd($shift, $bulan, $tahun);
+    //     $id_batch = $this->batchmodel->getIdBatch($shift, $bulan, $tahun);
+    //     // dd($id_batch);
+    //     $nama_bagian = $this->request->getPost('nama_bagian');
+    //     $area_utama = $this->request->getPost('area_utama');
+    //     $area = $this->request->getPost('area');
 
-        $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
-        // dd($id_bagian);
+    //     $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
+    //     // dd($id_bagian);
 
-        $id_jobrole = $this->jobrolemodel->getIdJobrole($id_bagian['id_bagian']);
-        // dd($id_jobrole);
+    //     $id_jobrole = $this->jobrolemodel->getIdJobrole($id_bagian['id_bagian']);
+    //     // dd($id_jobrole);
 
-        $karyawan_id = 1; // Dummy data
-        // dd($karyawan_id);
+    //     $karyawan_id = 1; // Dummy data
+    //     // dd($karyawan_id);
 
-        $id_user = 1; // Dummy data
+    //     $id_user = 1; // Dummy data
 
-        $datauntukinputnilai = [
-            'id_batch' => $id_batch['id_batch'],
-            'id_jobrole' => $id_jobrole['id_jobrole'],
-            'id_karyawan' => $karyawan_id,
-            'id_user' => $id_user
-        ];
+    //     $datauntukinputnilai = [
+    //         'id_batch' => $id_batch['id_batch'],
+    //         'id_jobrole' => $id_jobrole['id_jobrole'],
+    //         'id_karyawan' => $karyawan_id,
+    //         'id_user' => $id_user
+    //     ];
 
-        $json = json_encode($datauntukinputnilai);
+    //     $json = json_encode($datauntukinputnilai);
 
-        return view('penilaian/create', compact('json'));
-    }
+    //     return view('penilaian/create', compact('json'));
+    // }
 
     public function index() {}
 
@@ -236,6 +241,12 @@ class PenilaianController extends BaseController
 
         $id_user = session()->get('id_user') ?? 1; // Replace dummy data with session user if available
 
+        // jika karyawan sudah pernah dinilai pada periode dan id_jobrole yang dipilih, tampilkan pesan error
+        $existingPenilaian = $this->penilaianmodel->getExistingPenilaian($id_periode, $id_jobrole['id_jobrole'], $selected_karyawan_ids);
+        // dd ($existingPenilaian, $id_periode, $id_jobrole['id_jobrole'], $selected_karyawan_ids);
+        if (!empty($existingPenilaian)) {
+            return redirect()->back()->with('error', 'Karyawan sudah dinilai pada periode ini.');
+        }
         // karyawan count
         $karyawanCount = count($karyawan);
         $temp = [

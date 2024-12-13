@@ -143,7 +143,7 @@
                             </h4>
                         </div>
                         <div>
-                            <a href="<?= base_url('monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary btn-sm">
+                            <a href="<?= base_url('Monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary btn-sm">
                                 <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
                                 Kembali
                             </a>
@@ -163,52 +163,52 @@
                     </div>
                 </div>
             </div>
-                        <?php foreach ($karyawan as $k) : ?>
-                            <div class="col-xl-6 col-sm-12 mb-xl-0 mb-4 mt-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="mb-3"><?= htmlspecialchars($k['kode_kartu'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th class="bg-gradient-dark">Deskripsi Pekerjaan</th>
-                                                    <th class="bg-gradient-dark">Nilai</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($jobdesc as $desc) : ?>
-                                                    <tr>
-                                                        <td><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?></td>
-                                                        <td>
-                                                            <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" min="1" max="6" required>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                        <div class="mt-3">
-                                            <input type="hidden" class="index-nilai" name="index_nilai[<?= $k['id_karyawan'] ?>]">
-                                        </div>
-                                    </div>
-                                </div>
+            <?php foreach ($karyawan as $k) : ?>
+                <div class="col-xl-6 col-sm-12 mb-xl-0 mb-4 mt-4">
+                    <div class="card">
+                        <div class="card-body"> 
+                            <h5 class="mb-3"><?= htmlspecialchars($k['kode_kartu'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
+                            <table class="table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-gradient-dark">Deskripsi Pekerjaan</th>
+                                        <th class="bg-gradient-dark">Nilai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($jobdesc as $desc) : ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?></td>
+                                            <td>
+                                                <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" min="1" max="6" required>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                            <div class="mt-3">
+                                <input type="hidden" class="index-nilai" name="index_nilai[<?= $k['id_karyawan'] ?>]">
                             </div>
-                        <?php endforeach; ?>
-                        <?php foreach ($temp as $key => $value) : ?>
-                            <?php if (is_array($value)) : ?>
-                                <?php foreach ($value as $item) : ?>
-                                    <input type="hidden" name="<?= $key ?>[]" value="<?= $item['id_karyawan'] ?>">
-                                <?php endforeach; ?>
-                            <?php else : ?>
-                                <input type="hidden" name="<?= $key ?>" value="<?= $value ?>">
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                        </div>
                     </div>
+                </div>
+            <?php endforeach; ?>
+            <?php foreach ($temp as $key => $value) : ?>
+                <?php if (is_array($value)) : ?>
+                    <?php foreach ($value as $item) : ?>
+                        <input type="hidden" name="<?= $key ?>[]" value="<?= $item['id_karyawan'] ?>">
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <input type="hidden" name="<?= $key ?>" value="<?= $value ?>">
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
 
-                    <div class="mt-4">
-                        <button type="submit" class="btn bg-gradient-info btn-sm w-100">
-                            <i class="fas fa-save text-sm opacity-10"></i> Simpan
-                        </button>
-                    </div>
+        <div class="mt-4">
+            <button type="submit" class="btn bg-gradient-info btn-sm w-100">
+                <i class="fas fa-save text-sm opacity-10"></i> Simpan
+            </button>
+        </div>
     </form>
 </div>
 <?php $this->endSection(); ?>
