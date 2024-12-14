@@ -42,7 +42,7 @@
                                         <?php foreach ($jobrole as $role) : ?>
                                             <tr>
                                                 <td><?= $role['id_jobrole'] ?></td>
-                                                <td colspan="2"><?= $role['nama_bagian'] ?> - <?= $role['area'] ?></td>
+                                                <td colspan="2"><?= $role['nama_bagian'] ?> - <?= $role['area_utama'] ?> - <?= $role['area'] ?></td>
                                                 <td>
                                                     <button class="btn bg-gradient-info btn-sm toggle-detail" data-id="<?= $role['id_jobrole'] ?>">
                                                         <i class="fas fa-eye text-lg opacity-10" aria-hidden="true"></i>

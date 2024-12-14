@@ -561,7 +561,7 @@ class PenilaianController extends BaseController
         // Set auto-size for jobdesc columns
         $jobdescStartCol = Coordinate::columnIndexFromString('H');
         $jobdescEndCol = Coordinate::columnIndexFromString('H') + count($this->getJobDesc(1)) - 1;
-        dd (Coordinate::columnIndexFromString('H'), count($this->getJobDesc(1)), $jobdescEndCol, $this->getJobDesc(1));
+        // dd (Coordinate::columnIndexFromString('H'), count($this->getJobDesc(1)), $jobdescEndCol, $this->getJobDesc(1));
         $jobdescEndCol = $this->getColumnName($jobdescEndCol);
         $sheet->getColumnDimension('H')->setWidth(5); // JOBDESC
         $sheet->getColumnDimension($jobdescEndCol)->setWidth(5); // JOBDESC
@@ -621,8 +621,8 @@ class PenilaianController extends BaseController
             $sheet->getStyle($colLetter . $row)->getAlignment()
                 ->setTextRotation(90) // Rotasi teks 90 derajat
                 ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
+                ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER)
+                ->setWrapText(true); // Aktifkan wrap text
         }
 
         // Tambahkan border pada header jobdesc
@@ -665,7 +665,7 @@ class PenilaianController extends BaseController
         // dd ($indexAbsen, $lastAdditionalCol);
 
         $this->setStyles($sheet, "{$indexAbsen}{$row}", "$lastAdditionalCol{$row}");
-
+        $sheet->getStyle("{$indexAbsen}{$row}:{$lastAdditionalCol}{$row}")->getAlignment()->setWrapText(true);
     }
 
     private function setRowData($sheet, array $p, int $row, int $no, int $jobdescStartCol, int $jobdescCount): int

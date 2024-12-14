@@ -217,6 +217,7 @@ class MonitoringController extends BaseController
             // Mengelompokkan berdasarkan 'keterangan' di dalam setiap id_jobrole
             $groupedData[$id_jobrole] = [
                 'KNITTER' => [],
+                'OPERATOR' => [],
                 'C.O' => [],
                 'Ringan' => [],
                 'Standar' => [],
@@ -246,6 +247,8 @@ class MonitoringController extends BaseController
                         $groupedData[$id_jobrole]['6S'][] = $jobdesc;
                     } elseif ($keterangan === 'KNITTER') {
                         $groupedData[$id_jobrole]['KNITTER'][] = $jobdesc;
+                    } elseif ($keterangan === 'OPERATOR') {
+                        $groupedData[$id_jobrole]['OPERATOR'][] = $jobdesc;
                     } elseif ($keterangan === 'C.O') {
                         $groupedData[$id_jobrole]['C.O'][] = $jobdesc;
                     } elseif ($keterangan === 'Ringan') {
@@ -287,6 +290,9 @@ class MonitoringController extends BaseController
             }
             if (!isset($groupedData[$id_jobrole]['KNITTER'])) {
                 $groupedData[$id_jobrole]['KNITTER'] = [];
+            }
+            if (!isset($groupedData[$id_jobrole]['OPERATOR'])) {
+                $groupedData[$id_jobrole]['OPERATOR'] = [];
             }
             if (!isset($groupedData[$id_jobrole]['C.O'])) {
                 $groupedData[$id_jobrole]['C.O'] = [];
@@ -342,6 +348,8 @@ class MonitoringController extends BaseController
             'jobrole' => $jobrole,
             'groupedData' => $groupedData
         ];
+
+        // dd ($jobrole);
         return view(session()->get('role') . '/jobrole', $data);
     }
     public function bsmc()

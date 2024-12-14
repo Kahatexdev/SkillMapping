@@ -1,6 +1,7 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
+ <link href="<?= base_url('assets/css/select2.min.css') ?>" rel="stylesheet" />
 <div class="container-fluid py-4">
     <div class="row mt-4">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
@@ -59,7 +60,7 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="<?= base_url('assets/js/select2.min.js') ?>"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Event listener untuk nama_bagian
