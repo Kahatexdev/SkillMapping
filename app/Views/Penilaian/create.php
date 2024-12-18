@@ -139,11 +139,11 @@
                                 <a href="#" class="btn bg-gradient-info">
                                     <i class="fas fa-solid fa-tasks text-sm opacity-10"></i>
                                 </a>
-                                Form Penilaian Mandor
+                                Form Penilaian Karyawan
                             </h4>
                         </div>
                         <div>
-                            <a href="<?= base_url('Monitoring/dataPenilaian') ?>" class="btn bg-gradient-secondary btn-sm">
+                            <a href="<?= base_url(session()->get('role') . '/dataPenilaian') ?>" class="btn bg-gradient-secondary btn-sm">
                                 <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
                                 Kembali
                             </a>
@@ -154,7 +154,7 @@
         </div>
     </div>
 
-    <form action="<?= base_url('Monitoring/penilaianStore') ?>" method="post" id="evaluationForm">
+    <form action="<?= base_url(session()->get('role') . '/penilaianStore') ?>" method="post" id="evaluationForm">
         <div class="row mt-4">
             <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
                 <div class="card">
@@ -166,26 +166,36 @@
             <?php foreach ($karyawan as $k) : ?>
                 <div class="col-xl-6 col-sm-12 mb-xl-0 mb-4 mt-4">
                     <div class="card">
-                        <div class="card-body"> 
-                            <h5 class="mb-3"><?= htmlspecialchars($k['kode_kartu'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
-                            <table class="table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th class="bg-gradient-dark">Deskripsi Pekerjaan</th>
-                                        <th class="bg-gradient-dark">Nilai</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($jobdesc as $desc) : ?>
+                        <div class="card-body">
+                            <h5 class="mb-3">[<?= htmlspecialchars($k['kode_kartu'], ENT_QUOTES, 'UTF-8') ?>] <?= htmlspecialchars($k['nama_karyawan'], ENT_QUOTES, 'UTF-8') ?></h5>
+                            <hr>
+                            <?php foreach ($jobdescWithKet as $keterangan => $deskripsiList) : ?>
+                                <!-- Tampilkan Keterangan -->
+                                <h6 class="mt-4">
+                                        <!-- <strong>Memperbaiki mesin sesuai dengan tingkat kesulitannya</strong> -->
+                                </h6>
+
+                                <!-- Tabel Deskripsi Pekerjaan -->
+                                <table class="table table-bordered mt-2">
+                                    <thead>
                                         <tr>
-                                            <td><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?></td>
-                                            <td>
-                                                <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $desc ?>]" placeholder="Nilai" min="1" max="6" required>
-                                            </td>
+                                            <th class="bg-gradient-dark"><?= htmlspecialchars($keterangan, ENT_QUOTES, 'UTF-8') ?></th>
+                                            <th class="bg-gradient-dark">Nilai</th>
                                         </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($deskripsiList as $deskripsi) : ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8') ?></td>
+                                                <td>
+                                                    <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $deskripsi ?>]" placeholder="Nilai" min="1" max="6" required>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            <?php endforeach; ?>
+
                             <div class="mt-3">
                                 <input type="hidden" class="index-nilai" name="index_nilai[<?= $k['id_karyawan'] ?>]">
                             </div>

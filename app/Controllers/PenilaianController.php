@@ -27,6 +27,7 @@ class PenilaianController extends BaseController
     protected $karyawanmodel;
     protected $periodeModel;
     protected $absenmodel;
+    protected $db;
 
     const bobot_nilai = [
         1 => 15,
@@ -63,6 +64,7 @@ class PenilaianController extends BaseController
 
     public function __construct()
     {
+        $this->db = \Config\Database::connect();
         $this->penilaianmodel = new PenilaianModel();
         $this->jobrolemodel = new JobroleModel();
         $this->bagianmodel = new BagianModel();
@@ -214,6 +216,7 @@ class PenilaianController extends BaseController
         }
 
         $id_jobrole = $this->jobrolemodel->getJobRoleByBagianId($id_bagian['id_bagian']);
+        // dd($id_jobrole);
         if (!$id_jobrole) {
             return redirect()->back()->with('error', 'Job role not found.');
         }
@@ -224,6 +227,24 @@ class PenilaianController extends BaseController
             return redirect()->back()->with('error', 'Job description not available.');
         }
 
+
+        // $jobdesc = json_decode($id_jobrole['jobdesc'], true ) ?? [];
+        $keterangan = json_decode($id_jobrole['keterangan'], true) ?? [];
+        // Gabungkan jobdesc berdasarkan keterangannya
+        $jobdescWithKet = [];
+        foreach ($jobdesc as $index => $desc) {
+            $jobdescWithKet[$keterangan[$index]][] = $desc; // Kelompokkan berdasarkan keterangan
+        }
+        // // Gabungkan jobdesc dan keterangan
+        // $jobdescWithKet = [];
+        // foreach ($jobdesc as $index => $desc) {
+        //     $jobdescWithKet[] = [
+        //         'deskripsi' => $desc,
+        //         'keterangan' => $keterangan[$index] ?? null
+        //     ];
+        // }
+        // $ketJob = $this->jobrolemodel->getJobRolesByJobRoleId($id_jobrole['id_jobrole']);
+        // dd($ketJob);
         // Jika data karyawan dipilih dari form multiple select
         $selected_karyawan_ids = $this->request->getPost('karyawan'); // Ambil data karyawan dari form POST
 
@@ -273,11 +294,12 @@ class PenilaianController extends BaseController
             'jobdesc' => $jobdesc, // Pass jobdesc to view
             'karyawan' => $karyawan,
             'karyawanCount' => $karyawanCount,
-            'temp' => $temp
+            'temp' => $temp,
+            'jobdescWithKet' => $jobdescWithKet // Kirim data gabungan ke view
         ];
 
         // dd ($data);
-
+        $this->db->getLastQuery();
         return view('penilaian/create', $data);
     }
 
@@ -366,7 +388,7 @@ class PenilaianController extends BaseController
         }
 
         // dd($data);
-
+        
         if ($this->penilaianmodel->insertBatch($data)) {
             return redirect()->to('/Monitoring/dataPenilaian')->with('success', 'Penilaian berhasil disimpan.');
         }
@@ -389,7 +411,11 @@ class PenilaianController extends BaseController
         }
 
         // dd($bobotNilai);
-
+        $judul = $this->penilaianmodel->getPenilaianTitle($id_bagian, $id_periode, $id_jobrole);
+        // dd ($judul);
+        $id_karyawan = 308;
+        $id_periode_sekarang = 2;
+        // dd($this->penilaianmodel->getPreviousIndexNilai($id_karyawan, $id_periode_sekarang));
         $data = [
             'role' => session()->get('role'),
             'title' => 'Penilaian Mandor',
@@ -402,10 +428,12 @@ class PenilaianController extends BaseController
             'active7' => '',
             'active8' => 'active',
             'penilaian' => $penilaian,
-            'bobotNilai' => $bobotNilai
+            'bobotNilai' => $bobotNilai,
+            'judul' => $judul[0]['nama_bagian'] . ' - ' . $judul[0]['area_utama'] . ' - ' . $judul[0]['area'] . ' - ' . $judul[0]['nama_batch'] . ' Periode ' . $judul[0]['nama_periode'] . ' (' . $judul[0]['start_date'] . ' s/d ' . $judul[0]['end_date'] . ')'
         ];
 
-        return view('penilaian/show', $data);
+        // dd ($title);
+        return view('Penilaian/show', $data);
     }
 
 
@@ -910,14 +938,14 @@ class PenilaianController extends BaseController
 
                 // dd ($data);
                 // Hitung rata-rata dan grade
-                $average = round($total / $count, 2);
+                $average = round(($total+1) / ($count+1), 2);
                 $grade = $this->calculateGradeBatch($average);
 
                 // Tambahkan kolom rata-rata dan grade ke data
-                $data[] = ''; // Kolom tambahan (bisa untuk catatan)
+                $data[] = 1; // Kolom tambahan (bisa untuk catatan)
                 $data[] = $average;
                 $data[] = $grade;
-
+// dd ($data, $total, $count);
                 $sheet->fromArray($data, null, 'A' . $row);
                 $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 3) . $row)
                     ->getBorders()

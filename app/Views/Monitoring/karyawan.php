@@ -20,7 +20,7 @@
                             <div class="d-flex justify-content-between">
 
                                 <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
-                                    class="btn bg-gradient-success btn-sm me-2">
+                                    class="btn bg-gradient-success me-2">
                                     <!-- icon download -->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
@@ -313,7 +313,7 @@
                                         </option>
                                         <option value="Biru">Biru
                                         </option>
-                                        <option value="Hijau">>Hijau
+                                        <option value="Hijau">Hijau
                                         </option>
                                         <option value="Kuning">
                                             Kuning

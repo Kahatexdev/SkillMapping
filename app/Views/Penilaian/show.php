@@ -12,9 +12,7 @@
                             <h4 class="font-weight-bolder">
                                 Data Penilaian Mandor
                             </h4>
-                            <h5 class="card-title"><?= $penilaian[0]['nama_bagian'] .' - '. $penilaian[0]['area_utama'] . ' - ' . $penilaian[0]['area'] ?></h5>
-                            <h5 class="card-title"><?= $penilaian[0]['nama_batch'] ?> Periode <?= $penilaian[0]['nama_periode'] ?></h5>
-                            <h6><?= $penilaian[0]['start_date'] ?> s/d <?= $penilaian[0]['end_date'] ?></h6>
+                            <?= $judul ?>
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
@@ -48,6 +46,7 @@
                                     <th>Jobdesk</th>
                                     <th>Bobot Nilai</th>
                                     <th>Grade</th>
+                                    <th>Before</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -125,6 +124,7 @@
                                             </ul>
                                         </td>
                                         <td><span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($indexBadge, ENT_QUOTES, 'UTF-8') ?></span></td>
+                                        <td></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

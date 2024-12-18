@@ -14,6 +14,7 @@ use App\Models\SummaryRossoModel;
 use App\Models\BatchModel;
 use App\Models\PeriodeModel;
 use App\Models\PenilaianModel;
+use App\Models\HistoryPindahKaryawanModel;
 
 class TrainingSchoolController extends BaseController
 {
@@ -27,6 +28,7 @@ class TrainingSchoolController extends BaseController
     protected $batchmodel;
     protected $periodeModel;
     protected $penilaianmodel;
+    protected $historyPindahKaryawanModel;
 
     public function __construct()
     {
@@ -41,6 +43,7 @@ class TrainingSchoolController extends BaseController
         $this->batchmodel = new BatchModel();
         $this->periodeModel = new PeriodeModel();
         $this->penilaianmodel = new PenilaianModel();
+        $this->historyPindahKaryawanModel = new HistoryPindahKaryawanModel();
     }
 
     public function index()
@@ -129,5 +132,19 @@ class TrainingSchoolController extends BaseController
             'bagian' => $bagian
         ];
         return view(session()->get('role') . '/detailKaryawan', $data);
+    }
+
+    public function historyPindahKaryawan()
+    {
+        $historyPindahKaryawan = $this->historyPindahKaryawanModel->getHistoryPindahKaryawan();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'History Pindah Karyawan',
+            'active1' => '',
+            'active2' => '',
+            'active3' => 'active',
+            'historyPindahKaryawan' => $historyPindahKaryawan
+        ];
+        return view(session()->get('role') . '/historyPindahKaryawan', $data);
     }
 }

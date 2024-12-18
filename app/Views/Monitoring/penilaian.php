@@ -7,7 +7,7 @@
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-body">
-                    <h4>Pilih Batch Penilaian</h4>
+                    <h4>Form Penilaian Karyawan</h4>
                     <form action="<?= base_url('Monitoring/penilaianCreate') ?>" method="post">
                         <div class="row">
                             <div class="col-md-3 mb-3">
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                         <input type="hidden" class="form-control" id="id_jobrole" name="id_jobrole" required>
-                        <button type="submit" class="btn bg-gradient-info w-100">Buat Batch Penilaian</button>
+                        <button type="submit" class="btn bg-gradient-info w-100">Buat Form Penilaian</button>
                     </form>
                 </div>
             </div>

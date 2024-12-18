@@ -14,7 +14,7 @@
                             </a>
                             Data Job Role
                         </h4>
-                        <a href="<?= base_url('Monitoring/jobroleCreate') ?>" class="btn bg-gradient-info btn-sm">
+                        <a href="<?= base_url('Monitoring/jobroleCreate') ?>" class="btn bg-gradient-info">
                             <i class="fas fa-plus text-lg opacity-10"></i>
                             Job Role
                         </a>

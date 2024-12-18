@@ -112,9 +112,11 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
-    $routes->get('', 'MandorController::karyawan');
+    $routes->get('', 'MandorController::listArea');
 
-    $routes->get('dataKaryawan', 'MandorController::karyawan');
+    $routes->get('dataKaryawan', 'MandorController::listArea');
+    $routes->get('dataKaryawan/(:any)', 'MandorController::detailKaryawanPerArea/$1');
+
     // $routes->get('karyawanImport', 'KaryawanController::import');
     // $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
     // $routes->post('karyawanStoreImport', 'KaryawanController::upload');
@@ -136,6 +138,13 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     // $routes->get('absenEmpty', 'AbsenController::empty');
 
     $routes->get('dataPenilaian', 'MandorController::penilaian');
+    $routes->get('getAreaUtama', 'MandorController::getAreaUtama');
+    $routes->get('getArea', 'MandorController::getArea');
+    $routes->get('getJobRole', 'MandorController::getJobRole');
+    $routes->get('getKaryawan', 'MandorController::getKaryawan');
+    $routes->post('penilaianCreate', 'MandorController::create');
+    $routes->post('penilaianStore', 'MandorController::store');
+
 });
 
 $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes) {
@@ -150,6 +159,8 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
     $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
     $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
+
+    $routes->get('historyPindahKaryawan', 'TrainingSchoolController::historyPindahKaryawan');
 });
 
 

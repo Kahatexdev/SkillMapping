@@ -208,7 +208,7 @@ class PenilaianModel extends Model
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
             ->join('periode', 'periode.id_periode=penilaian.id_periode')
             ->join('batch', 'batch.id_batch=periode.id_batch')
-            ->where('penilaian.karyawan_id', $id_karyawan)
+            ->whereIn('penilaian.karyawan_id', $id_karyawan)
             ->where('penilaian.id_periode', $id_periode)
             ->where('penilaian.id_jobrole', $id_jobrole)
             ->get()
@@ -216,5 +216,36 @@ class PenilaianModel extends Model
 
             // dd ($cek);
     }
+
+    public function getPenilaianTitle($id_bagian, $id_periode, $id_jobrole)
+    {
+        return $this->table('penilaian')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date')
+            ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
+            ->join('periode', 'periode.id_periode=penilaian.id_periode')
+            ->join('batch', 'batch.id_batch=periode.id_batch')
+            ->where('job_role.id_bagian', $id_bagian)
+            ->where('penilaian.id_periode', $id_periode)
+            ->where('penilaian.id_jobrole', $id_jobrole)
+            ->get(1)
+            ->getResultArray();
+    }
+
+    // public function getPreviousIndexNilai($id_bagian, $id_periode_sekarang, id_jobrole)
+    // {
+    //     $tes =  $this->table('penilaian')
+    //         ->select('index_nilai')
+    //         ->where('id_bagian', $id_bagian) // Cari job role yang sama
+    //         ->where('id_periode <', $id_periode_sekarang) // Cari periode sebelumnya
+    //         ->orderBy('id_periode', 'DESC') // Ambil periode paling terakhir sebelum periode saat ini
+    //         ->limit(1)
+    //         ->get()
+    //         ->getRowArray();
+
+    // dd ($tes);
+    // }
+
 
 }
