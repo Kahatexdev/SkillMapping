@@ -19,13 +19,19 @@
                         <div>
                             <div class="d-flex justify-content-between">
 
-                                <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
+                                <a href="<?= base_url('TrainingSchool/exportKaryawan/' . $area) ?>"
+                                    class="btn bg-gradient-primary me-2">
+                                    <!-- icon download -->
+                                    <i class="fas fa-file-excel text-lg opacity-10" aria-hidden="true"></i>
+                                    Export Excel
+                                </a>
+                                <a href="<?= base_url('TrainingSchool/downloadTemplateKaryawan') ?>"
                                     class="btn bg-gradient-success me-2">
                                     <!-- icon download -->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
                                 </a>
-                                <a href="<?= base_url('Monitoring/karyawanCreate') ?>"
+                                <a href="<?= base_url('TrainingSchool/karyawanCreate') ?>"
                                     class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addKaryawan">
                                     <!-- icon tambah karyawan-->
                                     <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
@@ -156,7 +162,7 @@
                         Import Data Karyawan
                     </h5>
                     <!-- form import  data karyawan -->
-                    <form action="<?= base_url('Monitoring/karyawanStoreImport') ?>" method="post"
+                    <form action="<?= base_url('TrainingSchool/karyawanStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="upload-container">
                             <div class="upload-area" id="upload-area">
@@ -398,7 +404,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('Monitoring/karyawanDelete/') ?>" + id;
+                window.location.href = "<?= base_url('TrainingSchool/karyawanDelete/') ?>" + id;
             }
         })
     }

@@ -729,7 +729,7 @@ class KaryawanController extends BaseController
 
             return $numA <=> $numB;
         });
-        dd($dataKaryawan);
+        // dd($dataKaryawan);
         // Buat spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
