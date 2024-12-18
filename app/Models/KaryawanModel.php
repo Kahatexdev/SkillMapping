@@ -140,6 +140,7 @@ class KaryawanModel extends Model
             ->where('bagian.nama_bagian', $nama_bagian)
             ->where('bagian.area_utama', $area_utama)
             ->where('bagian.area', $area)
+            ->where('karyawan.status_aktif', 'Aktif')
             ->findAll();
     }
 }

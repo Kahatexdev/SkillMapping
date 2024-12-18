@@ -50,7 +50,7 @@ class JobroleModel extends Model
     public function getJobRolesWithBagian()
     {
         return $this->db->table('job_role')
-            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area_utama, bagian.area')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
             ->get()
             ->getResultArray();
@@ -66,7 +66,7 @@ class JobroleModel extends Model
     public function getJobRoleByBagianId($id_bagian)
     {
         return $this->db->table('job_role')
-            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian,bagian.area_utama, bagian.area')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area_utama, bagian.area')
             ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
             ->where('job_role.id_bagian', $id_bagian)
             ->get()

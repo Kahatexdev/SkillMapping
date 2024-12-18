@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="form-group mb-2">
                                     <label for="keterangan">Keterangan</label>
-                                    <input type="text" class="form-control" name="keterangan" id="keterangan" required>
+                                    <input type="text" class="form-control" name="keterangan" id="keterangan">
                                 </div>
 
                             </div>
@@ -167,7 +167,7 @@
                                 <div class="form-group mb-2">
                                     <label for="keterangan">Keterangan</label>
                                     <input type="text" class="form-control" name="keterangan" id="keterangan"
-                                        value="" required>
+                                        value="" >
                                 </div>
 
                             </div>
