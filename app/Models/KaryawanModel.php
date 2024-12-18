@@ -108,18 +108,28 @@ class KaryawanModel extends Model
             ->findAll();
     }
 
-    public function exportKaryawanByArea($area)
+    public function exportKaryawanAll()
     {
+        // Buat query builder untuk mengambil seluruh data karyawan
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, bagian.nama_bagian, bagian.area_utama, bagian.area, karyawan.status_aktif')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->where('bagian.area', $area)
-            ->findAll();
+            ->findAll(); // Ambil semua data tanpa filter
     }
+
+    public function exportKaryawanByArea($area)
+    {
+        // Buat query builder
+        $builder = $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, bagian.nama_bagian, bagian.area_utama, bagian.area, karyawan.status_aktif')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->where('bagian.area', $area);
+        return $builder->findAll();
+    }
+
     public function getKaryawanTanpaArea()
     {
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'left') // left join untuk menghindari data hilang
-            ->where('(bagian.area_utama IS NULL OR bagian.area IS NULL OR bagian.area_utama = "-" OR bagian.area = "-")') // Cek area kosong atau "-"
+            ->where('(bagian.area_utama IS NULL OR bagian.area IS NULL OR bagian.area_utama = "-")') // Cek area kosong atau "-"
             ->findAll();
     }
 

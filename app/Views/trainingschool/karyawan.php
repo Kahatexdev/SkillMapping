@@ -16,7 +16,7 @@
                         </div>
                         <div class="col-4 text-end">
                             <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
+                                <i class="ni ni-building text-lg opacity-10" aria-hidden="true"></i>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="col-4 text-end">
                                     <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                        <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                                        <i class="ni ni-building text-lg opacity-10" aria-hidden="true"></i>
                                     </div>
                                 </div>
 
@@ -65,4 +65,43 @@
     </div>
 
 </div>
+<script type="text/javascript">
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "<?= base_url('TrainingSchool/karyawanDelete/') ?>" + id;
+            }
+        })
+    }
+</script>
+<script>
+    $(document).ready(function() {
+
+        // Flash message SweetAlerts
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                html: '<?= session()->getFlashdata('success') ?>',
+            });
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                html: '<?= session()->getFlashdata('error') ?>',
+            });
+        <?php endif; ?>
+    });
+</script>
 <?php $this->endSection(); ?>

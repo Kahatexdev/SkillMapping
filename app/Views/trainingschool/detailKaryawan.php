@@ -16,23 +16,16 @@
                                 Data Karyawan
                             </h4>
                         </div>
-                        <!-- Button Karyawan -->
                         <div>
                             <div class="d-flex justify-content-between">
 
-                                <a href="<?= base_url('TrainingSchool/exportKaryawan/' . $area) ?>"
-                                    class="btn bg-gradient-primary btn-sm me-2">
-                                    <!-- icon download -->
-                                    <i class="fas fa-file-export text-lg opacity-10" aria-hidden="true"></i>
-                                    Export Excel
-                                </a>
-                                <a href="<?= base_url('TrainingSchool/downloadTemplateKaryawan') ?>"
-                                    class="btn bg-gradient-success btn-sm me-2">
+                                <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
+                                    class="btn bg-gradient-success me-2">
                                     <!-- icon download -->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
                                 </a>
-                                <a href="<?= base_url('TrainingSchool/karyawanCreate') ?>"
+                                <a href="<?= base_url('Monitoring/karyawanCreate') ?>"
                                     class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addKaryawan">
                                     <!-- icon tambah karyawan-->
                                     <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
@@ -163,7 +156,7 @@
                         Import Data Karyawan
                     </h5>
                     <!-- form import  data karyawan -->
-                    <form action="<?= base_url('TrainingSchool/karyawanStoreImport') ?>" method="post"
+                    <form action="<?= base_url('Monitoring/karyawanStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="upload-container">
                             <div class="upload-area" id="upload-area">
@@ -203,39 +196,41 @@
                             </thead>
                             <tbody>
                                 <?php if (!empty($karyawan)) : ?>
-                                    <?php $no = 1; ?>
-                                    <?php foreach ($karyawan as $kar) : ?>
+                                    <?php foreach ($karyawan as $karyawan) : ?>
                                         <tr>
-                                            <td><?= $no++ ?></td>
-                                            <td><?= $kar['kode_kartu'] ?></td>
-                                            <td><?= $kar['nama_karyawan'] ?></td>
-                                            <td><?= $kar['shift'] ?></td>
-                                            <td><?= $kar['warna_baju'] ?></td>
-                                            <td><?= $kar['nama_bagian'] . ' - ' . $kar['area_utama'] . ' - ' . $kar['area'] ?></td>
-                                            <td><?= $kar['status_aktif'] ?></td>
+                                            <td><?= $karyawan['id_karyawan'] ?></td>
+                                            <td><?= $karyawan['kode_kartu'] ?></td>
+                                            <td><?= $karyawan['nama_karyawan'] ?></td>
+                                            <td><?= $karyawan['shift'] ?></td>
+
+                                            <td><?= $karyawan['warna_baju'] ?></td>
+
+                                            <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area_utama'] . ' - ' . $karyawan['area'] ?></td>
+                                            <input type="hidden" name="id_bagian" value="<?= $karyawan['id_bagian'] ?>">
+                                            <td><?= $karyawan['status_aktif'] ?></td>
                                             <td>
                                                 <a class="btn btn-warning edit-btn"
-                                                    data-id="<?= $kar['id_karyawan'] ?> "
-                                                    data-kode_kartu="<?= $kar['kode_kartu'] ?>"
-                                                    data-nama="<?= $kar['nama_karyawan'] ?>"
-                                                    data-shift="<?= $kar['shift'] ?>"
-                                                    data-jenis_kelamin="<?= $kar['jenis_kelamin'] ?>"
-                                                    data-areaUtama="<?= $kar['area_utama'] ?>"
-                                                    data-area="<?= $kar['area'] ?>"
-                                                    data-libur="<?= $kar['libur'] ?>"
-                                                    data-libur_tambahan="<?= $kar['libur_tambahan'] ?>"
-                                                    data-warna_baju="<?= $kar['warna_baju'] ?>"
-                                                    data-status_baju="<?= $kar['status_baju'] ?>"
-                                                    data-tgl_lahir="<?= $kar['tgl_lahir'] ?>"
-                                                    data-tgl_masuk="<?= $kar['tgl_masuk'] ?>"
-                                                    data-nama_bagian="<?= $kar['nama_bagian'] ?>"
-                                                    data-status_aktif="<?= $kar['status_aktif'] ?>"
+                                                    data-id="<?= $karyawan['id_karyawan'] ?> "
+                                                    data-kode_kartu="<?= $karyawan['kode_kartu'] ?>"
+                                                    data-nama="<?= $karyawan['nama_karyawan'] ?>"
+                                                    data-shift="<?= $karyawan['shift'] ?>"
+                                                    data-jenis_kelamin="<?= $karyawan['jenis_kelamin'] ?>"
+                                                    data-areaUtama="<?= $karyawan['area_utama'] ?>"
+                                                    data-area="<?= $karyawan['area'] ?>"
+                                                    data-libur="<?= $karyawan['libur'] ?>"
+                                                    data-libur_tambahan="<?= $karyawan['libur_tambahan'] ?>"
+                                                    data-warna_baju="<?= $karyawan['warna_baju'] ?>"
+                                                    data-status_baju="<?= $karyawan['status_baju'] ?>"
+                                                    data-tgl_lahir="<?= $karyawan['tgl_lahir'] ?>"
+                                                    data-tgl_masuk="<?= $karyawan['tgl_masuk'] ?>"
+                                                    data-nama_bagian="<?= $karyawan['id_bagian'] ?>"
+                                                    data-status_aktif="<?= $karyawan['status_aktif'] ?>"
                                                     data-bs-toggle="modal" data-bs-target="#editUser">
                                                     <!-- icon edit -->
                                                     <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
                                                 <button class="btn bg-gradient-danger btn-sm"
-                                                    onclick="confirmDelete('<?= $kar['id_karyawan'] ?>')">
+                                                    onclick="confirmDelete('<?= $karyawan['id_karyawan'] ?>')">
                                                     <!-- icon hapus -->
                                                     <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
                                                 </button>
@@ -318,7 +313,7 @@
                                         </option>
                                         <option value="Biru">Biru
                                         </option>
-                                        <option value="Hijau">>Hijau
+                                        <option value="Hijau">Hijau
                                         </option>
                                         <option value="Kuning">
                                             Kuning
@@ -403,7 +398,7 @@
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = "<?= base_url('TrainingSchool/karyawanDelete/') ?>" + id;
+                window.location.href = "<?= base_url('Monitoring/karyawanDelete/') ?>" + id;
             }
         })
     }

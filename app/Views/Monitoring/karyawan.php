@@ -20,7 +20,7 @@
                             <div class="d-flex justify-content-between">
 
                                 <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
-                                    class="btn bg-gradient-success btn-sm me-2">
+                                    class="btn bg-gradient-success me-2">
                                     <!-- icon download -->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
@@ -206,6 +206,7 @@
                                             <td><?= $karyawan['warna_baju'] ?></td>
 
                                             <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area_utama'] . ' - ' . $karyawan['area'] ?></td>
+                                            <input type="hidden" name="id_bagian" value="<?= $karyawan['id_bagian'] ?>">
                                             <td><?= $karyawan['status_aktif'] ?></td>
                                             <td>
                                                 <a class="btn btn-warning edit-btn"
@@ -222,7 +223,7 @@
                                                     data-status_baju="<?= $karyawan['status_baju'] ?>"
                                                     data-tgl_lahir="<?= $karyawan['tgl_lahir'] ?>"
                                                     data-tgl_masuk="<?= $karyawan['tgl_masuk'] ?>"
-                                                    data-nama_bagian="<?= $karyawan['nama_bagian'] ?>"
+                                                    data-nama_bagian="<?= $karyawan['id_bagian'] ?>"
                                                     data-status_aktif="<?= $karyawan['status_aktif'] ?>"
                                                     data-bs-toggle="modal" data-bs-target="#editUser">
                                                     <!-- icon edit -->
@@ -312,7 +313,7 @@
                                         </option>
                                         <option value="Biru">Biru
                                         </option>
-                                        <option value="Hijau">>Hijau
+                                        <option value="Hijau">Hijau
                                         </option>
                                         <option value="Kuning">
                                             Kuning
