@@ -18,7 +18,12 @@
                         </div>
                         <div>
                             <div class="d-flex justify-content-between">
-
+                                <a href="<?= base_url('Monitoring/exportKaryawan/') ?>"
+                                    class="btn bg-gradient-primary me-2">
+                                    <!-- icon download -->
+                                    <i class="fas fa-file-excel text-lg opacity-10" aria-hidden="true"></i>
+                                    Export Excel
+                                </a>
                                 <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
                                     class="btn bg-gradient-success me-2">
                                     <!-- icon download -->

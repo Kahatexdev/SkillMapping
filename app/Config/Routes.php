@@ -23,6 +23,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
     $routes->post('karyawanUpdate/(:num)', 'KaryawanController::update/$1');
     $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
+    $routes->get('exportKaryawan/', 'KaryawanController::exportAll');
     // batch
     $routes->get('dataBatch', 'MonitoringController::batch');
     $routes->get('batchCreate', 'BatchController::create');
@@ -93,20 +94,18 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
-    $routes->get('getAreaUtama', 'PenilaianController::getAreaUtama');
-    $routes->get('getArea', 'PenilaianController::getArea');
-    $routes->get('getJobRole', 'PenilaianController::getJobRole');
-    $routes->get('getKaryawan', 'PenilaianController::getKaryawan');
-    $routes->post('penilaianCreate', 'PenilaianController::create');
+    $routes->post('getAreaUtama', 'PenilaianController::getAreaUtama');
+    $routes->post('getArea', 'PenilaianController::getArea');
+    $routes->post('getJobRole', 'PenilaianController::getJobRole');
+    $routes->get('penilaianCreate', 'PenilaianController::create');
     $routes->post('cekPenilaian', 'PenilaianController::cekPenilaian');
     $routes->post('penilaianStore', 'PenilaianController::store');
     $routes->get('penilaianDetail/(:num)/(:num)/(:num)', 'PenilaianController::show/$1/$2/$3');
     $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
 
     $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
-    $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
+    $routes->get('reportpenilaian', 'MonitoringController::reportpenilaian');
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
-
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 });
@@ -153,7 +152,8 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('dataKaryawan/(:any)', 'TrainingSchoolController::detailKaryawanPerArea/$1');
     $routes->get('downloadTemplateKaryawan', 'KaryawanController::downloadTemplate');
     $routes->post('karyawanStoreImport', 'KaryawanController::upload');
-    $routes->get('exportKaryawan/(:any)', 'KaryawanController::export/$1');
+    $routes->get('exportKaryawan/(:any)', 'KaryawanController::exportPerArea/$1');
+
     $routes->get('karyawanCreate', 'KaryawanController::create');
     $routes->post('karyawanStore', 'KaryawanController::store');
     $routes->get('karyawanEdit/(:num)', 'KaryawanController::edit/$1');
