@@ -95,7 +95,7 @@
                                         <select name="warna_baju" id="warna_baju" class="form-control" required>
                                             <option value="">Pilih Warna Baju</option>
                                             <option value="Putih">Putih</option>
-                                            <option value="Biru">Biru</option>
+                                            <option value="BIRU">BIRU</option>
                                             <option value="Kuning">Kuning</option>
                                             <option value="Pink">Pink</option>
                                             <option value="Coklat">Coklat</option>
@@ -110,7 +110,7 @@
                                             <option value="Harian">Harian</option>
                                             <option value="Training">Training</option>
                                             <option value="Magang">Magang</option>
-                                            <option value="Karyawan">Karyawan</option>
+                                            <option value="KARYAWAN">KARYAWAN</option>
                                             <option value="Staff">Staff</option>
                                         </select>
                                     </div>
@@ -259,7 +259,7 @@
         <div class="modal-dialog  modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Bagian</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Data Karyawan</h5>
                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -316,7 +316,7 @@
                                         <option value="">Pilih Warna Baju</option>
                                         <option value="Merah">Merah
                                         </option>
-                                        <option value="Biru">Biru
+                                        <option value="BIRU">BIRU
                                         </option>
                                         <option value="Hijau">Hijau
                                         </option>
@@ -341,8 +341,8 @@
                                         <option value="Magang">
                                             Magang
                                         </option>
-                                        <option value="Karyawan">
-                                            Karyawan</option>
+                                        <option value="KARYAWAN">
+                                            KARYAWAN</option>
                                         <option value="Staff">Staff
                                         </option>
                                     </select>

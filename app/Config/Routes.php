@@ -94,9 +94,10 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
-    $routes->post('getAreaUtama', 'PenilaianController::getAreaUtama');
-    $routes->post('getArea', 'PenilaianController::getArea');
-    $routes->post('getJobRole', 'PenilaianController::getJobRole');
+    $routes->get('getAreaUtama', 'PenilaianController::getAreaUtama');
+    $routes->get('getArea', 'PenilaianController::getArea');
+    $routes->get('getJobRole', 'PenilaianController::getJobRole');
+    $routes->get('getKaryawan', 'MandorController::getKaryawan');
     $routes->get('penilaianCreate', 'PenilaianController::create');
     $routes->post('cekPenilaian', 'PenilaianController::cekPenilaian');
     $routes->post('penilaianStore', 'PenilaianController::store');
