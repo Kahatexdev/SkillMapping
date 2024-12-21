@@ -15,9 +15,12 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
+                            <a href="<?= base_url('TrainingSchool/reportHistoryPindahKaryawan') ?>"
+                                class="btn bg-gradient-primary me-2">
+                                <!-- icon download -->
+                                <i class="fas fa-file-excel text-lg opacity-10" aria-hidden="true"></i>
+                                Export Excel
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -29,6 +32,10 @@
         <div class="col-md-12">
             <div class="card card-primary card-outline">
                 <div class="card-body">
+                    <!-- <div class="d-flex justify-content-between">
+
+                        <a href="<?= base_url('TrainingSchool/reportHistoryPindahKaryawan'); ?>" class="btn btn-success">Export Excel</a>
+                    </div> -->
                     <div class="table-responsive">
                         <table id="example1" class="table table-striped table-hover table-bordered w-100">
                             <thead>

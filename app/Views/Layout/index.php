@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="<?= base_url('assets/img/apple-icon.png') ?>">
     <link rel="icon" type="image/png" href="<?= base_url('assets/img/logo-ct.png') ?>">
     <title>
-        Skill Mapping
+        Human Resource System
     </title>
     <!--     Fonts and icons     -->
     <link href="<?php base_url('assets/fonts/open_sans_family.css') ?>" rel="stylesheet" />
@@ -97,6 +97,17 @@
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                         <ul class="navbar-nav  justify-content-end">
                             <li class="nav-item d-flex align-items-center">
+                                <a href="" class="nav-link text-body font-weight-bold px-0">
+                                    <!-- inbox -->
+                                    <i class="fas fa-envelope text-lg opacity-10 me-2 position-relative">
+                                        <span class="notification text-danger position-absolute top-5 start-100 translate-middle p-1">
+                                            <sup>2</sup>
+                                        </span>
+                                    </i>
+
+                                </a>
+                            </li>
+                            <li class="nav-item d-flex align-items-center">
                                 <a href="" data-bs-toggle="modal" data-bs-target="#LogoutModal" class=" nav-link text-body font-weight-bold px-0">
                                     <img src="<?= base_url('assets/img/user.png') ?>" alt="User Icon" width="20">
                                     <span class="d-sm-inline d-none"><?= session()->get('role') ?></span>
@@ -171,9 +182,9 @@
     <script src="<?= base_url('assets/js/plugins/perfect-scrollbar.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/plugins/smooth-scrollbar.min.js') ?>"></script>
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-    <script src="<?= base_url('assets/jquery/jquery-3.7.1.min.js') ?>"></script>
+    <!-- <script src="<?= base_url('assets/js/jquery/jquery-3.7.1.min.js') ?>"></script> -->
     <!-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> -->
-    <script src="<?= base_url('assets/jquery/jquery.dataTables.min.js') ?>"></script>
+    <script src="<?= base_url('assets/js/jquery/jquery.dataTables.min.js') ?>"></script>
     <!-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script> -->
     <script src="<?= base_url('assets/js/dataTables.buttons.min.js') ?>"></script>
     <!-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script> -->

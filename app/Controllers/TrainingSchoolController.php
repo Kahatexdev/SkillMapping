@@ -147,4 +147,6 @@ class TrainingSchoolController extends BaseController
         ];
         return view(session()->get('role') . '/historyPindahKaryawan', $data);
     }
+
+    
 }

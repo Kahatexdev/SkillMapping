@@ -29,7 +29,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Tabel Data Job Role</h5>
                         <div class="table-responsive">
-                            <table id="jobroleTable" class="table table-striped table-hover table-bordered w-100">
+                            <table id="jobroleTable" class="table table-hover table-bordered resposive w-100">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -128,7 +128,7 @@
     <!-- Scripts -->
     <script>
         $(document).ready(function() {
-            $('#jobroleTable').DataTable({});
+            // $('#jobroleTable').DataTable({});
 
             <?php if (session()->getFlashdata('success')) : ?>
                 Swal.fire({

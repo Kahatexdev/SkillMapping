@@ -1,37 +1,50 @@
 <?= $this->extend('Layout/index'); ?>
 <?= $this->section('content'); ?>
 <style>
-    /* Style untuk container dinamis */
     #jobdesc-container {
         border: 1px solid #dcdcdc;
         padding: 15px;
         border-radius: 8px;
         background-color: #f4f6f9;
-        /* Latar belakang lembut */
         margin-top: 15px;
     }
 
-    /* Style untuk setiap item jobdesc dan keterangan */
     .jobdesc-item {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         margin-bottom: 10px;
+        gap: 10px;
     }
 
-    /* Style untuk input dan select */
     .jobdesc-item select,
     .jobdesc-item input {
-        margin-right: 10px;
         flex: 1;
         border-radius: 4px;
         border: 1px solid #ced4da;
         padding: 8px;
     }
 
-    /* Tombol Add More dengan ikon + */
-    .add-more {
+    .drag-handle {
+        cursor: grab;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .drag-handle i {
+        font-size: 1.2em;
+        color: #6c757d;
+    }
+
+    .add-more,
+    .remove {
         background-color: #5cb85c;
-        /* Warna hijau lembut */
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -43,28 +56,30 @@
         font-size: 1.2em;
     }
 
-    /* Tombol Remove dengan warna netral */
     .remove {
         background-color: #dc3545;
-        /* Warna merah lembut */
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        font-size: 1.2em;
     }
 
-    /* Hover effects for buttons */
     .add-more:hover {
         background-color: #4cae4c;
     }
 
     .remove:hover {
         background-color: #c82333;
+    }
+
+    @media (max-width: 576px) {
+
+        .jobdesc-item select,
+        .jobdesc-item input {
+            flex: 1 100%;
+        }
+
+        .drag-handle,
+        .add-more,
+        .remove {
+            flex: 0;
+        }
     }
 </style>
 <div class="container-fluid py-4">
@@ -123,6 +138,7 @@
                             <div id="jobdesc-container">
                                 <?php foreach ($jobrole['keterangan'] as $index => $keterangan) : ?>
                                     <div class="input-group mb-2 jobdesc-item">
+                                        <button type="button" class="drag-handle"><i class="fas fa-grip-vertical"></i></button>
                                         <select name="keterangan[]" class="form-control mr-2" required>
                                             <option value="">Pilih Keterangan</option>
                                             <option value="KNITTER" <?= $keterangan === 'KNITTER' ? 'selected' : '' ?>>KNITTER</option>
@@ -146,7 +162,9 @@
                                         <input type="text" class="form-control" name="jobdesc[]" value="<?= $jobrole['jobdesc'][$index] ?>" required>
                                         <?php if ($index === 0) : ?>
                                             <button type="button" class="btn add-more">+</button>
+                                            <button type="button" class="btn remove">−</button>
                                         <?php else : ?>
+                                            <button type="button" class="btn add-more">+</button>
                                             <button type="button" class="btn remove">−</button>
                                         <?php endif; ?>
                                     </div>
@@ -163,14 +181,23 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <!-- JavaScript untuk menambahkan dan menghapus input dinamis -->
 <script>
     $(document).ready(function() {
-        // Fungsi untuk menambah input keterangan dan jobdesk baru
-        $('.add-more').click(function() {
+        const container = document.getElementById('jobdesc-container');
+        Sortable.create(container, {
+            animation: 150,
+            handle: '.drag-handle', // Drag hanya dapat dilakukan pada tombol handle
+            ghostClass: 'sortable-ghost',
+        });
+
+        // Event delegation untuk menambahkan input baru
+        $('#jobdesc-container').on('click', '.add-more', function() {
             $('#jobdesc-container').append(`
                 <div class="input-group mb-2 jobdesc-item">
-                    <select name="keterangan[]" class="form-control mr-2" required>
+                    <button type="button" class="drag-handle"><i class="fas fa-grip-vertical"></i></button>
+                    <select name="keterangan[]" class="form-control" required>
                         <option value="">Pilih Keterangan</option>
                         <option value="KNITTER">KNITTER</option>
                         <option value="OPERATOR">OPERATOR</option>
@@ -191,13 +218,14 @@
                         <option value="6S">6S</option>
                     </select>
                     <input type="text" class="form-control" name="jobdesc[]" placeholder="Jobdesk" required>
+                    <button type="button" class="btn add-more">+</button>
                     <button type="button" class="btn remove">−</button>
                 </div>
             `);
         });
 
-        // Fungsi untuk menghapus input keterangan dan jobdesk
-        $(document).on('click', '.remove', function() {
+        // Event delegation untuk menghapus input
+        $('#jobdesc-container').on('click', '.remove', function() {
             $(this).closest('.jobdesc-item').remove();
         });
     });

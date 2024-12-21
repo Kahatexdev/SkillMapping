@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="icon" sizes="76x76" href="<?= base_url('assets/img/key.png') ?>">
   <title>
-    Login | Skill Mapping
+    Login | Human Resource System
   </title>
   <!--     Fonts and icons     -->
   <link href="<?php echo base_url('assets/css/open_sans_family.css'); ?>" rel="stylesheet" />
@@ -37,7 +37,7 @@
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-info text-gradient">SKILL MAPPING</h3>
+                  <h3 class="font-weight-bolder text-info text-gradient">Human Resource System</h3>
                   <p class="mb-0">Enter your username and password to sign in</p>
                 </div>
                 <div class="card-body">

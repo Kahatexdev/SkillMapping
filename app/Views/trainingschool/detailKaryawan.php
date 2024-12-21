@@ -72,7 +72,7 @@
                                             <option value="A">A</option>
                                             <option value="B">B</option>
                                             <option value="C">C</option>
-                                            <option value="Non Shift">Non Shift</option>
+                                            <option value="NS">Non Shift</option>
                                         </select>
                                     </div>
                                     <div class="form-group mb-2">
@@ -287,7 +287,7 @@
                                         <option value="A">A</option>
                                         <option value="B">B</option>
                                         <option value="C">C</option>
-                                        <option value="Non Shift">Non
+                                        <option value="NS">Non
                                             Shift</option>
                                     </select>
                                 </div>
@@ -472,6 +472,7 @@
         var tgl_lahir = $(this).data('tgl_lahir');
         var tgl_masuk = $(this).data('tgl_masuk');
         var nama_bagian = $(this).data('nama_bagian');
+        // console.log(nama_bagian);
         var status_aktif = $(this).data('status_aktif');
 
         $('#ModalEdit').find('form').attr('action', '<?= base_url('TrainingSchool/karyawanUpdate/') ?>' + id);
@@ -492,5 +493,78 @@
         $('#ModalEdit').modal('show'); // Show the modal
     });
 </script>
+<script>
+    $(document).on('click', '.edit-btn', function() {
+        // Ambil data nama_bagian lama
+        var bagianOld = $(this).data('nama_bagian');
+        console.log('Bagian Old:', bagianOld);
+
+        // Simpan data bagian lama ke elemen dropdown
+        $('#bagian').data('nama_bagian', bagianOld);
+    });
+
+    $(document).on('change', '#bagian', function() {
+        var readonlyInputIdOld = 'readonlyInputOld';
+        var readonlyInputIdNew = 'readonlyInputNew';
+        var tgl_pindah = 'tgl_pindah';
+        var keterangan = 'keterangan';
+
+        // Ambil nilai lama
+        var oldValue = $('#bagian').data('nama_bagian');
+        // console.log('Old Value:', oldValue);
+
+        // Ambil nilai baru dengan menghapus spasi ekstra
+        // var tes = $('#ModalEdit').find('#bagian').val(oldValue);
+        var newValue = $(this).find(':selected').text().trim();
+        // console.log('Selected Value:', newValue);
+
+        // Hapus elemen readonly sebelumnya
+        $('#' + readonlyInputIdOld).remove();
+        $('#' + readonlyInputIdNew).remove();
+        $('#' + tgl_pindah).remove();
+        $('#' + keterangan).remove();
+
+        // Tampilkan nilai lama dan baru
+        var readonlyInputOld = `
+    <div class="form-group mb-2" id="${readonlyInputIdOld}">
+        <label for="readonly_bagian_old">Bagian Lama</label>
+        <input type="text" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
+    </div>`;
+
+        var readonlyInputNew = `
+    <div class="form-group mb-2" id="${readonlyInputIdNew}">
+        <label for="readonly_bagian_new">Bagian Baru</label>
+        <input type="text" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
+    </div>`;
+
+        var tgl_pindah = `
+    <div class="form-group mb-2" id="${tgl_pindah}">
+        <label for="tgl_pindah">Tanggal Pindah</label>
+        <input type="date" class="form-control" name="tgl_pindah" id="tgl_pindah" required>
+    </div>`;
+
+        var keterangan = `
+    <div class="form-group mb-2" id="${keterangan}">
+        <label for="keterangan">Keterangan</label>
+        <textarea class="form-control" name="keterangan" id="keterangan" required></textarea>
+    </div>`;
+
+
+        $(this).closest('.form-group').before(readonlyInputOld + readonlyInputNew + tgl_pindah + keterangan);
+    });
+
+    $(document).on('click', '.edit-btn', function() {
+        var bagianOld = $(this).data('nama_bagian');
+        console.log('Bagian Old (Saat Klik Edit):', bagianOld);
+        $('#bagian').data('nama_bagian', bagianOld);
+
+        // Verifikasi data yang diset
+        console.log('Data nama_bagian diset ke #bagian:', $('#bagian').data('nama_bagian'));
+    });
+</script>
+
+
+
+
 
 <?php $this->endSection(); ?>

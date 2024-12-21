@@ -154,16 +154,17 @@
         });
 
         // Validasi sebelum submit form
-        $('form').on('submit', function(e) {
-            if ($('#karyawan').val().length === 0) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    text: 'Harap pilih minimal satu karyawan sebelum melanjutkan.',
-                });
-            }
-        });
+        // $('form').on('submit', function(e) {
+        //     if ($('#karyawan').val().length === 0) {
+        //         e.preventDefault();
+        //         // Swal.fire({
+        //         //     icon: 'error',
+        //         //     title: 'Oops!',
+        //         //     text: 'Harap pilih minimal satu karyawan sebelum melanjutkan.',
+        //         // });
+        //         console.log('Harap pilih minimal satu karyawan sebelum melanjutkan.');
+        //     }
+        // });
     });
 </script>
 <script>

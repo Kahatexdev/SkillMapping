@@ -98,14 +98,14 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('getArea', 'PenilaianController::getArea');
     $routes->get('getJobRole', 'PenilaianController::getJobRole');
     $routes->get('getKaryawan', 'MandorController::getKaryawan');
-    $routes->get('penilaianCreate', 'PenilaianController::create');
+    $routes->post('penilaianCreate', 'PenilaianController::create');
     $routes->post('cekPenilaian', 'PenilaianController::cekPenilaian');
     $routes->post('penilaianStore', 'PenilaianController::store');
     $routes->get('penilaianDetail/(:num)/(:num)/(:num)', 'PenilaianController::show/$1/$2/$3');
     $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
 
     $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
-    $routes->get('reportpenilaian', 'MonitoringController::reportpenilaian');
+    $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
@@ -162,6 +162,7 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('karyawanDelete/(:num)', 'KaryawanController::delete/$1');
 
     $routes->get('historyPindahKaryawan', 'TrainingSchoolController::historyPindahKaryawan');
+    $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
 });
 
 

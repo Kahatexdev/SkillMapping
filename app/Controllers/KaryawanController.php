@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Week;
 use PhpOffice\PhpSpreadsheet\Style\{Border, Alignment, Fill};
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use App\Models\HistoryPindahKaryawanModel;
 
 use App\Models\KaryawanModel;
 
@@ -18,11 +19,13 @@ class KaryawanController extends BaseController
 {
     protected $request;
     protected $karyawanModel;
+    protected $historyPindahKaryawanModel;
 
     public function __construct()
     {
         $this->request = \Config\Services::request();
         $this->karyawanModel = new KaryawanModel();
+        $this->historyPindahKaryawanModel = new HistoryPindahKaryawanModel();
     }
     public function index() {}
 
@@ -421,6 +424,23 @@ class KaryawanController extends BaseController
         ];
 
         $karyawanModel->update($id, $data);
+
+        $oldBagian = $this->request->getPost('readonly_bagian_old');
+        $tgl_pindah = $this->request->getPost('tgl_pindah');
+        $keterangan = $this->request->getPost('keterangan');
+        $item = [
+            'id_karyawan' => $id,
+            'id_bagian_asal' => $oldBagian,
+            'id_bagian_baru' => $bagian['id_bagian'],
+            'tgl_pindah' => $tgl_pindah,
+            'keterangan' => $keterangan,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_by' => session()->get('id_user')
+        ];
+        // dd ($item);
+        $this->historyPindahKaryawanModel->insert($item);
+
+
         $role = session()->get('role');
         if ($role === 'Monitoring') {
             return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');

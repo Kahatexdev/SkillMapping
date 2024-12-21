@@ -300,7 +300,7 @@ class PenilaianController extends BaseController
 
         // dd ($data);
         $this->db->getLastQuery();
-        return view('penilaian/create', $data);
+        return view('Penilaian/create', $data);
     }
 
 
@@ -830,6 +830,110 @@ class PenilaianController extends BaseController
         // Membuat file Excel
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
+        $spreadsheet->getActiveSheet()->setTitle('REPORT BATCH');
+
+        // set header
+        $spreadsheet->getActiveSheet()->mergeCells('A1:I1');
+        $spreadsheet->getActiveSheet()->setCellValue('A1', 'REPORT PENILAIAN BATCH ' . $area_utama);
+        $spreadsheet->getActiveSheet()->mergeCells('A2:I2');
+        $spreadsheet->getActiveSheet()->setCellValue('A2', 'DEPARTEMEN KAOS KAKI');
+
+        $bulan = '';
+        foreach ($getBulan as $b) {
+            $bulan .= date('M', strtotime($b['end_date'])) . ' ';
+        }
+        $spreadsheet->getActiveSheet()->mergeCells('A3:I3');
+        $spreadsheet->getActiveSheet()->setCellValue('A3', '(PERIODE ' . trim($bulan) . ')');
+        // Set font header
+        $spreadsheet->getActiveSheet()->getStyle('A1:A3')->getFont()->setName('Times New Roman');
+        $spreadsheet->getActiveSheet()->getStyle('A1:A3')->getFont()->setBold(true)->setSize(16);
+        $spreadsheet->getActiveSheet()->getStyle('A1:A3')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        
+        // Set header kolom
+        $spreadsheet->getActiveSheet()->setCellValue('A4', 'NO');
+        $spreadsheet->getActiveSheet()->setCellValue('B4', 'KODE KARTU');
+        $spreadsheet->getActiveSheet()->setCellValue('C4', 'NAMA KARYAWAN');
+        $spreadsheet->getActiveSheet()->setCellValue('D4', 'L/P');
+        $spreadsheet->getActiveSheet()->setCellValue('E4', 'TGL. MASUK KERJA');
+        $spreadsheet->getActiveSheet()->setCellValue('F4', 'BAGIAN');
+        $spreadsheet->getActiveSheet()->setCellValue('G4', 'POINT');
+        $spreadsheet->getActiveSheet()->setCellValue('H4', 'GRADE');
+        $spreadsheet->getActiveSheet()->setCellValue('I4', 'AREA');
+
+        // set font header kolom
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getFont()->setName('Times New Roman');
+        // Set font size header kolom
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getFont()->setSize(12);
+        // Set style header kolom
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getAlignment()
+            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        // Set style border header kolom
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        
+        // set column dimension manual
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(5); // NO
+        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(10); // KODE KARTU
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(25); // NAMA KARYAWAN
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(5); // L/P
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(10); // TGL. MASUK KERJA
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(15); // BAGIAN
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(10); // POINT
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(10); // GRADE
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(10); // AREA
+
+        // wrap text
+        $spreadsheet->getActiveSheet()->getStyle('A4:I4')->getAlignment()->setWrapText(true);
+        // Set data
+        $row = 5;
+        $no = 1;
+
+        foreach ($reportbatch as $p) {
+            $spreadsheet->getActiveSheet()->setCellValue('A' . $row, $no);
+            $spreadsheet->getActiveSheet()->setCellValue('B' . $row, $p['kode_kartu']);
+            $spreadsheet->getActiveSheet()->setCellValue('C' . $row, $p['nama_karyawan']);
+            $spreadsheet->getActiveSheet()->setCellValue('D' . $row, $p['jenis_kelamin']);
+            $spreadsheet->getActiveSheet()->setCellValue('E' . $row, $p['tgl_masuk']);
+            $spreadsheet->getActiveSheet()->setCellValue('F' . $row, $p['nama_bagian']);
+            $spreadsheet->getActiveSheet()->setCellValue('G' . $row, 1);
+            $spreadsheet->getActiveSheet()->setCellValue('H' . $row, $p['index_nilai']);
+            $spreadsheet->getActiveSheet()->setCellValue('I' . $row, $p['area_utama']);
+
+            $row++;
+            $no++;
+        }
+
+        // set font data
+        $spreadsheet->getActiveSheet()->getStyle('A5:I' . ($row - 1))->getFont()->setName('Times New Roman');
+
+        // set font size data
+        $spreadsheet->getActiveSheet()->getStyle('A5:I' . ($row - 1))->getFont()->setSize(10);
+
+        // Set style border data
+        $spreadsheet->getActiveSheet()->getStyle('A5:I' . ($row - 1))
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        // Set auto-size columns
+        // foreach (range('A', 'I') as $col) {
+        //     $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+        // }
+
+        // wrap text
+        $spreadsheet->getActiveSheet()->getStyle('A1:I' . ($row - 1))->getAlignment()->setWrapText(true);
+
+        // text center
+        $spreadsheet->getActiveSheet()->getStyle('A1:I' . ($row - 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
         foreach ($bagianList as $bagian) {
             $dataBagian = array_filter($reportbatch, function ($item) use ($bagian) {
                 return $item['nama_bagian'] === $bagian;
@@ -839,9 +943,10 @@ class PenilaianController extends BaseController
             $sheet->setTitle($bagian);
 
             // Header utama
-            $sheet->mergeCells('A1:L1');
+            $sheet->mergeCells('A1:Q1');
             $sheet->setCellValue('A1', 'REPORT PENILAIAN ' . $bagian . ' AREA ' . $area_utama);
-            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+            $sheet->getStyle('A1')->getFont()->setName('Times New Roman');
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
             $sheet->getStyle('A1')->getAlignment()
                 ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
@@ -880,12 +985,30 @@ class PenilaianController extends BaseController
             $sheet->setCellValue(chr(ord($endColBulan) + 2) . '3', 'RATA-RATA POINT AREA');
             $sheet->mergeCells(chr(ord($endColBulan) + 3) . '3:' . chr(ord($endColBulan) + 3) . '4');
             $sheet->setCellValue(chr(ord($endColBulan) + 3) . '3', 'GRADE');
+            $sheet->mergeCells(chr(ord($endColBulan) + 4) . '3:' . chr(ord($endColBulan) + 4) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 4) . '3', 'PROD');
+            $sheet->mergeCells(chr(ord($endColBulan) + 5) . '3:' . chr(ord($endColBulan) + 5) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 5) . '3', 'BS');
+            $sheet->mergeCells(chr(ord($endColBulan) + 6) . '3:' . chr(ord($endColBulan) + 6) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 6) . '3', 'USED NEEDLE');   
+            $sheet->mergeCells(chr(ord($endColBulan) + 7) . '3:' . chr(ord($endColBulan) + 7) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 7) . '3', 'POINT');         
+            $sheet->mergeCells(chr(ord($endColBulan) + 8) . '3:' . chr(ord($endColBulan) + 8) . '4');
+            $sheet->setCellValue(chr(ord($endColBulan) + 8) . '3', 'GRADE AKHIR');
 
-            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 3) . '4')
+            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 8) . '4')
                 ->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
+            // Set style untuk header kolom
+            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 8) . '4')
+                ->getFont()
+                ->setName('Times New Roman');
+            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 8) . '4')
+                ->getFont()
+                ->setBold(true)
+                ->setSize(12);
             // Tulis data
             $row = 5;
             $no = 1;
@@ -945,12 +1068,22 @@ class PenilaianController extends BaseController
                 $data[] = 1; // Kolom tambahan (bisa untuk catatan)
                 $data[] = $average;
                 $data[] = $grade;
+                $data[] = "";
+                $data[] = "";
+                $data[] = "";
+                $data[] = $average;
+                $data[] = $grade;
 // dd ($data, $total, $count);
                 $sheet->fromArray($data, null, 'A' . $row);
-                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 3) . $row)
+                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
                     ->getBorders()
                     ->getAllBorders()
                     ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                
+                // set font data
+                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)->getFont()->setName('Times New Roman');
+                // Set font size data
+                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)->getFont()->setSize(10);
                 $row++;
                 $no++;
             }
@@ -963,13 +1096,13 @@ class PenilaianController extends BaseController
             $sheet->setCellValue('C' . $row, $no - 1);
             $sheet->setCellValue('D' . $row, 'org');
 
-            $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 3) . $row)
+            $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
                 ->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             // Atur kolom yang harus di tengah
-            $columnsCenter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+            $columnsCenter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
             foreach ($columnsCenter as $col) {
                 $sheet->getStyle($col . '1:' . $col . $row)
                     ->getAlignment()
@@ -985,6 +1118,12 @@ class PenilaianController extends BaseController
             $sheet->getColumnDimension('E')->setWidth(15);
             $sheet->getColumnDimension('J')->setWidth(10);
             $sheet->getColumnDimension('K')->setWidth(10);
+            $sheet->getColumnDimension('L')->setWidth(10);
+            $sheet->getColumnDimension('M')->setWidth(10);
+            $sheet->getColumnDimension('N')->setWidth(10);
+            $sheet->getColumnDimension('O')->setWidth(10);
+            $sheet->getColumnDimension('P')->setWidth(10);
+            $sheet->getColumnDimension('Q')->setWidth(10);
 
             // Wrap text
             $sheet->getStyle('B3:B4')->getAlignment()->setWrapText(true);
@@ -992,6 +1131,8 @@ class PenilaianController extends BaseController
             $sheet->getStyle('E3:E4')->getAlignment()->setWrapText(true);
             $sheet->getStyle('J3:J4')->getAlignment()->setWrapText(true);
             $sheet->getStyle('K3:K4')->getAlignment()->setWrapText(true);
+            $sheet->getStyle('O3:O4')->getAlignment()->setWrapText(true);
+            $sheet->getStyle('Q3:Q4')->getAlignment()->setWrapText(true);
         }
 
         // Simpan file Excel
