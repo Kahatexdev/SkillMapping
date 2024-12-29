@@ -337,4 +337,41 @@ class SummaryRossoController extends BaseController
         $this->summaryRosso->delete($id);
         return redirect()->to(base_url('Monitoring/dataRosso'))->with('success', 'Data successfully deleted.');
     }
+
+    public function summaryRosso()
+    {
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Rosso',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active'
+        ];
+
+        // dd ($summaryRosso);
+        return view('Rosso/summaryPerPeriode', $data);
+    }
+
+    public function tampilPerBatch()
+    {
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Rosso',
+            'active1' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => ''
+        ];
+
+        return view('Rosso/tampilPerBatch', $data);
+    }
 }

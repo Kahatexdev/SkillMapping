@@ -92,9 +92,8 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form action="<?= base_url($role . '/userStore'); ?>" method="post">
-
+                <div class="modal-body ">
+                    <form action="<?= base_url('Monitoring/userAdd'); ?>" method="post">
                         <div class="row">
                             <div class="col-lg-12 col-sm-12">
                                 <div class="form-group">
@@ -114,119 +113,115 @@
                                         <option value="TrainingSchool">Training School</option>
                                     </select>
                                 </div>
-
                             </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn bg-gradient-primary">Save</button>
                         </div>
                     </form>
+                                    
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
-        <div class="modal-dialog  modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
-                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="<?= base_url('Monitoring/userUpdate' . $user['id_user']); ?>" method="post">
-
-                        <div class="row">
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="form-group">
-                                    <label for="col-lg-6 col-sm-12">Username</label>
-                                    <input type="text" class="form-control" name="username">
-                                </div>
-                                <div class="form-group">
-                                    <label for="col-lg-6 col-sm-12">Password</label>
-                                    <input type="password" class="form-control" name="password">
-                                </div>
-                                <div class="form-group">
-                                    <label for="role">Role</label>
-                                    <select name="role" id="role" class="form-control" required>
-                                        <option value="">Pilih Role</option>
-                                        <option value="Mandor">Mandor</option>
-                                        <option value="Monitoring">Monitoring</option>
-                                        <option value="TrainingSchool">Training School</option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-
+            <div class="modal fade  bd-example-modal-lg" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEdit" aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                            <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn bg-gradient-primary">Save</button>
+                        <div class="modal-body">
+                            <form action="<?= base_url('Monitoring/userUpdate' . $user['id_user']); ?>" method="post">
+
+                                <div class="row">
+                                    <div class="col-lg-12 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="col-lg-6 col-sm-12">Username</label>
+                                            <input type="text" class="form-control" name="username">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="col-lg-6 col-sm-12">Password</label>
+                                            <input type="password" class="form-control" name="password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="role">Role</label>
+                                            <select name="role" id="role" class="form-control" required>
+                                                <option value="">Pilih Role</option>
+                                                <option value="Mandor">Mandor</option>
+                                                <option value="Monitoring">Monitoring</option>
+                                                <option value="TrainingSchool">Training School</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn bg-gradient-primary">Save</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- modals -->
+            <!-- modals -->
 
-    <script type="text/javascript">
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "<?= base_url('Monitoring/userDelete/') ?>" + id;
+            <script type="text/javascript">
+                function confirmDelete(id) {
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data yang dihapus tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "<?= base_url('Monitoring/userDelete/') ?>" + id;
+                        }
+                    })
                 }
-            })
-        }
-    </script>
-    <script>
-        $(document).ready(function() {
-            // Initialize DataTable with export options
-            $('#userTable').DataTable({});
+            </script>
+            <script>
+                $(document).ready(function() {
+                    // Initialize DataTable with export options
+                    $('#userTable').DataTable({});
 
-            // Flash message SweetAlerts
-            <?php if (session()->getFlashdata('success')) : ?>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: '<?= session()->getFlashdata('success') ?>',
+                    // Flash message SweetAlerts
+                    <?php if (session()->getFlashdata('success')) : ?>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '<?= session()->getFlashdata('success') ?>',
+                        });
+                    <?php endif; ?>
+
+                    <?php if (session()->getFlashdata('error')) : ?>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: '<?= session()->getFlashdata('error') ?>',
+                        });
+                    <?php endif; ?>
                 });
-            <?php endif; ?>
 
-            <?php if (session()->getFlashdata('error')) : ?>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: '<?= session()->getFlashdata('error') ?>',
+                $('.edit-btn').click(function() {
+                    var id = $(this).data('id');
+                    var username = $(this).data('usn');
+                    var pass = $(this).data('pass');
+                    var area = $(this).data('area');
+                    $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/userUpdate/') ?>' + id);
+                    $('#ModalEdit').find('input[name="username"]').val(username);
+                    $('#ModalEdit').find('input[name="password"]').val(pass);
+                    $('#ModalEdit').modal('show'); // Show the modal
                 });
-            <?php endif; ?>
-        });
+            </script>
 
-        $('.edit-btn').click(function() {
-            var id = $(this).data('id');
-            var username = $(this).data('usn');
-            var pass = $(this).data('pass');
-            var area = $(this).data('area');
-            $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/userUpdate/') ?>' + id);
-            $('#ModalEdit').find('input[name="username"]').val(username);
-            $('#ModalEdit').find('input[name="password"]').val(pass);
-            $('#ModalEdit').modal('show'); // Show the modal
-        });
-    </script>
-
-    <?php $this->endSection(); ?>
+            <?php $this->endSection(); ?>

@@ -10,7 +10,7 @@
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Human Resource System</p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    Summary Rosso Per Area
+                                    Summary Jarum Per Area
                                 </h5>
                             </div>
                         </div>
@@ -28,7 +28,7 @@
     <div class="row">
         <?php foreach ($tampilperarea as $key => $ar) : ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url($role . '/dataRosso/' . $ar['area_utama']) ?>">
+                <a href="<?= base_url($role . '/dataJarum/' . $ar['area_utama']) ?>">
                     <div class="card">
                         <div class="card-body p-3">
                             <div class="row">

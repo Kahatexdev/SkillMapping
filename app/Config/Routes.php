@@ -74,6 +74,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('jobroleDelete/(:num)', 'JobroleController::delete/$1');
     // bsmc
     $routes->get('dataBsmc', 'MonitoringController::bsmc');
+    $routes->get('dataBsmc/KK1', 'BsMcController::tampilPerBatch');
+    $routes->get('summaryBsmc', 'BsMcController::summaryBsmc');
     $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
     $routes->post('bsmcStoreImport', 'BsMcController::upload');
     $routes->get('bsmcCreate', 'BsMcController::create');
@@ -83,6 +85,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
     // summary rosso
     $routes->get('dataRosso', 'MonitoringController::rosso');
+    $routes->get('dataRosso/KK1', 'SummaryRossoController::tampilPerBatch');
+    $routes->get('summaryRosso', 'SummaryRossoController::summaryRosso');
     $routes->get('downloadTemplateRosso', 'SummaryRossoController::downloadTemplate');
     $routes->post('rossoStoreImport', 'SummaryRossoController::upload');
     $routes->get('rossoCreate', 'SummaryRossoController::create');
@@ -92,6 +96,11 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('rossoDelete/(:num)', 'SummaryRossoController::delete/$1');
     $routes->get('reportSummaryRosso', 'MonitoringController::reportSummaryRosso');
     $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
+    // summary jarum
+    $routes->get('dataJarum', 'MonitoringController::jarum');
+    $routes->get('dataJarum/KK1', 'JarumController::tampilPerBatch');
+    $routes->get('summaryJarum', 'JarumController::summaryJarum');
+    $routes->get('excelSummaryJarum', 'JarumController::excelSummaryJarum');
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
     $routes->get('getAreaUtama', 'PenilaianController::getAreaUtama');
@@ -107,6 +116,10 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
     $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
+    $routes->get('reportPenilaian/(:segment)', 'PenilaianController::penilaianPerArea/$1');
+    $routes->get('reportPenilaian/(:segment)/(:num)', 'PenilaianController::penilaianPerPeriode/$1/$2');
+    $routes->get('reportPenilaian/(:segment)/(:segment)/(:segment)', 'PenilaianController::excelReportPerPeriode/$1/$2/$3');
+    $routes->get('reportExcel/(:segment)/(:segment)/(:segment)', 'PenilaianController::reportExcel/$1/$2/$3');
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 });

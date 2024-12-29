@@ -404,4 +404,43 @@ class BsMcController extends BaseController
 
         return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', 'Data karyawan berhasil dihapus.');
     }
+
+    public function tampilPerBatch()
+    {
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Bs Mesin',
+            'active1' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => ''
+
+        ];
+
+        return view('Bsmc/tampilPerBatch', $data);
+    }
+
+    public function summaryBsmc()
+    {
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Bs Mesin',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active'
+
+        ];
+
+        // dd ($summaryRosso);
+        return view('Bsmc/summaryPerPeriode', $data);
+    } 
 }

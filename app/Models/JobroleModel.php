@@ -118,4 +118,14 @@ class JobroleModel extends Model
     {
         return $this->findAll();
     }
+
+    public function getJobRolesByArea($area_utama)
+    {
+        return $this->db->table('job_role')
+            ->select('job_role.id_jobrole, job_role.id_bagian, job_role.jobdesc, job_role.keterangan, bagian.nama_bagian, bagian.area_utama, bagian.area')
+            ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
+            ->where('bagian.area_utama', $area_utama)
+            ->get()
+            ->getResultArray();
+    }
 }

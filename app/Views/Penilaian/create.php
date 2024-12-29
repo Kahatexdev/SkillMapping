@@ -186,7 +186,7 @@
                                     <tbody>
                                         <?php foreach ($deskripsiList as $deskripsi) : ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8') ?></td>
+                                                <td class="text-wrap"><?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8') ?></td>
                                                 <td>
                                                     <input type="number" class="form-control nilai-input" data-karyawan-id="<?= $k['id_karyawan'] ?>" data-jobdesc="<?= htmlspecialchars($deskripsi, ENT_QUOTES, 'UTF-8') ?>" name="nilai[<?= $k['id_karyawan'] ?>][<?= $deskripsi ?>]" placeholder="Nilai" min="1" max="6" required>
                                                 </td>

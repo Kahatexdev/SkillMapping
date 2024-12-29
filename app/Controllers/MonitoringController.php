@@ -354,8 +354,35 @@ class MonitoringController extends BaseController
     }
     public function bsmc()
     {
-        $bsmc = $this->bsmcmodel->getKaryawan();
-        // dd($bsmc);
+        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $sort = [
+            'KK1',
+            'KK2',
+            'KK5',
+            'KK7',
+            'KK8',
+            'KK9',
+            'KK10',
+            'KK11'
+        ];
+        // dd($tampilperarea);
+        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+        // Urutkan data menggunakan usort
+        usort($tampilperarea, function ($a, $b) use ($sort) {
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
+
+            // Jika tidak ditemukan, letakkan di akhir
+            $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
+            $pos_b = ($pos_b === false) ? PHP_INT_MAX : $pos_b;
+
+            return $pos_a - $pos_b;
+        });
+
+        // $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
+        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        // $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
+        // dd($reportbatch);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Bs Mesin',
@@ -365,17 +392,49 @@ class MonitoringController extends BaseController
             'active4' => '',
             'active5' => '',
             'active6' => '',
-            'active7' => 'active',
-            'bsmc' => $bsmc
-
+            'active7' => '',
+            'active8' => '',
+            'active9' => 'active',
+            // 'reportbatch' => $reportbatch,
+            // 'getArea' => $getArea,
+            // 'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea
+            // 'area' => $area
         ];
+        // dd ($getBatch);
         return view(session()->get('role') . '/bsmc', $data);
     }
     public function rosso()
     {
-        $summaryRosso = $this->summaryRosso->getData();
-        $periode = $this->periodeModel->getPeriode();
-        $karyawan = $this->karyawanmodel->getBagianRosso();
+        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $sort = [
+            'KK1',
+            'KK2',
+            'KK5',
+            'KK7',
+            'KK8',
+            'KK9',
+            'KK10',
+            'KK11'
+        ];
+        // dd($tampilperarea);
+        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+        // Urutkan data menggunakan usort
+        usort($tampilperarea, function ($a, $b) use ($sort) {
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
+
+            // Jika tidak ditemukan, letakkan di akhir
+            $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
+            $pos_b = ($pos_b === false) ? PHP_INT_MAX : $pos_b;
+
+            return $pos_a - $pos_b;
+        });
+
+        // $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
+        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        // $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
+        // dd($reportbatch);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Rosso',
@@ -386,15 +445,68 @@ class MonitoringController extends BaseController
             'active5' => '',
             'active6' => '',
             'active7' => '',
-            'active8' => 'active',
-            'summaryRosso' => $summaryRosso,
-            'periode' => $periode,
-            'karyawan' => $karyawan
-
+            'active8' => '',
+            'active9' => 'active',
+            // 'reportbatch' => $reportbatch,
+            // 'getArea' => $getArea,
+            // 'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea
+            // 'area' => $area
         ];
-
-        // dd ($summaryRosso);
+        // dd ($getBatch);
         return view(session()->get('role') . '/rosso', $data);
+    }
+    public function jarum()
+    {
+        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $sort = [
+            'KK1',
+            'KK2',
+            'KK5',
+            'KK7',
+            'KK8',
+            'KK9',
+            'KK10',
+            'KK11'
+        ];
+        // dd($tampilperarea);
+        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+        // Urutkan data menggunakan usort
+        usort($tampilperarea, function ($a, $b) use ($sort) {
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
+
+            // Jika tidak ditemukan, letakkan di akhir
+            $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
+            $pos_b = ($pos_b === false) ? PHP_INT_MAX : $pos_b;
+
+            return $pos_a - $pos_b;
+        });
+
+        // $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
+        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        // $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
+        // dd($reportbatch);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Jarum',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'active9' => 'active',
+            // 'reportbatch' => $reportbatch,
+            // 'getArea' => $getArea,
+            // 'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea
+            // 'area' => $area
+        ];
+        // dd ($getBatch);
+        return view(session()->get('role') . '/jarum', $data);
     }
     public function penilaian()
     {
@@ -456,10 +568,33 @@ class MonitoringController extends BaseController
 
     public function reportpenilaian()
     {
-        $absen = $this->absenmodel->getReportPenilaian();
-        $penilaian = $this->penilaianmodel->getPenilaian();
+        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $sort = [
+            'KK1',
+            'KK2',
+            'KK5',
+            'KK7',
+            'KK8',
+            'KK9',
+            'KK10',
+            'KK11'
+        ];
+        // dd($tampilperarea);
+        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+        // Urutkan data menggunakan usort
+        usort($tampilperarea, function ($a, $b) use ($sort) {
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
 
-        // dd($area);
+            // Jika tidak ditemukan, letakkan di akhir
+            $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
+            $pos_b = ($pos_b === false) ? PHP_INT_MAX : $pos_b;
+
+            return $pos_a - $pos_b;
+        });
+
+        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        // dd($reportbatch);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Report Penilaian',
@@ -472,11 +607,11 @@ class MonitoringController extends BaseController
             'active7' => '',
             'active8' => '',
             'active9' => 'active',
-            'absen' => $absen,
-            'penilaian' => $penilaian
+            'getArea' => $getArea,
+            'tampilperarea' => $tampilperarea
             // 'area' => $area
         ];
-        // dd ($absen);
+        // dd ($getBatch);
         return view(session()->get('role') . '/reportpenilaian', $data);
     }
 
@@ -489,7 +624,9 @@ class MonitoringController extends BaseController
             'KK5',
             'KK7',
             'KK8',
-            'KK9'
+            'KK9',
+            'KK10',
+            'KK11'
         ];
         // dd($tampilperarea);
         // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
