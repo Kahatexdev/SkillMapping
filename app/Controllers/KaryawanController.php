@@ -174,16 +174,16 @@ class KaryawanController extends BaseController
                 }
 
                 // Validasi nama karyawan
-                if (empty($namaKaryawan)) {
-                    $isValid = false;
-                    $errorMessage .= "Nama Karyawan harus diisi. ";
-                } else {
-                    $karyawan = $karyawanModel->where('nama_karyawan', $namaKaryawan)->first();
-                    if ($karyawan) {
-                        $isValid = false;
-                        $errorMessage .= "Nama Karyawan sudah ada. ";
-                    }
-                }
+                // if (empty($namaKaryawan)) {
+                //     $isValid = false;
+                //     $errorMessage .= "Nama Karyawan harus diisi. ";
+                // } else {
+                //     $karyawan = $karyawanModel->where('nama_karyawan', $namaKaryawan)->where('kode_kartu', $kodeKartu)->first();
+                //     if ($karyawan) {
+                //         $isValid = false;
+                //         $errorMessage .= "Nama Karyawan dan Kode Kartu sudah ada. ";
+                //     }
+                // }
 
                 // Validasi shift
                 if (empty($shift)) {

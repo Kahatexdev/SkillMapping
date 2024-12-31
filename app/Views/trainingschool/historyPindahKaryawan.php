@@ -40,7 +40,7 @@
                         <table id="example1" class="table table-striped table-hover table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>No</th>
+                                    <th>Kode Kartu</th>
                                     <th>Nama Karyawan</th>
                                     <th>Bagian Asal</th>
                                     <th>Bagian Baru</th>
@@ -50,10 +50,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $no = 1; ?>
                                 <?php foreach ($historyPindahKaryawan as $row): ?>
                                     <tr>
-                                        <td><?= $no++; ?></td>
+                                        <td><?= esc($row['kode_kartu']); ?></td>
                                         <td><?= esc($row['nama_karyawan']); ?></td>
                                         <td><?= esc($row['bagian_asal']) . '-' . esc($row['area_utama_asal']) . '-' . esc($row['area_asal']); ?></td>
                                         <td><?= esc($row['bagian_baru']) . '-' . esc($row['area_utama_baru']) . '-' . esc($row['area_baru']); ?></td>
