@@ -191,7 +191,7 @@ class PenilaianController extends BaseController
 
     //     $json = json_encode($datauntukinputnilai);
 
-    //     return view('penilaian/create', compact('json'));
+    //     return view('Penilaian/create', compact('json'));
     // }
 
     public function index() {}
@@ -839,7 +839,7 @@ class PenilaianController extends BaseController
             'reportbatch' => $batch
         ];
 
-        return view('penilaian/reportareaperbatch', $data);
+        return view('Penilaian/reportareaperbatch', $data);
     }
     public function exelReportBatch($id_batch, $area_utama)
     {

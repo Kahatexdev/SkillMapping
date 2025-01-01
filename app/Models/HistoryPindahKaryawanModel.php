@@ -47,7 +47,7 @@ class HistoryPindahKaryawanModel extends Model
     public function getHistoryPindahKaryawan()
     {
         return $this->db->table('history_pindah_karyawan')
-            ->select('history_pindah_karyawan.*, karyawan.nama_karyawan,  bagian_asal.nama_bagian AS bagian_asal, 
+            ->select('history_pindah_karyawan.*, karyawan.kode_kartu, karyawan.nama_karyawan,  bagian_asal.nama_bagian AS bagian_asal, 
                 bagian_asal.area_utama AS area_utama_asal, 
                 bagian_asal.area AS area_asal, 
                 bagian_baru.nama_bagian AS bagian_baru, 
