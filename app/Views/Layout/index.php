@@ -97,7 +97,7 @@
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                         <ul class="navbar-nav  justify-content-end">
                             <li class="nav-item d-flex align-items-center">
-                                <a href="" class="nav-link text-body font-weight-bold px-0">
+                                <a href="<?= base_url(session()->get('role') . '/chat') ?>" class="nav-link text-body font-weight-bold px-0">
                                     <!-- inbox -->
                                     <i class="fas fa-envelope text-lg opacity-10 me-2 position-relative">
                                         <span class="notification text-danger position-absolute top-5 start-100 translate-middle p-1">

@@ -14,7 +14,9 @@ use App\Models\SummaryRossoModel;
 use App\Models\BatchModel;
 use App\Models\PeriodeModel;
 use App\Models\PenilaianModel;
+// use App\Models\UserModel;
 use App\Models\HistoryPindahKaryawanModel;
+use App\Models\MessageModel;
 
 class TrainingSchoolController extends BaseController
 {
@@ -29,6 +31,9 @@ class TrainingSchoolController extends BaseController
     protected $periodeModel;
     protected $penilaianmodel;
     protected $historyPindahKaryawanModel;
+    // protected $userModel;
+    protected $messageModel;
+    // protected $userModel;
 
     public function __construct()
     {
@@ -44,6 +49,9 @@ class TrainingSchoolController extends BaseController
         $this->periodeModel = new PeriodeModel();
         $this->penilaianmodel = new PenilaianModel();
         $this->historyPindahKaryawanModel = new HistoryPindahKaryawanModel();
+        $this->messageModel = new MessageModel();
+
+        // $this->userModel = new UserModel();
     }
 
     public function index()
@@ -148,5 +156,36 @@ class TrainingSchoolController extends BaseController
         return view(session()->get('role') . '/historyPindahKaryawan', $data);
     }
 
-    
+    public function chat()
+    {
+        $userId = session()->get('id_user'); // ID pengguna yang login
+        $contacts = $this->usermodel->findAll(); // Ambil semua kontak dari database (selain pengguna yang login)
+
+        $contactsWithLastMessage = [];
+
+        foreach ($contacts as $contact) {
+            if ($contact['id_user'] != $userId) {
+                // Ambil pesan terakhir antara pengguna yang login dan kontak ini
+                $lastMessage = $this->messageModel
+                    ->where("(sender_id = $userId AND receiver_id = {$contact['id_user']}) OR (sender_id = {$contact['id_user']} AND receiver_id = $userId)")
+                    ->orderBy('created_at', 'DESC')
+                    ->limit(1)
+                    ->first();
+
+                $contactsWithLastMessage[] = [
+                    'contact' => $contact,
+                    'last_message' => $lastMessage
+                ];
+            }
+        }
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Chat',
+            'active4' => 'active',
+            'contacts' => $contactsWithLastMessage // Kirim data kontak beserta pesan terakhir
+        ];
+
+        return view('chat/index', $data);
+    }
 }

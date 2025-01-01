@@ -9,6 +9,11 @@ $routes->get('/', 'AuthController::index');
 $routes->get('/login', 'AuthController::index');
 $routes->post('authverify', 'AuthController::login');
 $routes->get('logout', 'AuthController::logout');
+// $routes->get('TrainingSchool/conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+// $routes->post('TrainingSchool/send-message', 'ChatController::sendMessage');
+// $routes->get('TrainingSchool/getContacts/(:num)', 'ChatController::getContacts/$1');
+
+
 // $routes->get('/pengguna', 'UserController::index');
 
 $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
@@ -122,6 +127,14 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('reportExcel/(:segment)/(:segment)/(:segment)', 'PenilaianController::reportExcel/$1/$2/$3');
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
+
+    // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
+    $routes->get('contacts', 'ChatController::getContactsWithLastMessage');
+    $routes->get('chat', 'TrainingSchoolController::chat');
+
+    $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -158,6 +171,13 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->post('penilaianCreate', 'MandorController::create');
     $routes->post('penilaianStore', 'MandorController::store');
 
+    $routes->get('chat', 'TrainingSchoolController::chat');
+    // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
+    $routes->get('contacts', 'ChatController::getContactsWithLastMessage');
+
+    $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
 });
 
 $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes) {
@@ -176,6 +196,16 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
 
     $routes->get('historyPindahKaryawan', 'TrainingSchoolController::historyPindahKaryawan');
     $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
+
+    // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
+    $routes->get('contacts', 'ChatController::getContactsWithLastMessage');
+    $routes->get('chat', 'TrainingSchoolController::chat');
+
+    // $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    // $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
 });
 
 
