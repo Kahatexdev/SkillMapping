@@ -11,6 +11,58 @@
         background-color: #f9f9f9;
     }
 
+    /* Styling pesan dari pengirim */
+    .bg-primary {
+        background-color: #007bff !important;
+        color: white;
+    }
+
+    /* .bg-light {
+        background-color: #f8f9fa !important;
+        color: black;
+    } */
+
+    /* Area chat dengan padding yang memadai */
+    /* Area chat dengan padding yang memadai */
+    #chat-area {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: 500px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+    }
+
+    /* Gaya pesan untuk pengirim */
+    .d-flex.justify-content-end>.p-3 {
+        background-color: #007bff;
+        /* Warna biru */
+        color: white;
+        border-radius: 15px 15px 0 15px;
+        max-width: 75%;
+        /* Batasi lebar pesan */
+        word-wrap: break-word;
+    }
+
+    /* Gaya pesan untuk penerima */
+    .d-flex.justify-content-start>.p-3 {
+        background-color: #f1f1f1;
+        /* Warna abu terang */
+        color: black;
+        border-radius: 15px 15px 15px 0;
+        max-width: 75%;
+        /* Batasi lebar pesan */
+        word-wrap: break-word;
+    }
+
+    /* Tambahkan efek margin */
+    /* .d-flex {
+        margin: 0 10px;
+    } */
+
+
+
     /* Styling for the message input */
     #chat-input {
         width: 80%;
@@ -84,9 +136,9 @@
                                 style="cursor: pointer;">
                                 <img src="<?= base_url('assets/img/user.png') ?>" alt="Profile" class="rounded-circle" width="40">
                                 <div class="ms-3">
-                                    <h6 class="mb-0 text-truncate"><?= $contactData['contact']['username'] ?></h6>
+                                    <h6><?= htmlspecialchars($contactData['contact']['username'], ENT_QUOTES, 'UTF-8') ?></h6>
                                     <small class="text-muted">
-                                        <?= $contactData['last_message'] ? $contactData['last_message']['message'] : 'No messages yet' ?>
+                                        <?= htmlspecialchars($contactData['last_message']['message'] ?? 'No messages yet', ENT_QUOTES, 'UTF-8') ?>
                                     </small>
                                 </div>
                             </li>
@@ -101,15 +153,15 @@
             <div class="card h-100 shadow border-0">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="text-dark mb-0">Chat with <span id="chat-contact-name">Select a contact</span></h5>
-                    <button class="btn btn-sm btn-outline-dark">Options</button>
+                    <!-- <button class="btn btn-sm btn-outline-dark">Hapus Semua Pesan</button> -->
                 </div>
                 <div class="card-body overflow-auto" id="chat-area" style="height: 500px; background-color: #f8f9fa;">
                     <p class="text-muted text-center">Select a contact to view conversation</p>
                 </div>
                 <div class="card-footer">
                     <form id="chat-form" action="<?= base_url('send-message') ?>" method="POST">
-                        <input type="text" id="chat-input" name="message" placeholder="Type a message" required />
-                        <button type="submit" id="send-button">Send</button>
+                        <textarea id="chat-input" name="message" class="form-control" placeholder="Type a message" required></textarea>
+                        <button type="submit" id="send-button"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
             </div>
@@ -121,30 +173,37 @@
     // ID pengguna yang login
     let senderId = Number(<?= session('id_user') ?>);
     let receiverId = null; // ID kontak yang dipilih
+
+    function sanitizeHTML(str) {
+        var temp = document.createElement('div');
+        temp.textContent = str;
+        return temp.innerHTML;
+    }
+
     // Fungsi untuk memuat percakapan
     function loadConversation(senderId, contactId) {
         fetch(`conversation/${senderId}/${contactId}`)
             .then(response => response.json())
             .then(data => {
                 const chatArea = document.getElementById('chat-area');
-                chatArea.innerHTML = ''; // Kosongkan chat area
+                chatArea.innerHTML = ''; // Kosongkan area chat
 
                 if (data.status === 'error' || !data.messages || data.messages.length === 0) {
                     chatArea.innerHTML = '<p class="text-muted text-center">No messages yet</p>';
                     return;
                 }
 
-                const messages = data.messages;
-
-                messages.forEach(msg => {
-                    const isSender = msg.sender_id === senderId; // Pesan yang dikirim oleh sender
+                data.messages.forEach(msg => {
+                    const isSender = parseInt(msg.sender_id) === senderId; // Pastikan `sender_id` adalah angka
                     const messageDiv = document.createElement('div');
 
+                    // Tambahkan kelas berdasarkan pengirim atau penerima
                     messageDiv.className = `d-flex ${isSender ? 'justify-content-end' : 'justify-content-start'} mb-3`;
 
+                    // Tambahkan konten pesan
                     messageDiv.innerHTML = `
-                    <div class="p-3 ${isSender ? 'bg-light border' : 'bg-gradient-info text-white'} rounded w-75">
-                        <p class="mb-0">${msg.message}</p>
+                    <div class="p-3 ${isSender ? 'bg-primary text-white' : 'bg-light text-dark'} rounded w-50">
+                        <p class="mb-0">${sanitizeHTML(msg.message)}</p>
                         <small class="d-block text-end">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
                     </div>
                 `;
@@ -155,23 +214,25 @@
             })
             .catch(error => {
                 console.error('Error loading conversation:', error);
-                document.getElementById('chat-area').innerHTML = '<p class="text-danger text-center">Failed to load conversation</p>';
+                chatArea.innerHTML = '<p class="text-danger text-center">Failed to load conversation</p>';
             });
     }
 
+
+
+
     // Fungsi untuk menangani klik pada kontak
-    document.querySelectorAll('.contact-item').forEach(contact => {
-        contact.addEventListener('click', () => {
-            const contactId = contact.getAttribute('data-contact-id');
-            const contactName = contact.getAttribute('data-contact-name');
+    document.getElementById('contacts-list').addEventListener('click', (event) => {
+        const target = event.target.closest('.contact-item');
+        if (target) {
+            receiverId = target.getAttribute('data-contact-id');
+            const contactName = target.getAttribute('data-contact-name');
 
-            // Update nama kontak di header chat
-            document.getElementById('chat-contact-name').textContent = contactName;
-
-            // Muat percakapan
-            loadConversation(senderId, contactId);
-        });
+            document.getElementById('chat-contact-name').textContent = sanitizeHTML(contactName);
+            loadConversation(senderId, receiverId);
+        }
     });
+
 
     fetch('contacts')
         .then(response => response.json())

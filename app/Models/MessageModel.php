@@ -12,7 +12,8 @@ class MessageModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields = ['sender_id', 'receiver_id', 'message', 'created_at'];
+    protected $allowedFields = ['sender_id', 'receiver_id', 'message', 'created_at', 'is_read'];
+
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -135,6 +135,10 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
     $routes->post('send-message', 'ChatController::sendMessage');
     $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
+    $routes->get('unread-messages', 'ChatController::countUnreadMessages');
+    $routes->post('read-messages/(:num)', 'ChatController::markMessagesAsRead/$1');
+
+
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -178,6 +182,10 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
     $routes->post('send-message', 'ChatController::sendMessage');
     $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
+    $routes->get('unread-messages', 'ChatController::countUnreadMessages');
+    $routes->post('read-messages/(:num)', 'ChatController::markMessagesAsRead/$1');
+
+
 });
 
 $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes) {
@@ -206,6 +214,10 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
     $routes->post('send-message', 'ChatController::sendMessage');
     $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
+    $routes->get('unread-messages', 'ChatController::countUnreadMessages');
+    $routes->post('read-messages/(:num)', 'ChatController::markMessagesAsRead/$1');
+
+
 });
 
 

@@ -31,32 +31,34 @@ class ChatController extends BaseController
         return $this->response->setJSON(['status' => 'success', 'messages' => $messages]);
     }
 
-    // Mengambil daftar kontak dengan pesan terakhir
     public function getContactsWithLastMessage()
     {
         $userId = session('id_user'); // ID pengguna yang login
         $contacts = $this->userModel->findAll(); // Ambil semua kontak
 
-        $contactsWithLastMessage = [];
-
-        foreach ($contacts as $contact) {
+        $contactsWithLastMessage = array_map(function ($contact) use ($userId) {
             if ($contact['id_user'] != $userId) {
                 // Ambil pesan terakhir antara user yang login dan kontak ini
                 $lastMessage = $this->messageModel
-                    ->where("(sender_id = $userId AND receiver_id = {$contact['id_user']}) OR (sender_id = {$contact['id_user']} AND receiver_id = $userId)")
+                    ->where('(sender_id = :user_id: AND receiver_id = :contact_id:) OR (sender_id = :contact_id: AND receiver_id = :user_id:)', [
+                        'user_id' => $userId,
+                        'contact_id' => $contact['id_user']
+                    ])
                     ->orderBy('created_at', 'DESC')
-                    ->limit(1)
                     ->first();
-
-                $contactsWithLastMessage[] = [
-                    'contact' => $contact,
-                    'last_message' => $lastMessage
-                ];
+            } else {
+                $lastMessage = null;
             }
-        }
+
+            return [
+                'contact' => $contact,
+                'last_message' => $lastMessage
+            ];
+        }, $contacts);
 
         return $this->response->setJSON(['status' => 'success', 'contacts' => $contactsWithLastMessage]);
     }
+
 
 
     public function getContacts($userId)
@@ -93,4 +95,71 @@ class ChatController extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Failed to send message'])->setStatusCode(500);
         }
     }
+
+    public function countUnreadMessages()
+    {
+        $userId = session('id_user'); // ID pengguna yang login
+
+        // Hitung hanya pesan yang belum dibaca
+        $unreadCount = $this->messageModel
+            ->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->countAllResults();
+
+        log_message('debug', 'Unread messages count: ' . $unreadCount);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'unread_count' => $unreadCount
+        ]);
+    }
+
+
+
+
+    public function markMessagesAsRead($contactId)
+    {
+        $userId = session('id_user'); // ID pengguna yang login
+
+        // Query untuk memperbarui status pesan
+        $updated = $this->messageModel
+            ->where('sender_id', $contactId)
+            ->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->set(['is_read' => 1])
+            ->update();
+
+        // Debugging: Cek apakah update berhasil
+        if ($updated) {
+            log_message('debug', 'Messages marked as read successfully.');
+        } else {
+            log_message('error', 'Failed to mark messages as read.');
+        }
+
+        // Debugging: Cek pesan setelah update
+        $messagesAfterUpdate = $this->messageModel
+            ->where('sender_id', $contactId)
+            ->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->findAll();
+
+        log_message('debug', 'Messages after update: ' . json_encode($messagesAfterUpdate));
+
+        // Hitung ulang pesan belum dibaca
+        $unreadCount = $this->messageModel
+            ->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->countAllResults();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Messages marked as read.',
+            'unread_count' => $unreadCount
+        ]);
+    }
+
+
+
+
+
 }

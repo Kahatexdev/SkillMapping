@@ -52,7 +52,7 @@ class HistoryPindahKaryawanModel extends Model
                 bagian_asal.area AS area_asal, 
                 bagian_baru.nama_bagian AS bagian_baru, 
                 bagian_baru.area_utama AS area_utama_baru, 
-                bagian_baru.area AS area_baru, user.role as updated_by')
+                bagian_baru.area AS area_baru, user.username as updated_by')
             ->join('karyawan', 'karyawan.id_karyawan = history_pindah_karyawan.id_karyawan')
             ->join('bagian AS bagian_asal', 'bagian_asal.id_bagian = history_pindah_karyawan.id_bagian_asal')
             ->join('bagian AS bagian_baru', 'bagian_baru.id_bagian = history_pindah_karyawan.id_bagian_baru')
