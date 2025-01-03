@@ -18,22 +18,15 @@ class BsMc extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'tanggal' => [
-                'type' => 'DATE',
-            ],
-            'no_model' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50,
-            ],
-            'inisial' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50,
-            ],
-            'qty_prod_mc' => [
+            'id_periode' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'qty_bs' => [
+            'average_produksi' => [
+                'type' => 'INT',
+                'constraint' => 11,
+            ],
+            'average_bs' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],
@@ -47,6 +40,7 @@ class BsMc extends Migration
         ]);
         $this->forge->addKey('id_bsmc', true);
         $this->forge->addForeignKey('id_karyawan', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_periode', 'periode', 'id_periode', 'CASCADE', 'CASCADE');
         $this->forge->createTable('bs_mesin');
     }
 

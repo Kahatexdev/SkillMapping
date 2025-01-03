@@ -22,10 +22,7 @@ class SummaryJarum extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'tanggal' => [
-                'type' => 'DATE',
-            ],
-            'qty_jarum' => [
+            'avg_used_needle' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],

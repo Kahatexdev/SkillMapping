@@ -97,20 +97,24 @@
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                         <ul class="navbar-nav  justify-content-end">
                             <li class="nav-item d-flex align-items-center">
-                                <a href="" class="nav-link text-body font-weight-bold px-0">
-                                    <!-- inbox -->
+                                <a href="<?= base_url(session()->get('role') . '/chat') ?>" class="nav-link text-body font-weight-bold px-0">
                                     <i class="fas fa-envelope text-lg opacity-10 me-2 position-relative">
-                                        <span class="notification text-danger position-absolute top-5 start-100 translate-middle p-1">
-                                            <sup>2</sup>
+                                        <span id="unread-count" class="badge bg-danger position-absolute top-5 start-100 translate-middle p-1">
+                                            <sup>0</sup>
                                         </span>
+                                        <!-- <span id="unread-count" class="notification text-danger position-absolute top-5 start-100 translate-middle p-1" style="display: none;">
+                                            <sup>0</sup>
+                                        </span> -->
                                     </i>
-
                                 </a>
                             </li>
+
+
+
                             <li class="nav-item d-flex align-items-center">
                                 <a href="" data-bs-toggle="modal" data-bs-target="#LogoutModal" class=" nav-link text-body font-weight-bold px-0">
                                     <img src="<?= base_url('assets/img/user.png') ?>" alt="User Icon" width="20">
-                                    <span class="d-sm-inline d-none"><?= session()->get('role') ?>-<?= session()->get('username') ?></span>
+                                    <span class="d-sm-inline d-none"><?= session()->get('username') ?>-<?= session()->get('role') ?></span>
                                 </a>
                             </li>
                             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -172,6 +176,7 @@
         </footer>
         </div>
     </main>
+
     <!--   Core JS Files   -->
     <!-- SweetAlert2 CDN -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
@@ -186,11 +191,41 @@
     <!-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> -->
     <script src="<?= base_url('assets/js/jquery/jquery.dataTables.min.js') ?>"></script>
     <!-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script> -->
-    <script src="<?= base_url('assets/js/dataTables.buttons.min.js') ?>"></script>
+    <!-- <script src="<?= base_url('assets/js/dataTables.buttons.min.js') ?>"></script> -->
     <!-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script> -->
     <script src="<?= base_url('assets/js/buttons.html5.min.js') ?>"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script> -->
-    <script src="<?= base_url('assets/js/jszip.min.js') ?>"></script>
+    <script>
+        function fetchUnreadCount() {
+            fetch('/<?= session()->get('role') ?>/count-unread-messages')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        const unreadCountElement = document.getElementById('unread-count');
+                        if (unreadCountElement) {
+                            unreadCountElement.textContent =
+                                data.unread_messages > 0 ? data.unread_messages : '';
+                        }
+                    } else {
+                        console.error('Error fetching unread messages:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching unread count:', error);
+                });
+        }
+
+        // Panggil fungsi setiap 5 detik
+        setInterval(fetchUnreadCount, 5000);
+
+        // Panggilan awal saat halaman dimuat
+        fetchUnreadCount();
+    </script>
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -204,6 +239,7 @@
     <script async defer src="<?= base_url('assets/js/buttons.js') ?>"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="<?= base_url('assets/js/soft-ui-dashboard.min.js?v=1.0.7') ?>"></script>
+
 
 </body>
 

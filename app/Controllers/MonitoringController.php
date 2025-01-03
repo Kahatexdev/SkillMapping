@@ -355,6 +355,8 @@ class MonitoringController extends BaseController
     public function bsmc()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $periode = $this->periodeModel->getPeriode();
+
         $sort = [
             'KK1',
             'KK2',
@@ -398,8 +400,8 @@ class MonitoringController extends BaseController
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
             // 'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'tampilperarea' => $tampilperarea,
+            'periode' => $periode
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/bsmc', $data);
@@ -407,6 +409,8 @@ class MonitoringController extends BaseController
     public function rosso()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $periode = $this->periodeModel->getPeriode();
+
         $sort = [
             'KK1',
             'KK2',
@@ -450,8 +454,8 @@ class MonitoringController extends BaseController
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
             // 'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'tampilperarea' => $tampilperarea,
+            'periode' => $periode
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/rosso', $data);
@@ -459,6 +463,8 @@ class MonitoringController extends BaseController
     public function jarum()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $periode = $this->periodeModel->getPeriode();
+
         $sort = [
             'KK1',
             'KK2',
@@ -502,8 +508,8 @@ class MonitoringController extends BaseController
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
             // 'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'tampilperarea' => $tampilperarea,
+            'periode' => $periode
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/jarum', $data);

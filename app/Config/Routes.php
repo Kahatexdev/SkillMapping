@@ -9,6 +9,12 @@ $routes->get('/', 'AuthController::index');
 $routes->get('/login', 'AuthController::index');
 $routes->post('authverify', 'AuthController::login');
 $routes->get('logout', 'AuthController::logout');
+
+// $routes->get('TrainingSchool/conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+// $routes->post('TrainingSchool/send-message', 'ChatController::sendMessage');
+// $routes->get('TrainingSchool/getContacts/(:num)', 'ChatController::getContacts/$1');
+
+
 // $routes->get('/pengguna', 'UserController::index');
 
 $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
@@ -74,8 +80,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('jobroleDelete/(:num)', 'JobroleController::delete/$1');
     // bsmc
     $routes->get('dataBsmc', 'MonitoringController::bsmc');
-    $routes->get('dataBsmc/KK1', 'BsMcController::tampilPerBatch');
-    $routes->get('summaryBsmc', 'BsMcController::summaryBsmc');
+    $routes->get('dataBsmc/(:segment)', 'BsMcController::tampilPerBatch/$1');
+    $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::summaryBsmc/$1/$2');
     $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
     $routes->post('bsmcStoreImport', 'BsMcController::upload');
     $routes->get('bsmcCreate', 'BsMcController::create');
@@ -85,7 +91,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('bsmcDelete/(:num)', 'BsMcController::delete/$1');
     // summary rosso
     $routes->get('dataRosso', 'MonitoringController::rosso');
-    $routes->get('dataRosso/KK1', 'SummaryRossoController::tampilPerBatch');
+    $routes->get('dataRosso/(:segment)', 'SummaryRossoController::tampilPerBatch/$1');
     $routes->get('summaryRosso', 'SummaryRossoController::summaryRosso');
     $routes->get('downloadTemplateRosso', 'SummaryRossoController::downloadTemplate');
     $routes->post('rossoStoreImport', 'SummaryRossoController::upload');
@@ -94,13 +100,16 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('rossoEdit/(:num)', 'SummaryRossoController::edit/$1');
     $routes->post('rossoUpdate/(:num)', 'SummaryRossoController::update/$1');
     $routes->get('rossoDelete/(:num)', 'SummaryRossoController::delete/$1');
-    $routes->get('reportSummaryRosso', 'MonitoringController::reportSummaryRosso');
+    $routes->get('reportSummaryRosso/(:segment)/(:num)', 'SummaryRossoController::excelSummaryRosso/$1/$2');
     $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
     // summary jarum
     $routes->get('dataJarum', 'MonitoringController::jarum');
-    $routes->get('dataJarum/KK1', 'JarumController::tampilPerBatch');
+    $routes->get('dataJarum/(:segment)', 'JarumController::tampilPerBatch/$1');
     $routes->get('summaryJarum', 'JarumController::summaryJarum');
-    $routes->get('excelSummaryJarum', 'JarumController::excelSummaryJarum');
+    $routes->get('downloadTemplateJarum', 'JarumController::downloadTemplate');
+    $routes->post('jarumStoreImport', 'JarumController::upload');
+    $routes->get('reportSummaryJarum/(:segment)/(:num)', 'JarumController::excelSummaryJarum/$1/$2');
+
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');
     $routes->get('getAreaUtama', 'PenilaianController::getAreaUtama');
@@ -122,6 +131,18 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('reportExcel/(:segment)/(:segment)/(:segment)', 'PenilaianController::reportExcel/$1/$2/$3');
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
+
+    // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
+    $routes->get('contacts', 'ChatController::getContactsWithLastMessage');
+    $routes->get('chat', 'TrainingSchoolController::chat');
+
+    $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
+    $routes->post('mark-messages-as-read/(:num)', 'ChatController::markMessagesAsRead/$1');
+    $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
+
+
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -158,6 +179,17 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->post('penilaianCreate', 'MandorController::create');
     $routes->post('penilaianStore', 'MandorController::store');
 
+    $routes->get('chat', 'TrainingSchoolController::chat');
+    // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
+    $routes->get('contacts', 'ChatController::getContactsWithLastMessage');
+
+    $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
+    $routes->post('mark-messages-as-read/(:num)', 'ChatController::markMessagesAsRead/$1');
+    $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
+
+
 });
 
 $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes) {
@@ -176,6 +208,20 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
 
     $routes->get('historyPindahKaryawan', 'TrainingSchoolController::historyPindahKaryawan');
     $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
+
+    // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
+    $routes->get('contacts', 'ChatController::getContactsWithLastMessage');
+    $routes->get('chat', 'TrainingSchoolController::chat');
+
+    // $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    // $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('conversation/(:num)/(:num)', 'ChatController::fetchConversation/$1/$2');
+    $routes->post('send-message', 'ChatController::sendMessage');
+    $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
+    $routes->post('mark-messages-as-read/(:num)', 'ChatController::markMessagesAsRead/$1');
+    $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
+
+
 });
 
 

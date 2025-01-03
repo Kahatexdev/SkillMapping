@@ -9,7 +9,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="font-weight-bolder mb-0">
-                                <a href="" # class="btn bg-gradient-info">
+                                <a href="#" class="btn bg-gradient-info">
                                     <!-- icon data karyawan -->
                                     <i class="fas fa-user-tie text-lg opacity-10" aria-hidden="true"></i>
                                 </a>

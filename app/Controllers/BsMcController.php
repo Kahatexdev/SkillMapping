@@ -4,10 +4,13 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\BsmcModel;
+use App\Models\BatchModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+
 
 use App\Models\KaryawanModel;
 
@@ -15,12 +18,14 @@ class BsMcController extends BaseController
 {
     protected $bsmcModel;
     protected $karyawanModel;
+    protected $batchModel;
 
     public function __construct()
     {
 
         $this->bsmcModel = new BsmcModel();
         $this->karyawanModel = new KaryawanModel();
+        $this->batchModel = new BatchModel();
     }
 
     public function downloadTemplate()
@@ -30,13 +35,13 @@ class BsMcController extends BaseController
         $sheet = $spreadsheet->getActiveSheet();
 
         // Menyusun header kolom
-        $sheet->setCellValue('A1', 'Kode Kartu');
-        $sheet->setCellValue('B1', 'Nama Karyawan');
-        $sheet->setCellValue('C1', 'Tanggal');
-        $sheet->setCellValue('D1', 'Nomor Model	');
-        $sheet->setCellValue('E1', 'Inisial');
-        $sheet->setCellValue('F1', 'Qty Prod Mc');
-        $sheet->setCellValue('G1', 'Qty Bs');
+        $sheet->setCellValue('A1', 'KODE KARTU');
+        $sheet->setCellValue('B1', 'NAMA LENGKAP');
+        $sheet->setCellValue('C1', 'L/P');
+        $sheet->setCellValue('D1', 'TGL. MASUK KERJA');
+        $sheet->setCellValue('E1', 'BAGIAN');
+        $sheet->setCellValue('F1', 'RATA-RATA PRODUKSI');
+        $sheet->setCellValue('G1', 'RATA-RATA BS');
 
         // Mengatur lebar kolom
         $sheet->getColumnDimension('A')->setWidth(20);
@@ -46,6 +51,7 @@ class BsMcController extends BaseController
         $sheet->getColumnDimension('E')->setWidth(20);
         $sheet->getColumnDimension('F')->setWidth(20);
         $sheet->getColumnDimension('G')->setWidth(20);
+        
 
 
         // Mengatur style header
@@ -56,15 +62,15 @@ class BsMcController extends BaseController
         // isi data
         $sheet->setCellValue('A2', 'KK001');
         $sheet->setCellValue('B2', 'John Doe');
-        $sheet->setCellValue('C2', '2024/09/12');
-        $sheet->setCellValue('D2', 'LN2541');
-        $sheet->setCellValue('E2', 'LN');
-        $sheet->setCellValue('F2', '2');
-        $sheet->setCellValue('G2', '3');
+        $sheet->setCellValue('C2', 'L');
+        $sheet->setCellValue('D2', '24/05/2023');
+        $sheet->setCellValue('E2', 'KNITTER');
+        $sheet->setCellValue('F2', '515');
+        $sheet->setCellValue('G2', '2');
 
         // 
         // Menentukan nama file
-        $fileName = 'Template_Data_Bs_Mesin.xlsx';
+        $fileName = 'Template_Summary_Bs_Mesin.xlsx';
 
         // Set header untuk unduhan file
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -149,156 +155,82 @@ class BsMcController extends BaseController
 
     public function upload()
     {
-        set_time_limit(0); // Disable time limit for this script
-        // ini_set('memory_limit', '2048M'); // Set memory limit to 2GB
-
-        $file = $this->request->getFile('file'); // Nama input file excel
+        $file = $this->request->getFile('file');
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $fileType = $file->getClientMimeType();
             if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
-                return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file type. Please upload an Excel file.');
+                return redirect()->to(base_url('Monitoring/dataRosso'))->with('error', 'Invalid file type. Please upload an Excel file.');
             }
 
-            $spreadsheet = IOFactory::load($file->getTempName());
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
+            $dataSheet = $spreadsheet->getActiveSheet();
+            $startRow = 2;
 
-            $karyawanModel = new \App\Models\KaryawanModel();
-            $bsmcModel = new \App\Models\BsmcModel();
+            $bagianModel = new \App\Models\BagianModel();
+            $this->karyawanmodel = new \App\Models\KaryawanModel();
+            $this->summaryRosso = new \App\Models\SummaryRossoModel();
 
+            $periode = $this->request->getPost('id_periode');
             $successCount = 0;
             $errorCount = 0;
             $errorMessages = [];
 
-            $dataToInsert = [];
+            for ($row = $startRow; $row <= $dataSheet->getHighestRow(); $row++) {
+                $isValid = true;
+                $errorMessage = "Row {$row}: ";
 
-            for ($sheetIndex = 2; $sheetIndex <= 32; $sheetIndex++) { // 1-31
-                $sheet = $spreadsheet->getSheet($sheetIndex);
-                $highestRow = min(40, $sheet->getHighestRow());
-                $highestColumn = $sheet->getHighestColumn();
-                // limit highestColumn to 5 to avoid memory limit
-                $highestColumn = $highestColumn > 'S' ? 'S' : $highestColumn;
+                $kodeKartu = $dataSheet->getCell('A' . $row)->getValue();
+                $namaLengkap = $dataSheet->getCell('B' . $row)->getValue();
+                $jenisKelamin = $dataSheet->getCell('C' . $row)->getValue();
+                $tglMasukKerja = $dataSheet->getCell('D' . $row)->getFormattedValue();
+                $bagian = $dataSheet->getCell('E' . $row)->getValue();
+                $averageProduksi = $dataSheet->getCell('F' . $row)->getValue();
+                $averageBS = $dataSheet->getCell('G' . $row)->getValue();
 
-                for ($row = 33; $row <= $highestRow; $row++) {
-                    $rowData = $sheet->rangeToArray('J' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE)[0];
-
-                    if (!empty($rowData[4])){
-                        $nama_karyawan = $rowData[4];
-                        $no_model = $rowData[1];
-                        $inisial = $rowData[2];
-                        $qty_bs = $rowData[8];
-                        // tanggal didapat dari nama sheet
-                        $tmp_tgl = $sheet->getTitle();
-                        // bulan sekarang
-                        $tmp_month = date('m');
-                        // tahun sekarang
-                        $tmp_year = date('Y');
-                        // tanggal sekarang
-                        $tanggal = date('Y-m-d', strtotime($tmp_year . '-' . $tmp_month . '-' . $tmp_tgl));
-
-                        // dd ($nama_karyawan, $no_model, $inisial, $qty_bs, $tanggal, $rowData);
-
-                        // Validasi untuk record yang hilang di databse.
-                        $karyawan = $karyawanModel->where('nama_karyawan', $nama_karyawan)->first();
-                        // dd ($karyawan);
-                        if ($karyawan) {
-                            $dataToInsert[] = [
-                                'id_karyawan' => $karyawan['id_karyawan'],
-                                'no_model' => $no_model,
-                                'tanggal' => $tanggal,
-                                'inisial' => $inisial,
-                                'qty_bs' => (float) $qty_bs
-                            ];
-                            $successCount++;
-                            // dd ($dataToInsert);
-                        } else {
-                            $errorCount++;
-                            $errorMessages[] = "Sheet $sheetIndex, Row $row: Nama $nama_karyawan not found.";
-                        }
-                    }
-                    if (!empty($rowData[5])){
-                        $nama_karyawan = $rowData[5];
-                        $no_model = $rowData[1];
-                        $inisial = $rowData[2];
-                        $qty_bs = $rowData[11];
-                        // tanggal didapat dari nama sheet
-                        $tmp_tgl = $sheet->getTitle();
-                        // bulan sekarang
-                        $tmp_month = date('m');
-                        // tahun sekarang
-                        $tmp_year = date('Y');
-                        // tanggal sekarang
-                        $tanggal = date('Y-m-d', strtotime($tmp_year . '-' . $tmp_month . '-' . $tmp_tgl));
-
-                        // dd ($nama_karyawan, $no_model, $inisial, $qty_bs, $tanggal);
-
-                        // Validasi untuk record yang hilang di databse.
-                        $karyawan = $karyawanModel->where('nama_karyawan', $nama_karyawan)->first();
-                        // dd ($karyawan);
-                        if ($karyawan) {
-                            $dataToInsert[] = [
-                                'id_karyawan' => $karyawan['id_karyawan'],
-                                'no_model' => $no_model,
-                                'tanggal' => $tanggal,
-                                'inisial' => $inisial,
-                                'qty_bs' => (float) $qty_bs
-                            ];
-                            $successCount++;
-                            // dd ($dataToInsert);
-                        } else {
-                            $errorCount++;
-                            $errorMessages[] = "Sheet $sheetIndex, Row $row: Nama $nama_karyawan not found.";
-                        }
-                    }
-                    if(!empty($rowData[6])){
-                        $nama_karyawan = $rowData[6];
-                        $no_model = $rowData[1];
-                        $inisial = $rowData[2];
-                        $qty_bs = $rowData[14];
-                        // tanggal didapat dari nama sheet
-                        $tmp_tgl = $sheet->getTitle();
-                        // bulan sekarang
-                        $tmp_month = date('m');
-                        // tahun sekarang
-                        $tmp_year = date('Y');
-                        // tanggal sekarang
-                        $tanggal = date('Y-m-d', strtotime($tmp_year . '-' . $tmp_month . '-' . $tmp_tgl));
-
-                        // dd ($nama_karyawan, $no_model, $inisial, $qty_bs, $tanggal);
-
-                        // Validasi untuk record yang hilang di databse.
-                        $karyawan = $karyawanModel->where('nama_karyawan', $nama_karyawan)->first();
-                        // dd ($karyawan);
-                        if ($karyawan) {
-                            $dataToInsert[] = [
-                                'id_karyawan' => $karyawan['id_karyawan'],
-                                'no_model' => $no_model,
-                                'tanggal' => $tanggal,
-                                'inisial' => $inisial,
-                                'qty_bs' => (float) $qty_bs
-                            ];
-                            $successCount++;
-                            // dd ($dataToInsert);
-                        } else {
-                            $errorCount++;
-                            $errorMessages[] = "Sheet $sheetIndex, Row $row: Nama $nama_karyawan not found.";
-                        }
-                    } else {
-                        $errorCount++;
-                        $errorMessages[] = "Sheet $sheetIndex, Row $row empty nama_karyawan";
+                if (empty($kodeKartu)) {
+                    $isValid = false;
+                    $errorMessage .= "Kode Kartu is required. ";
+                } else {
+                    $karyawan = $this->karyawanmodel->where('kode_kartu', $kodeKartu)->where('nama_karyawan', $namaLengkap)->first();
+                    if (!$karyawan) {
+                        $isValid = false;
+                        $errorMessage .= "Kode Kartu not found. ";
                     }
                 }
-            }
 
-            if(!empty($dataToInsert)) {
-                // dd ($dataToInsert);
-                $bsmcModel->insertBatch($dataToInsert);
+                if (empty($jenisKelamin) || !in_array($jenisKelamin, ['L', 'P'])) {
+                    $isValid = false;
+                    $errorMessage .= "Jenis Kelamin must be L or P. ";
+                }
+
+                if ($isValid) {
+                    $data = [
+                        'id_periode' => $periode,
+                        'id_karyawan' => $karyawan['id_karyawan'],
+                        'average_produksi' => $averageProduksi,
+                        'average_bs' => $averageBS
+                    ];
+                    // var_dump($data);
+
+                    // dd ($data);
+                    $this->bsmcModel->insert($data);
+
+                    $successMessage = "Summary BS Mesin berhasil disimpan.";
+                    $successCount++;
+                } else {
+                    $errorMessages[] = $errorMessage;
+                    $errorCount++;
+                }
             }
-        
-            $message = "Upload success: $successCount record(s). <br>Error: $errorCount.<br>";
-            if ($errorMessages) $message .= implode(' | ', $errorMessages);
-            return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', $message);
-            
+            // Jika ada data yang gagal disimpan
+            if ($errorCount > 0) {
+                $errorMessages = implode("<br>", $errorMessages);
+                return redirect()->to(base_url('Monitoring/dataBsmc'))->with('error', "{$errorCount} data gagal disimpan. <br>{$errorMessages}");
+            } else {
+                return redirect()->to(base_url('Monitoring/dataBsmc'))->with('success', "{$successCount} data berhasil disimpan.");
+            }
         } else {
-            return redirect()->to(base_url('monitoring/dataBsmc'))->with('error', 'Invalid file.');
+            return redirect()->to(base_url('Monitoring/dataBsmc'))->with('error', 'Invalid file.');
         }
     }
 
@@ -405,8 +337,10 @@ class BsMcController extends BaseController
         return redirect()->to(base_url('monitoring/dataBsmc'))->with('success', 'Data karyawan berhasil dihapus.');
     }
 
-    public function tampilPerBatch()
+    public function tampilPerBatch($area_utama)
     {
+        $summaryBsmc = $this->bsmcModel->getDatabyAreaUtama($area_utama);
+        $batch = $this->batchModel->getBatch();
         $data = [
             'role' => session()->get('role'),
             'title' => 'Bs Mesin',
@@ -417,30 +351,181 @@ class BsMcController extends BaseController
             'active5' => '',
             'active6' => '',
             'active7' => '',
-            'active8' => ''
+            'active8' => '',
+            'area_utama' => $area_utama,
+            'batch' => $batch,
+            'summaryBsmc' => $summaryBsmc
 
         ];
 
         return view('Bsmc/tampilPerBatch', $data);
     }
 
-    public function summaryBsmc()
+    public function summaryBsmc($area_utama, $id_batch)
     {
-        $data = [
-            'role' => session()->get('role'),
-            'title' => 'Bs Mesin',
-            'active1' => '',
-            'active2' => '',
-            'active3' => '',
-            'active4' => '',
-            'active5' => '',
-            'active6' => '',
-            'active7' => '',
-            'active8' => 'active'
-
-        ];
-
+        $summaryBsmc = $this->bsmcModel->getDatabyAreaUtamaAndPeriodeInBatch($area_utama, $id_batch);
+        $namaBatch = $this->batchModel->where('id_batch', $id_batch)->first();
+        // $id_batch = $this->request->getPost('id_batch');
         // dd ($summaryRosso);
-        return view('Bsmc/summaryPerPeriode', $data);
-    } 
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->mergeCells('A1:H2');
+        $sheet->setCellValue('A1', 'REPORT SUMMARY BS MESIN');
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+        $sheet->getStyle('A1')->getFont()->setUnderline(true);
+        $sheet->getStyle('A1')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('A1')->getFont()->setSize(16);
+
+        $sheet->mergeCells('A3:B3');
+        $sheet->setCellValue('A3', 'AREA');
+        $sheet->setCellValue('C3', ': ' . $area_utama);
+        $sheet->getStyle('A3:C3')->getFont()->setBold(true);
+
+        $sheet->mergeCells('A4:B4');
+        $sheet->setCellValue('A4', 'NAMA BATCH');
+        $sheet->setCellValue('C4', ': ' . $namaBatch['nama_batch']);
+        $sheet->getStyle('A4:C4')->getFont()->setBold(true);
+        $sheet->getStyle('A3:C4')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('A3:C4')->getFont()->setSize(12);
+
+
+        $sheet->mergeCells('A6:A7');
+        $sheet->setCellValue('A6', 'NO');
+        $sheet->mergeCells('B6:B7');
+        $sheet->setCellValue('B6', 'KODE KARTU');
+        $sheet->mergeCells('C6:C7');
+        $sheet->setCellValue('C6', 'NAMA LENGKAP');
+        $sheet->mergeCells('D6:D7');
+        $sheet->setCellValue('D6', 'L/P');
+        $sheet->mergeCells('E6:E7');
+        $sheet->setCellValue('E6', 'TGL. MASUK KERJA');
+        $sheet->mergeCells('F6:F7');
+        $sheet->setCellValue('F6', 'BAGIAN');
+        $sheet->mergeCells('G6:G7');
+        $sheet->setCellValue('G6', 'RATA-RATA PRODUKSI');
+        $sheet->mergeCells('H6:H7');
+        $sheet->setCellValue('H6', 'RATA-RATA BS');
+
+        $sheet->getStyle('A6:H7')->getFont()->setBold(true);
+        $sheet->getStyle('A6:H7')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('A6:H7')->getFont()->setSize(10);
+        $sheet->getStyle('A6:H7')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A6:H7')->getAlignment()->setVertical('center');
+        $sheet->getStyle('A6:H7')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A6:H7')->getAlignment()->setWrapText(true);
+
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(10);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(5);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(10);
+
+        $startRow = 8;
+        $no = 1;
+
+        foreach ($summaryBsmc as $row) {
+            $sheet->setCellValue('A' . $startRow, $no);
+            $sheet->setCellValue('B' . $startRow, $row['kode_kartu']);
+            $sheet->setCellValue('C' . $startRow, $row['nama_karyawan']);
+            $sheet->setCellValue('D' . $startRow, $row['jenis_kelamin']);
+            $sheet->setCellValue('E' . $startRow, $row['tgl_masuk']);
+            $sheet->setCellValue('F' . $startRow, $row['nama_bagian']);
+            $sheet->setCellValue('G' . $startRow, $row['average_produksi']);
+            $sheet->setCellValue('H' . $startRow, $row['average_bs']);
+
+            $sheet->getStyle('A' . $startRow . ':H' . $startRow)->getFont()->setName('Times New Roman');
+            $sheet->getStyle('A' . $startRow . ':H' . $startRow)->getFont()->setSize(10);
+            $sheet->getStyle('A' . $startRow . ':H' . $startRow)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle('A' . $startRow . ':H' . $startRow)->getAlignment()->setVertical('center');
+            $sheet->getStyle('A' . $startRow . ':H' . $startRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyle('A' . $startRow . ':H' . $startRow)->getAlignment()->setWrapText(true);
+
+            $no++;
+            $startRow++;
+        }
+
+        // get 3 karyawan dengan max average produksi dan min average bs
+        $getTop3 = $this->bsmcModel->getTop3Produksi($area_utama, $id_batch);
+        // dd($getTop3);
+        // Header untuk Top 3 Produksi
+        $sheet->mergeCells('J6:Q6');
+        $sheet->setCellValue('J6', 'TOP 3 PRODUKSI');
+        $sheet->getStyle('J6')->getFont()->setBold(true);
+        $sheet->getStyle('J6')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('J6')->getFont()->setSize(10);
+        $sheet->getStyle('J6')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('J6')->getAlignment()->setVertical('center');
+        $sheet->getStyle('J6:Q6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        // Sub-header untuk kolom Top 3 Produksi
+        $sheet->setCellValue('J7', 'NO');
+        $sheet->setCellValue('K7', 'KODE KARTU');
+        $sheet->setCellValue('L7', 'NAMA KARYAWAN');
+        $sheet->setCellValue('M7', 'L/P');
+        $sheet->setCellValue('N7', 'TGL MASUK');
+        $sheet->setCellValue('O7', 'BAGIAN');
+        $sheet->setCellValue('P7', 'AVG PRODUKSI');
+        $sheet->setCellValue('Q7', 'AVG BS');
+
+        $sheet->getStyle('J7:Q7')->getFont()->setBold(true);
+        $sheet->getStyle('J7:Q7')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('J7:Q7')->getFont()->setSize(10);
+        $sheet->getStyle('J7:Q7')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('J7:Q7')->getAlignment()->setVertical('center');
+        $sheet->getStyle('J7:Q7')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('J7:Q7')->getAlignment()->setWrapText(true);
+
+        // column dimension
+        $sheet->getColumnDimension('J')->setWidth(5);
+        $sheet->getColumnDimension('K')->setWidth(10);
+        $sheet->getColumnDimension('L')->setWidth(20);
+        $sheet->getColumnDimension('M')->setWidth(5);
+        $sheet->getColumnDimension('N')->setWidth(15);
+        $sheet->getColumnDimension('O')->setWidth(10);
+        $sheet->getColumnDimension('P')->setWidth(10);
+        $sheet->getColumnDimension('Q')->setWidth(10);
+
+        // Data Top 3 Produksi
+        $startRow = 8;
+        $no = 1;
+        foreach ($getTop3 as $row) {
+            $sheet->setCellValue('J' . $startRow, $no);
+            $sheet->setCellValue('K' . $startRow, $row['kode_kartu']);
+            $sheet->setCellValue('L' . $startRow, $row['nama_karyawan']);
+            $sheet->setCellValue('M' . $startRow, $row['jenis_kelamin']);
+            $sheet->setCellValue('N' . $startRow, $row['tgl_masuk']);
+            $sheet->setCellValue('O' . $startRow, $row['nama_bagian']);
+            $sheet->setCellValue('P' . $startRow, $row['average_produksi']);
+            $sheet->setCellValue('Q' . $startRow, $row['average_bs']);
+
+            $sheet->getStyle('J' . $startRow . ':Q' . $startRow)->getFont()->setName('Times New Roman');
+            $sheet->getStyle('J' . $startRow . ':Q' . $startRow)->getFont()->setSize(10);
+            $sheet->getStyle('J' . $startRow . ':Q' . $startRow)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle('J' . $startRow . ':Q' . $startRow)->getAlignment()->setVertical('center');
+            $sheet->getStyle('J' . $startRow . ':Q' . $startRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyle('J' . $startRow . ':Q' . $startRow)->getAlignment()->setWrapText(true);
+
+            $no++;
+            $startRow++;
+        }
+
+
+
+        $spreadsheet->getActiveSheet()->setTitle('Report Summary Rosso');
+
+        $filename = 'Report Summary BS Mesin ' . date('d-m-Y H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
 }

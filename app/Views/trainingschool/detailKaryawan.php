@@ -191,7 +191,7 @@
                     <div class="table-responsive">
                         <table id="karyawanTable" class="table table-striped table-hover table-bordered w-100">
                             <thead>
-                                <th>No</th>
+                                <!-- <th>No</th> -->
                                 <th>Kode Kartu</th>
                                 <th>Nama Karyawan</th>
                                 <th>Shift</th>
@@ -204,7 +204,7 @@
                                 <?php if (!empty($karyawan)) : ?>
                                     <?php foreach ($karyawan as $karyawan) : ?>
                                         <tr>
-                                            <td><?= $karyawan['id_karyawan'] ?></td>
+                                            <!-- <td><?= $karyawan['id_karyawan'] ?></td> -->
                                             <td><?= $karyawan['kode_kartu'] ?></td>
                                             <td><?= $karyawan['nama_karyawan'] ?></td>
                                             <td><?= $karyawan['shift'] ?></td>

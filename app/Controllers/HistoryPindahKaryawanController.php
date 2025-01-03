@@ -260,7 +260,7 @@ class HistoryPindahKaryawanController extends BaseController
             $sheet->setCellValue('P' . $row, $id['tgl_pindah']);
             $sheet->setCellValue('Q' . $row, $id['keterangan']);
             $sheet->setCellValue('R' . $row, $id['status_aktif']);
-            $sheet->setCellValue('S' . $row, $id['role']);
+            $sheet->setCellValue('S' . $row, $id['username']);
             $row++;
         }
 

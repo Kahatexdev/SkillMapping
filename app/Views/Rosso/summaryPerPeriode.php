@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <a href="<?= base_url('Monitoring/excelSummaryJarum/') ?>"
+                            <a href="<?= base_url('Monitoring/reportSummaryRosso/') ?>"
                                 class="btn bg-gradient-primary me-2">
                                 <!-- icon download -->
                                 <i class="fas fa-file-excel text-lg opacity-10" aria-hidden="true"></i>

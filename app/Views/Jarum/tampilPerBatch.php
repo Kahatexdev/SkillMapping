@@ -26,96 +26,29 @@
     </div>
     <div class="row">
         <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
-            <a href="<?= base_url('Monitoring/summaryJarum') ?>">
-                <div class="card">
-                    <div class="card-body w-100">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"></p>
-                                    <h5 class="font-weight-bolder mb-0">Batch 1 2024
-                                    </h5>
+            <?php foreach ($batch as $b) : ?>
+                <a href="<?= base_url('Monitoring/reportSummaryJarum/' . $area_utama . '/' . $b['id_batch']) ?>">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"><?= $b['nama_batch'] ?></p>
+                                        <h5 class="font-weight-bolder mb-0">
+                                        </h5>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
+                                        <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
-            <a href="">
-                <div class="card">
-                    <div class="card-body w-100">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"></p>
-                                    <h5 class="font-weight-bolder mb-0">Batch 2 2024
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
-            <a href="">
-                <div class="card">
-                    <div class="card-body w-100">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"></p>
-                                    <h5 class="font-weight-bolder mb-0">Batch 3 2024
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
-            <a href="">
-                <div class="card">
-                    <div class="card-body w-100">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="numbers">
-                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"></p>
-                                    <h5 class="font-weight-bolder mb-0">Batch 4 2024
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-4 text-end">
-                                <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </a>
+                </a>
+            <?php endforeach ?>
         </div>
     </div>
 </div>

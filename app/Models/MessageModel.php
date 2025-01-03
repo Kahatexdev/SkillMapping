@@ -4,15 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class BatchModel extends Model
+class MessageModel extends Model
 {
-    protected $table            = 'batch';
-    protected $primaryKey       = 'id_batch';
+    protected $table            = 'messages';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_batch', 'nama_batch', 'created_at', 'updated_at'];
+    protected $allowedFields = ['sender_id', 'receiver_id', 'message', 'is_read', 'created_at'];
+
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,10 +22,10 @@ class BatchModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $updatedField  = false;
     protected $deletedField  = 'deleted_at';
 
     // Validation
@@ -43,11 +44,12 @@ class BatchModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-    
 
-    public function getBatch()
+    public function unreadMessages($userId)
     {
-        return $this->db->table('batch')
-            ->get()->getResultArray();
+        return $this->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->countAllResults();
     }
+
 }
