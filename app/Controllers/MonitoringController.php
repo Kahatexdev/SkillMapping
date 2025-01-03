@@ -356,6 +356,7 @@ class MonitoringController extends BaseController
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
         $periode = $this->periodeModel->getPeriode();
+        $getBatch = $this->batchmodel->getBatch();
 
         $sort = [
             'KK1',
@@ -399,7 +400,7 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
-            // 'getBatch' => $getBatch,
+            'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
             'periode' => $periode
         ];

@@ -10,6 +10,9 @@ use App\Models\BatchModel;
 use App\Models\KaryawanModel;
 use App\Models\PeriodeModel;
 use App\Models\AbsenModel;
+use App\Models\SummaryJarumModel;
+use App\Models\SummaryRossoModel;
+use App\Models\BsmcModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -31,6 +34,9 @@ class PenilaianController extends BaseController
     protected $karyawanmodel;
     protected $periodeModel;
     protected $absenmodel;
+    protected $jarumModel;
+    protected $rossoModel;
+    protected $bsmcModel;
     protected $db;
 
     const bobot_nilai = [
@@ -75,6 +81,10 @@ class PenilaianController extends BaseController
         $this->batchmodel = new BatchModel();
         $this->karyawanmodel = new KaryawanModel();
         $this->periodeModel = new PeriodeModel();
+        $this->absenmodel = new AbsenModel();
+        $this->jarumModel = new SummaryJarumModel();
+        $this->rossoModel = new SummaryRossoModel();
+        $this->bsmcModel = new BsmcModel();
     }
 
     // public function getAreaUtama()
@@ -850,7 +860,7 @@ class PenilaianController extends BaseController
         // getPenilaianGroupByBatchAndAreaByIdBatch
         $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
         $getAreaUtama = $this->bagianmodel->getAreaGroupByAreaUtama();
-
+        
         // Ambil daftar bagian unik
         $bagianList = array_unique(array_column($reportbatch, 'nama_bagian'));
 
@@ -1090,12 +1100,17 @@ class PenilaianController extends BaseController
                 // Hitung rata-rata dan grade
                 $average = round(($total + 1) / ($count + 1), 2);
                 $grade = $this->calculateGradeBatch($average);
-
+                $bsmc = $this->bsmcModel->getBsmcByIdKaryawan($p['id_karyawan']);
+                // dd ($bsmc);
                 // Tambahkan kolom rata-rata dan grade ke data
                 $data[] = 1; // Kolom tambahan (bisa untuk catatan)
                 $data[] = $average;
                 $data[] = $grade;
-                $data[] = "";
+
+                foreach ($bsmc as $b) {
+                    $data[] = $b['average_produksi'];
+                }
+                // $data[] = $bsmc['prod'];
                 $data[] = "";
                 $data[] = "";
                 $data[] = $average;

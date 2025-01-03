@@ -170,7 +170,7 @@ class BsMcController extends BaseController
             $this->karyawanmodel = new \App\Models\KaryawanModel();
             $this->summaryRosso = new \App\Models\SummaryRossoModel();
 
-            $periode = $this->request->getPost('id_periode');
+            $batch = $this->request->getPost('id_batch');
             $successCount = 0;
             $errorCount = 0;
             $errorMessages = [];
@@ -205,7 +205,7 @@ class BsMcController extends BaseController
 
                 if ($isValid) {
                     $data = [
-                        'id_periode' => $periode,
+                        'id_batch' => $batch,
                         'id_karyawan' => $karyawan['id_karyawan'],
                         'average_produksi' => $averageProduksi,
                         'average_bs' => $averageBS

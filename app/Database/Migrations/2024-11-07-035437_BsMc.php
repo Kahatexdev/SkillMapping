@@ -18,9 +18,10 @@ class BsMc extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'id_periode' => [
+            'id_batch' => [
                 'type' => 'INT',
                 'constraint' => 11,
+                'unsigned' => true,
             ],
             'average_produksi' => [
                 'type' => 'INT',
@@ -40,7 +41,7 @@ class BsMc extends Migration
         ]);
         $this->forge->addKey('id_bsmc', true);
         $this->forge->addForeignKey('id_karyawan', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_periode', 'periode', 'id_periode', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_batch', 'batch', 'id_batch', 'CASCADE', 'CASCADE');
         $this->forge->createTable('bs_mesin');
     }
 

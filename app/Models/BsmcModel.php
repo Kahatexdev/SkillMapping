@@ -15,7 +15,7 @@ class BsmcModel extends Model
     protected $allowedFields    = [
         'id_bsmc',
         'id_karyawan',
-        'id_periode',
+        'id_batch',
         'average_produksi',
         'average_bs',
         'created_at',
@@ -73,24 +73,31 @@ class BsmcModel extends Model
         return $this->db->table('bs_mesin')
         ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('periode', 'periode.id_periode = bs_mesin.id_periode')
-        ->where('periode.id_batch', $id_batch)
+        ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
+        ->where('batch.id_batch', $id_batch)
             ->where('bagian.area_utama', $area_utama)
             ->get()->getResultArray();
     }
 
     public function getTop3Produksi($area_utama, $id_batch)
     {
-        return $this->select('bs_mesin.average_produksi, bs_mesin.average_bs, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, periode.nama_periode, batch.nama_batch')
+        return $this->select('bs_mesin.average_produksi, bs_mesin.average_bs, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.id_batch')
         ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('periode', 'periode.id_periode = bs_mesin.id_periode')
-        ->join('batch', 'batch.id_batch = periode.id_batch')
+        ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
         ->where('bagian.area_utama', $area_utama)
-            ->where('periode.id_batch', $id_batch)
+            ->where('batch.id_batch', $id_batch)
             ->orderBy('bs_mesin.average_produksi', 'DESC') // Order by highest production
             ->orderBy('bs_mesin.average_bs', 'ASC') // Order by lowest defect
             ->limit(3) // Limit to top 3
             ->get()->getResultArray();
+    }
+
+    public function getBsmcByIdKaryawan($id_karyawan)
+    {
+        return $this->select('bs_mesin.id_bsmc, bs_mesin.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mesin.id_periode, bs_mesin.average_produksi, bs_mesin.average_bs, bs_mesin.created_at, bs_mesin.updated_at')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
+            ->where('bs_mesin.id_karyawan', $id_karyawan)
+            ->findAll();
     }
 }

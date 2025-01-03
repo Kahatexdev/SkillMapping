@@ -197,7 +197,12 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script> -->
     <script>
         function fetchUnreadCount() {
-            fetch('/<?= session()->get('role') ?>/count-unread-messages')
+            // Tentukan base URL secara dinamis
+            const baseUrl = "<?= base_url() ?>"; // Gunakan base_url() dari CodeIgniter
+            const role = "<?= session()->get('role') ?>"; // Dapatkan role dari session
+            const fetchUrl = `${baseUrl}/${role}/count-unread-messages`; // Gabungkan URL
+
+            fetch(fetchUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -226,6 +231,7 @@
         // Panggilan awal saat halaman dimuat
         fetchUnreadCount();
     </script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
