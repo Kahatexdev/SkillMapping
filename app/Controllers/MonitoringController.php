@@ -355,6 +355,9 @@ class MonitoringController extends BaseController
     public function bsmc()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $periode = $this->periodeModel->getPeriode();
+        $getBatch = $this->batchmodel->getBatch();
+
         $sort = [
             'KK1',
             'KK2',
@@ -397,9 +400,9 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
-            // 'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea,
+            'periode' => $periode
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/bsmc', $data);
@@ -407,6 +410,9 @@ class MonitoringController extends BaseController
     public function rosso()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $getBatch = $this->batchmodel->getBatch();
+        $periode = $this->periodeModel->getPeriode();
+
         $sort = [
             'KK1',
             'KK2',
@@ -449,9 +455,9 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
-            // 'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea,
+            'periode' => $periode
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/rosso', $data);
@@ -459,6 +465,9 @@ class MonitoringController extends BaseController
     public function jarum()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $getBatch = $this->batchmodel->getBatch();
+        $periode = $this->periodeModel->getPeriode();
+
         $sort = [
             'KK1',
             'KK2',
@@ -501,9 +510,9 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
-            // 'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'getBatch' => $getBatch,
+            'tampilperarea' => $tampilperarea,
+            'periode' => $periode
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/jarum', $data);

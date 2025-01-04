@@ -22,14 +22,11 @@ class SummaryRosso extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'tgl_prod_rosso' => [
-                'type' => 'DATE',
-            ],
-            'qty_prod_rosso' => [
+            'average_produksi' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'qty_bs' => [
+            'average_bs' => [
                 'type' => 'INT',
                 'constraint' => 11,
             ],

@@ -173,6 +173,11 @@
     // ID pengguna yang login
     let senderId = Number(<?= session('id_user') ?>);
     let receiverId = null; // ID kontak yang dipilih
+    const baseUrl = "<?= base_url() ?>"; // Gunakan base_url() dari CodeIgniter
+    const role = "<?= session()->get('role') ?>"; // Dapatkan role dari session
+    const fetchUrlSendMessage = `${baseUrl}/${role}/send-message`; // URL untuk mengirim pesan
+
+    // const fetchUrlContacts = `${baseUrl}/${role}/contacts`; // URL untuk mengambil daftar kontak
 
     function sanitizeHTML(str) {
         var temp = document.createElement('div');
@@ -182,7 +187,9 @@
 
     // Fungsi untuk memuat percakapan
     function loadConversation(senderId, contactId) {
-        fetch(`conversation/${senderId}/${contactId}`)
+        const fetchUrlConversation = `${baseUrl}/${role}/conversation/${senderId}/${contactId}`; // Gabungkan URL
+        const fetchUrlMarkAsRead = `${baseUrl}/${role}/mark-messages-as-read/${contactId}`; // URL untuk menandai pesan sebagai sudah dibaca
+        fetch(fetchUrlConversation)
             .then(response => response.json())
             .then(data => {
                 const chatArea = document.getElementById('chat-area');
@@ -192,6 +199,18 @@
                     chatArea.innerHTML = '<p class="text-muted text-center">No messages yet</p>';
                     return;
                 }
+
+                // Update pesan sebagai sudah dibaca
+                fetch(fetchUrlMarkAsRead, {
+                        method: 'POST'
+                    })
+                    .then(response => response.json())
+                    .then(res => {
+                        if (res.status !== 'success') {
+                            console.error('Failed to mark messages as read:', res.message);
+                        }
+                    })
+                    .catch(error => console.error('Error marking messages as read:', error));
 
                 data.messages.forEach(msg => {
                     const isSender = parseInt(msg.sender_id) === senderId; // Pastikan `sender_id` adalah angka
@@ -221,6 +240,7 @@
 
 
 
+
     // Fungsi untuk menangani klik pada kontak
     document.getElementById('contacts-list').addEventListener('click', (event) => {
         const target = event.target.closest('.contact-item');
@@ -234,32 +254,32 @@
     });
 
 
-    fetch('contacts')
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                const contactsList = document.getElementById('contacts-list');
-                data.contacts.forEach(item => {
-                    const contactItem = document.createElement('li');
-                    contactItem.className = 'list-group-item d-flex align-items-center contact-item';
-                    contactItem.setAttribute('data-contact-id', item.contact.id_user);
-                    contactItem.setAttribute('data-contact-name', item.contact.username);
-                    contactItem.style.cursor = 'pointer';
+    // fetch(fetchUrlContacts)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.status === 'success') {
+    //             const contactsList = document.getElementById('contacts-list');
+    //             data.contacts.forEach(item => {
+    //                 const contactItem = document.createElement('li');
+    //                 contactItem.className = 'list-group-item d-flex align-items-center contact-item';
+    //                 contactItem.setAttribute('data-contact-id', item.contact.id_user);
+    //                 contactItem.setAttribute('data-contact-name', item.contact.username);
+    //                 contactItem.style.cursor = 'pointer';
 
-                    contactItem.innerHTML = `
-                    <img src="<?= base_url('assets/img/user.png') ?>" alt="Profile" class="rounded-circle" width="40">
-                    <div class="ms-3">
-                        <h6 class="mb-0 text-truncate">${item.contact.username}</h6>
-                        <small class="text-muted">${item.last_message ? item.last_message.message : 'No messages yet'}</small>
-                    </div>
-                `;
-                    contactsList.appendChild(contactItem);
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching contacts:', error);
-        });
+    //                 contactItem.innerHTML = `
+    //                 <img src="<?= base_url('assets/img/user.png') ?>" alt="Profile" class="rounded-circle" width="40">
+    //                 <div class="ms-3">
+    //                     <h6 class="mb-0 text-truncate">${item.contact.username}</h6>
+    //                     <small class="text-muted">${item.last_message ? item.last_message.message : 'No messages yet'}</small>
+    //                 </div>
+    //             `;
+    //                 contactsList.appendChild(contactItem);
+    //             });
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Error fetching contacts:', error);
+    //     });
 
 
     document.getElementById('chat-form').addEventListener('submit', (event) => {
@@ -276,26 +296,22 @@
 
             console.log('Sending data:', data); // Debug: lihat data yang dikirim
 
-            fetch('send-message', {
+            fetch(fetchUrlSendMessage, {
                     method: 'POST',
-                    body: data, // Kirim form data
+                    body: data
                 })
                 .then(response => response.json())
-                .then(responseData => {
-                    console.log('Response data:', responseData); // Debug respons server
-                    if (responseData.status === 'success') {
-                        loadConversation(senderId, receiverId); // Refresh percakapan
+                .then(res => {
+                    if (res.status === 'success') {
                         chatInput.value = ''; // Kosongkan input
+                        loadConversation(senderId, receiverId); // Muat ulang percakapan
                     } else {
-                        alert(responseData.message); // Pesan error
+                        console.error('Failed to send message:', res.message);
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error); // Debug jika ada error
-                    alert('Failed to send message');
+                    console.error('Error sending message:', error);
                 });
-        } else {
-            alert('Message cannot be empty!');
         }
     });
 </script>

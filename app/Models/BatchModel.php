@@ -44,4 +44,10 @@ class BatchModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
     
+
+    public function getBatch()
+    {
+        return $this->db->table('batch')
+            ->get()->getResultArray();
+    }
 }

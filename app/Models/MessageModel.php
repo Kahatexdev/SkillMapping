@@ -12,7 +12,7 @@ class MessageModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields = ['sender_id', 'receiver_id', 'message', 'created_at', 'is_read'];
+    protected $allowedFields = ['sender_id', 'receiver_id', 'message', 'is_read', 'created_at'];
 
 
     protected bool $allowEmptyInserts = false;
@@ -44,4 +44,12 @@ class MessageModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function unreadMessages($userId)
+    {
+        return $this->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->countAllResults();
+    }
+
 }

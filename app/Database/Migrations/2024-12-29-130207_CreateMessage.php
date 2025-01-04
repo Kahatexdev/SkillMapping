@@ -27,6 +27,11 @@ class CreateMessage extends Migration
             'message' => [
                 'type'       => 'TEXT',
             ],
+            'is_read' => [
+                'type'       => 'TINYINT',
+                'constraint' => 1,
+                'default'    => 0,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,

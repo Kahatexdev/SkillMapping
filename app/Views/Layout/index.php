@@ -99,9 +99,12 @@
                             <li class="nav-item d-flex align-items-center">
                                 <a href="<?= base_url(session()->get('role') . '/chat') ?>" class="nav-link text-body font-weight-bold px-0">
                                     <i class="fas fa-envelope text-lg opacity-10 me-2 position-relative">
-                                        <span class="notification text-danger position-absolute top-5 start-100 translate-middle p-1" style="display: none;">
+                                        <span id="unread-count" class="badge bg-danger position-absolute top-5 start-100 translate-middle p-1">
                                             <sup>0</sup>
                                         </span>
+                                        <!-- <span id="unread-count" class="notification text-danger position-absolute top-5 start-100 translate-middle p-1" style="display: none;">
+                                            <sup>0</sup>
+                                        </span> -->
                                     </i>
                                 </a>
                             </li>
@@ -188,10 +191,47 @@
     <!-- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> -->
     <script src="<?= base_url('assets/js/jquery/jquery.dataTables.min.js') ?>"></script>
     <!-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script> -->
-    <script src="<?= base_url('assets/js/dataTables.buttons.min.js') ?>"></script>
+    <!-- <script src="<?= base_url('assets/js/dataTables.buttons.min.js') ?>"></script> -->
     <!-- <script src="https://cdn.datatables.net/buttons/2.3.4/js/buttons.html5.min.js"></script> -->
     <script src="<?= base_url('assets/js/buttons.html5.min.js') ?>"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script> -->
+    <script>
+        function fetchUnreadCount() {
+            // Tentukan base URL secara dinamis
+            const baseUrl = "<?= base_url() ?>"; // Gunakan base_url() dari CodeIgniter
+            const role = "<?= session()->get('role') ?>"; // Dapatkan role dari session
+            const fetchUrl = `${baseUrl}/${role}/count-unread-messages`; // Gabungkan URL
+
+            fetch(fetchUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        const unreadCountElement = document.getElementById('unread-count');
+                        if (unreadCountElement) {
+                            unreadCountElement.textContent =
+                                data.unread_messages > 0 ? data.unread_messages : '';
+                        }
+                    } else {
+                        console.error('Error fetching unread messages:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching unread count:', error);
+                });
+        }
+
+        // Panggil fungsi setiap 5 detik
+        setInterval(fetchUnreadCount, 5000);
+
+        // Panggilan awal saat halaman dimuat
+        fetchUnreadCount();
+    </script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {

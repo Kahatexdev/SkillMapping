@@ -10,6 +10,9 @@ use App\Models\BatchModel;
 use App\Models\KaryawanModel;
 use App\Models\PeriodeModel;
 use App\Models\AbsenModel;
+use App\Models\SummaryJarumModel;
+use App\Models\SummaryRossoModel;
+use App\Models\BsmcModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -31,6 +34,9 @@ class PenilaianController extends BaseController
     protected $karyawanmodel;
     protected $periodeModel;
     protected $absenmodel;
+    protected $jarumModel;
+    protected $rossoModel;
+    protected $bsmcModel;
     protected $db;
 
     const bobot_nilai = [
@@ -75,6 +81,10 @@ class PenilaianController extends BaseController
         $this->batchmodel = new BatchModel();
         $this->karyawanmodel = new KaryawanModel();
         $this->periodeModel = new PeriodeModel();
+        $this->absenmodel = new AbsenModel();
+        $this->jarumModel = new SummaryJarumModel();
+        $this->rossoModel = new SummaryRossoModel();
+        $this->bsmcModel = new BsmcModel();
     }
 
     // public function getAreaUtama()
@@ -850,7 +860,7 @@ class PenilaianController extends BaseController
         // getPenilaianGroupByBatchAndAreaByIdBatch
         $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
         $getAreaUtama = $this->bagianmodel->getAreaGroupByAreaUtama();
-
+        
         // Ambil daftar bagian unik
         $bagianList = array_unique(array_column($reportbatch, 'nama_bagian'));
 
@@ -1090,16 +1100,59 @@ class PenilaianController extends BaseController
                 // Hitung rata-rata dan grade
                 $average = round(($total + 1) / ($count + 1), 2);
                 $grade = $this->calculateGradeBatch($average);
+                $bsmc = $this->bsmcModel->getBsmcByIdKaryawan($p['id_karyawan']);
+                $getTop3 = $this->bsmcModel->getTop3Produksi($area_utama, $id_batch);
+                $getMinAvgBS = $this->bsmcModel->getTop3LowestBS($area_utama, $id_batch);
 
+
+                // dd ($bsmc);
                 // Tambahkan kolom rata-rata dan grade ke data
                 $data[] = 1; // Kolom tambahan (bisa untuk catatan)
                 $data[] = $average;
                 $data[] = $grade;
+
+                // jika karayawan di $getTop3 maka berikan angka 1/2/3 sesuai urutan
+                if ($getTop3) {
+                    $noTop3 = 1;
+                    foreach ($getTop3 as $top3) {
+                        if ($top3['id_karyawan'] == $p['id_karyawan']) {
+                            $data[] = $noTop3;
+                        }
+                        $noTop3++;
+                    }
+                } else {
+                    $data[] = NULL;
+                }
                 $data[] = "";
+                // jika karayawan di $getMinAvgBS maka berikan angka 1/2/3 sesuai urutan
+                if ($getMinAvgBS) {
+                    $noMinAvgBS = 1;
+                    foreach ($getMinAvgBS as $minAvgBS) {
+                        if ($minAvgBS['id_karyawan'] == $p['id_karyawan']) {
+                            $data[] = $noMinAvgBS;
+                        }
+                        $noMinAvgBS++;
+                    }
+                } else {
+                    $data[] = NULL;
+                }
                 $data[] = "";
-                $data[] = "";
-                $data[] = $average;
-                $data[] = $grade;
+
+                // dd ($data);
+                // $data[] = $bsmc['prod'];
+                // $data[] = "0";
+                // $data[] = "0";
+                // $data[] = $average;
+                // set rumus excel untuk point =K5+IF(M5<>"";1;0)+IF(N5<>"";1;0)+IF(O5<>"";1;0)
+                $sum = "=SUM(K" . $row . ",(IF(M" . $row . "<>\"\",1,0)),(IF(N" . $row . "<>\"\",1,0)),(IF(O" . $row . "<>\"\",1,0)))";
+                $sheet->setCellValue("P" . $row, $sum);
+
+                // $sheet->setCellValue("P" . $row, $sum);
+                // dd ($sum);
+                // set rumus excel untuk gradeakhir =IF(P5>3,5;"A";IF(P5>2,5;"B";IF(P5>1,75;"C";IF(P5<1,75;"D";""))))
+                $konversigradeakhir = "=IF(P" . $row . ">3.5,\"A\",IF(P" . $row . ">2.5,\"B\",IF(P" . $row . ">1.75,\"C\",IF(P" . $row . "<1.75,\"D\",\"\"))))";
+                // $konvesigradeakhir = "=IF(P" . $row . ">3,5;\"A\";IF(P" . $row . ">2,5;\"B\";IF(P" . $row . ">1,75;\"C\";IF(P" . $row . "<1,75;\"D\";\"\"))))";
+                $sheet->setCellValue("Q" . $row, $konversigradeakhir);
                 // dd ($data, $total, $count);
                 $sheet->fromArray($data, null, 'A' . $row);
                 $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
@@ -1122,7 +1175,11 @@ class PenilaianController extends BaseController
             $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
             $sheet->setCellValue('C' . $row, $no - 1);
             $sheet->setCellValue('D' . $row, 'org');
-
+            $sheet->getStyle('A' . $row . ':D' . $row)
+                ->getFont()
+                ->setName('Times New Roman')
+                ->setBold(true)
+                ->setSize(10);
             $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
                 ->getBorders()
                 ->getAllBorders()

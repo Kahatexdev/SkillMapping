@@ -12,7 +12,7 @@ class SummaryRossoModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_sr', 'id_periode', 'id_karyawan', 'tgl_prod_rosso', 'qty_prod_rosso', 'qty_bs', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_sr', 'id_batch', 'id_karyawan', 'average_produksi', 'average_bs', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -48,8 +48,29 @@ class SummaryRossoModel extends Model
     {
         return $this->db->table('summary_rosso')
             ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             ->get()->getResultArray();
     }
+
+    public function getDatabyAreaUtama($area_utama)
+    {
+        return $this->db->table('summary_rosso')
+            ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->where('bagian.area_utama', $area_utama)
+            ->get()->getResultArray();
+    }
+    public function getDatabyAreaUtamaAndPeriodeInBatch($area_utama, $id_batch)
+    {
+        return $this->db->table('summary_rosso')
+            ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            -> join('batch', 'batch.id_batch = summary_jarum.id_batch')
+            ->where('batch.id_batch', $id_batch)
+            ->where('bagian.area_utama', $area_utama)
+            ->get()->getResultArray();
+    }
+
 
     public function getDataById($id)
     {
@@ -100,5 +121,32 @@ class SummaryRossoModel extends Model
             ->where('summary_rosso.id_periode', $id_periode)
             ->groupBy('summary_rosso.id_karyawan')
             ->get()->getResultArray();
+    }
+
+    public function getTop3Produksi($area_utama, $id_batch)
+    {
+        return $this->select('summary_rosso.average_produksi, summary_rosso.average_bs, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
+        ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
+        ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+        ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
+        ->where('bagian.area_utama', $area_utama)
+            ->where('batch.id_batch', $id_batch)
+            ->orderBy('summary_rosso.average_produksi', 'DESC') // Order by highest production
+            ->orderBy('summary_rosso.average_bs', 'ASC') // Order by lowest defect
+            ->limit(3) // Limit to top 3
+            ->get()->getResultArray();
+    }
+
+
+    public function getMinAvgBS($area_utama, $id_batch)
+    {
+        return $this->select('MIN(summary_rosso.average_bs) as min_avg_bs,summary_rosso.average_bs, summary_rosso.average_produksi, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, periode.nama_periode, batch.nama_batch')
+            ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('periode', 'periode.id_periode = summary_rosso.id_periode')
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->where('bagian.area_utama', $area_utama)
+            ->where('periode.id_batch', $id_batch)
+            ->get()->getRowArray();
     }
 }

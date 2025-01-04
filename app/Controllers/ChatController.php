@@ -26,7 +26,7 @@ class ChatController extends BaseController
             ->findAll();
 
         // Log data pesan untuk verifikasi
-        log_message('debug', 'Messages: ' . print_r($messages, true));
+        // log_message('debug', 'Messages: ' . print_r($messages, true));
 
         return $this->response->setJSON(['status' => 'success', 'messages' => $messages]);
     }
@@ -100,20 +100,18 @@ class ChatController extends BaseController
     {
         $userId = session('id_user'); // ID pengguna yang login
 
-        // Hitung hanya pesan yang belum dibaca
-        $unreadCount = $this->messageModel
-            ->where('receiver_id', $userId)
-            ->where('is_read', 0)
-            ->countAllResults();
+        if (!$userId) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'User not logged in']);
+        }
 
-        log_message('debug', 'Unread messages count: ' . $unreadCount);
+        // Hitung hanya pesan yang belum dibaca
+        $unreadMessages = $this->messageModel->unreadMessages($userId);
 
         return $this->response->setJSON([
             'status' => 'success',
-            'unread_count' => $unreadCount
+            'unread_messages' => $unreadMessages,
         ]);
     }
-
 
 
 
@@ -122,44 +120,17 @@ class ChatController extends BaseController
         $userId = session('id_user'); // ID pengguna yang login
 
         // Query untuk memperbarui status pesan
-        $updated = $this->messageModel
+        $this->messageModel
             ->where('sender_id', $contactId)
             ->where('receiver_id', $userId)
             ->where('is_read', 0)
             ->set(['is_read' => 1])
             ->update();
 
-        // Debugging: Cek apakah update berhasil
-        if ($updated) {
-            log_message('debug', 'Messages marked as read successfully.');
-        } else {
-            log_message('error', 'Failed to mark messages as read.');
-        }
-
-        // Debugging: Cek pesan setelah update
-        $messagesAfterUpdate = $this->messageModel
-            ->where('sender_id', $contactId)
-            ->where('receiver_id', $userId)
-            ->where('is_read', 0)
-            ->findAll();
-
-        log_message('debug', 'Messages after update: ' . json_encode($messagesAfterUpdate));
-
-        // Hitung ulang pesan belum dibaca
-        $unreadCount = $this->messageModel
-            ->where('receiver_id', $userId)
-            ->where('is_read', 0)
-            ->countAllResults();
-
         return $this->response->setJSON([
             'status' => 'success',
-            'message' => 'Messages marked as read.',
-            'unread_count' => $unreadCount
+            'message' => 'Messages marked as read.'
         ]);
     }
-
-
-
-
 
 }

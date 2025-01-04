@@ -9,7 +9,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h4 class="font-weight-bolder mb-0">
-                                <a href="" # class="btn bg-gradient-info">
+                                <a href="#" class="btn bg-gradient-info">
                                     <!-- icon data periode -->
                                     <i class="fas fa-calendar text-lg opacity-10 me-1" aria-hidden="true"> </i>
                                 </a>
@@ -68,7 +68,7 @@
                                                     data-nama="<?= $periode['nama_periode'] ?>" data-idbatch="<?= $periode['id_batch'] ?>"
                                                     data-startdate="<?= $periode['start_date'] ?>" data-enddate="<?= $periode['end_date'] ?>"
                                                     data-jmllibur="<?= $periode['jml_libur'] ?>"
-                                                    data-bs-toggle=" modal" data-bs-target="#editUser">
+                                                    data-bs-toggle="modal" data-bs-target="#editUser">
                                                     <i class=" fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
                                                 <button onclick="confirmDelete(<?= $periode['id_periode'] ?>)"
@@ -93,7 +93,7 @@
 </div>
 
 <!-- Modal Tambah -->
-<div class="modal fade  bd-example-modal-lg" id="addPeriode" tabindex="-1" role="dialog" aria-labelledby="addPeriode" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="addPeriode" tabindex="-1" role="dialog" aria-labelledby="addPeriode" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

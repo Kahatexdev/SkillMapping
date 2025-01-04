@@ -103,8 +103,9 @@ class KaryawanModel extends Model
     public function getKaryawanByArea($area)
     {
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, bagian.keterangan, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
-            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->where('bagian.area', $area)
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')   
+            ->where('bagian.area_utama', substr($area, 0, -1))
+            // ->where('bagian.area', $area)
             ->findAll();
     }
 
@@ -129,7 +130,7 @@ class KaryawanModel extends Model
     {
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'left') // left join untuk menghindari data hilang
-            ->where('(bagian.area_utama IS NULL OR bagian.area IS NULL OR bagian.area_utama = "-")') // Cek area kosong atau "-"
+            ->where('(bagian.area_utama IS NULL OR bagian.area_utama = "-")') // Cek area kosong atau "-"
             ->findAll();
     }
 
