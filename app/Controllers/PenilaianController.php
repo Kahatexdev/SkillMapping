@@ -1101,20 +1101,58 @@ class PenilaianController extends BaseController
                 $average = round(($total + 1) / ($count + 1), 2);
                 $grade = $this->calculateGradeBatch($average);
                 $bsmc = $this->bsmcModel->getBsmcByIdKaryawan($p['id_karyawan']);
+                $getTop3 = $this->bsmcModel->getTop3Produksi($area_utama, $id_batch);
+                $getMinAvgBS = $this->bsmcModel->getTop3LowestBS($area_utama, $id_batch);
+
+
                 // dd ($bsmc);
                 // Tambahkan kolom rata-rata dan grade ke data
                 $data[] = 1; // Kolom tambahan (bisa untuk catatan)
                 $data[] = $average;
                 $data[] = $grade;
 
-                foreach ($bsmc as $b) {
-                    $data[] = $b['average_produksi'];
+                // jika karayawan di $getTop3 maka berikan angka 1/2/3 sesuai urutan
+                if ($getTop3) {
+                    $noTop3 = 1;
+                    foreach ($getTop3 as $top3) {
+                        if ($top3['id_karyawan'] == $p['id_karyawan']) {
+                            $data[] = $noTop3;
+                        }
+                        $noTop3++;
+                    }
+                } else {
+                    $data[] = NULL;
                 }
+                $data[] = "";
+                // jika karayawan di $getMinAvgBS maka berikan angka 1/2/3 sesuai urutan
+                if ($getMinAvgBS) {
+                    $noMinAvgBS = 1;
+                    foreach ($getMinAvgBS as $minAvgBS) {
+                        if ($minAvgBS['id_karyawan'] == $p['id_karyawan']) {
+                            $data[] = $noMinAvgBS;
+                        }
+                        $noMinAvgBS++;
+                    }
+                } else {
+                    $data[] = NULL;
+                }
+                $data[] = "";
+
+                // dd ($data);
                 // $data[] = $bsmc['prod'];
-                $data[] = "";
-                $data[] = "";
-                $data[] = $average;
-                $data[] = $grade;
+                // $data[] = "0";
+                // $data[] = "0";
+                // $data[] = $average;
+                // set rumus excel untuk point =K5+IF(M5<>"";1;0)+IF(N5<>"";1;0)+IF(O5<>"";1;0)
+                $sum = "=SUM(K" . $row . ",(IF(M" . $row . "<>\"\",1,0)),(IF(N" . $row . "<>\"\",1,0)),(IF(O" . $row . "<>\"\",1,0)))";
+                $sheet->setCellValue("P" . $row, $sum);
+
+                // $sheet->setCellValue("P" . $row, $sum);
+                // dd ($sum);
+                // set rumus excel untuk gradeakhir =IF(P5>3,5;"A";IF(P5>2,5;"B";IF(P5>1,75;"C";IF(P5<1,75;"D";""))))
+                $konversigradeakhir = "=IF(P" . $row . ">3.5,\"A\",IF(P" . $row . ">2.5,\"B\",IF(P" . $row . ">1.75,\"C\",IF(P" . $row . "<1.75,\"D\",\"\"))))";
+                // $konvesigradeakhir = "=IF(P" . $row . ">3,5;\"A\";IF(P" . $row . ">2,5;\"B\";IF(P" . $row . ">1,75;\"C\";IF(P" . $row . "<1,75;\"D\";\"\"))))";
+                $sheet->setCellValue("Q" . $row, $konversigradeakhir);
                 // dd ($data, $total, $count);
                 $sheet->fromArray($data, null, 'A' . $row);
                 $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
@@ -1137,7 +1175,11 @@ class PenilaianController extends BaseController
             $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
             $sheet->setCellValue('C' . $row, $no - 1);
             $sheet->setCellValue('D' . $row, 'org');
-
+            $sheet->getStyle('A' . $row . ':D' . $row)
+                ->getFont()
+                ->setName('Times New Roman')
+                ->setBold(true)
+                ->setSize(10);
             $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
                 ->getBorders()
                 ->getAllBorders()

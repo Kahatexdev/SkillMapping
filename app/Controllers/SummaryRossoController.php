@@ -102,7 +102,7 @@ class SummaryRossoController extends BaseController
             $this->karyawanmodel = new \App\Models\KaryawanModel();
             $this->summaryRosso = new \App\Models\SummaryRossoModel();
 
-            $periode = $this->request->getPost('id_periode');
+            $batch = $this->request->getPost('id_batch');
             $successCount = 0;
             $errorCount = 0;
             $errorMessages = [];
@@ -137,7 +137,7 @@ class SummaryRossoController extends BaseController
 
                 if ($isValid) {
                     $data = [
-                        'id_periode' => $periode,
+                        'id_batch' => $batch,
                         'id_karyawan' => $karyawan['id_karyawan'],
                         'average_produksi' => $averageProduksi,
                         'average_bs' => $averageBS
@@ -501,9 +501,9 @@ class SummaryRossoController extends BaseController
 
 
 
-        $spreadsheet->getActiveSheet()->setTitle('Report Summary Rosso');
+        $spreadsheet->getActiveSheet()->setTitle('REPORT SUMMARY ROSSO');
 
-        $filename = 'Report Summary Rosso ' . date('d-m-Y H:i:s') . '.xlsx';
+        $filename = 'REPORT SUMMARY ROSSO ' . date('d-m-Y H:i:s') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

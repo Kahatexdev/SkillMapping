@@ -15,11 +15,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="id_periode">Periode</label>
-                                    <select class="form-select" name="id_periode" id="id_periode" required>
-                                        <option value="">Pilih Periode</option>
-                                        <?php foreach ($periode as $p) : ?>
-                                            <option value="<?= $p['id_periode'] ?>">Periode <?= $p['nama_periode'] ?> (<?= $p['start_date'] ?> - <?= $p['end_date'] ?>)</option>
+                                    <label for="id_batch">Batch</label>
+                                    <select class="form-select" name="id_batch" id="id_batch" required>
+                                        <option value="">Pilih Batch</option>
+                                        <?php foreach ($getBatch as $p) : ?>
+                                            <option value="<?= $p['id_batch'] ?>"><?= $p['nama_batch'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -57,12 +57,12 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                                <a href="<?= base_url('Monitoring/downloadTemplateRosso') ?>"
-                                    class="btn bg-gradient-success me-2">
-                                    <!-- icon download -->
-                                    <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
-                                    Template Excel
-                                </a>
+                            <a href="<?= base_url('Monitoring/downloadTemplateRosso') ?>"
+                                class="btn bg-gradient-success me-2">
+                                <!-- icon download -->
+                                <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
+                                Template Excel
+                            </a>
                         </div>
                     </div>
                 </div>

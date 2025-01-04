@@ -490,6 +490,35 @@ class BsMcController extends BaseController
         $sheet->getColumnDimension('P')->setWidth(10);
         $sheet->getColumnDimension('Q')->setWidth(10);
 
+        // header untuk top 3 min avg bs
+        $sheet->mergeCells('S6:Z6');
+        $sheet->setCellValue('S6', 'TOP 3 MIN AVG BS');
+        $sheet->getStyle('S6')->getFont()->setBold(true);
+        $sheet->getStyle('S6')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('S6')->getFont()->setSize(10);
+        $sheet->getStyle('S6')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('S6')->getAlignment()->setVertical('center');
+        $sheet->getStyle('S6:Z6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        // Sub-header untuk kolom Top 3 Min Avg BS
+        $sheet->setCellValue('S7', 'NO');
+        $sheet->setCellValue('T7', 'KODE KARTU');
+        $sheet->setCellValue('U7', 'NAMA KARYAWAN');
+        $sheet->setCellValue('V7', 'L/P');
+        $sheet->setCellValue('W7', 'TGL MASUK');
+        $sheet->setCellValue('X7', 'BAGIAN');
+        $sheet->setCellValue('Y7', 'AVG PRODUKSI');
+        $sheet->setCellValue('Z7', 'AVG BS');
+
+        $sheet->getStyle('S7:Z7')->getFont()->setBold(true);
+        $sheet->getStyle('S7:Z7')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('S7:Z7')->getFont()->setSize(10);
+        $sheet->getStyle('S7:Z7')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('S7:Z7')->getAlignment()->setVertical('center');
+        $sheet->getStyle('S7:Z7')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        // $sheet->getStyle('S7:Z7')->getAlignment()->setWrapText(true);
+
+
         // Data Top 3 Produksi
         $startRow = 8;
         $no = 1;
@@ -514,11 +543,34 @@ class BsMcController extends BaseController
             $startRow++;
         }
 
+        // Data Top 3 Min Avg BS
+        $getMinAvgBS = $this->bsmcModel->getTop3LowestBS($area_utama, $id_batch);
+        $startRow = 8;
+        $no = 1;
+        foreach ($getMinAvgBS as $row) {
+            $sheet->setCellValue('S' . $startRow, $no);
+            $sheet->setCellValue('T' . $startRow, $row['kode_kartu']);
+            $sheet->setCellValue('U' . $startRow, $row['nama_karyawan']);
+            $sheet->setCellValue('V' . $startRow, $row['jenis_kelamin']);
+            $sheet->setCellValue('W' . $startRow, $row['tgl_masuk']);
+            $sheet->setCellValue('X' . $startRow, $row['nama_bagian']);
+            $sheet->setCellValue('Y' . $startRow, $row['average_produksi']);
+            $sheet->setCellValue('Z' . $startRow, $row['average_bs']);
 
+            $sheet->getStyle('S' . $startRow . ':Z' . $startRow)->getFont()->setName('Times New Roman');
+            $sheet->getStyle('S' . $startRow . ':Z' . $startRow)->getFont()->setSize(10);
+            $sheet->getStyle('S' . $startRow . ':Z' . $startRow)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle('S' . $startRow . ':Z' . $startRow)->getAlignment()->setVertical('center');
+            $sheet->getStyle('S' . $startRow . ':Z' . $startRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyle('S' . $startRow . ':Z' . $startRow)->getAlignment()->setWrapText(true);
 
-        $spreadsheet->getActiveSheet()->setTitle('Report Summary Rosso');
+            $no++;
+            $startRow++;
+        }
 
-        $filename = 'Report Summary BS Mesin ' . date('d-m-Y H:i:s') . '.xlsx';
+        $spreadsheet->getActiveSheet()->setTitle('REPORT SUMMARY BS MESIN');
+
+        $filename = 'REPORT SUMMARY BS MESIN ' . date('d-m-Y H:i:s') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

@@ -410,6 +410,7 @@ class MonitoringController extends BaseController
     public function rosso()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
 
         $sort = [
@@ -454,7 +455,7 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
-            // 'getBatch' => $getBatch,
+            'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
             'periode' => $periode
         ];
@@ -464,6 +465,7 @@ class MonitoringController extends BaseController
     public function jarum()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
 
         $sort = [
@@ -508,7 +510,7 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             // 'reportbatch' => $reportbatch,
             // 'getArea' => $getArea,
-            // 'getBatch' => $getBatch,
+            'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
             'periode' => $periode
         ];
