@@ -65,4 +65,25 @@
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function() {
+        // Flash message SweetAlerts
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                html: '<?= session()->getFlashdata('success') ?>',
+            });
+        <?php endif; ?>
+
+        <?php if (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                html: '<?= session()->getFlashdata('error') ?>',
+            });
+        <?php endif; ?>
+    });
+</script>
 <?php $this->endSection(); ?>

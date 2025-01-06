@@ -115,7 +115,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('getAreaUtama', 'PenilaianController::getAreaUtama');
     $routes->get('getArea', 'PenilaianController::getArea');
     $routes->get('getJobRole', 'PenilaianController::getJobRole');
-    $routes->get('getKaryawan', 'MandorController::getKaryawan');
+    $routes->get('getKaryawan', 'PenilaianController::getKaryawan');
     $routes->post('penilaianCreate', 'PenilaianController::create');
     $routes->post('cekPenilaian', 'PenilaianController::cekPenilaian');
     $routes->post('penilaianStore', 'PenilaianController::store');
@@ -147,7 +147,6 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('', 'MandorController::listArea');
-
     $routes->get('dataKaryawan', 'MandorController::listArea');
     $routes->get('dataKaryawan/(:any)', 'MandorController::detailKaryawanPerArea/$1');
 
@@ -171,13 +170,26 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     // $routes->post('absenStoreImport', 'AbsenController::upload');
     // $routes->get('absenEmpty', 'AbsenController::empty');
 
-    $routes->get('dataPenilaian', 'MandorController::penilaian');
+    $routes->get('dataPenilaian', 'MonitoringController::penilaian');
     $routes->get('getAreaUtama', 'MandorController::getAreaUtama');
     $routes->get('getArea', 'MandorController::getArea');
     $routes->get('getJobRole', 'MandorController::getJobRole');
     $routes->get('getKaryawan', 'MandorController::getKaryawan');
     $routes->post('penilaianCreate', 'MandorController::create');
+    $routes->post('cekPenilaian', 'MandorController::cekPenilaian');
     $routes->post('penilaianStore', 'MandorController::store');
+    $routes->get('penilaianDetail/(:num)/(:num)/(:num)', 'PenilaianController::show/$1/$2/$3');
+    $routes->get('penilaianExcel/(:num)/(:num)/(:num)', 'PenilaianController::reportExcel/$1/$2/$3');
+
+    $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
+    $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
+    $routes->get('reportBatch', 'MonitoringController::reportBatch');
+    $routes->get('reportPenilaian/(:segment)', 'PenilaianController::penilaianPerArea/$1');
+    $routes->get('reportPenilaian/(:segment)/(:num)', 'PenilaianController::penilaianPerPeriode/$1/$2');
+    $routes->get('reportPenilaian/(:segment)/(:segment)/(:segment)', 'PenilaianController::excelReportPerPeriode/$1/$2/$3');
+    $routes->get('reportExcel/(:segment)/(:segment)/(:segment)', 'PenilaianController::reportExcel/$1/$2/$3');
+    // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
+    $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 
     $routes->get('chat', 'TrainingSchoolController::chat');
     // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)

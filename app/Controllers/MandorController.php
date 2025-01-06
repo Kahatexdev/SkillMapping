@@ -221,23 +221,17 @@ class MandorController extends BaseController
         // Siapkan data untuk view
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Penilaian',
+            'title' => 'Penilaian Karyawan',
             'active1' => '',
-            'active2' => '',
+            'active2' => 'active',
             'active3' => '',
-            'active4' => '',
-            'active5' => '',
-            'active6' => '',
-            'active7' => '',
-            'active8' => '',
-            'active9' => 'active',
             'batch' => $batch,
             'namabagian' => $namabagian,
             'periode' => $periode,
             'penilaian' => $penilaian,
             'karyawan' => $karyawan // Karyawan yang difilter
         ];
-
+        // dd ($data);
         return view(session()->get('role') . '/penilaian', $data);
     }
 
@@ -398,7 +392,6 @@ class MandorController extends BaseController
         // $indexNilai = $this->request->getPost('index_nilai');  // Should now contain data
         $id_user = session()->get('id_user');
 
-        // dd($periodeId, $jobroleId, $karyawanIds, $bobotNilai);
         // hitung nilai rata-rata dari bobot nilai dengan constanta bobot_nilai
         $indexNilai = [];
 
@@ -448,7 +441,7 @@ class MandorController extends BaseController
         // dd($data);
 
         if ($this->penilaianmodel->insertBatch($data)) {
-            return redirect()->to(session()->get('role') . '/dataPenilaian')->with('success', 'Penilaian berhasil disimpan.');
+            return redirect()->to('/Mandor')->with('success', 'Penilaian berhasil disimpan.');
         }
 
         return redirect()->back()->with('error', 'Gagal menyimpan penilaian.');
