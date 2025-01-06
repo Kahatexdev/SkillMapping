@@ -14,9 +14,10 @@ class SummaryRosso extends Migration
                 'constraint' => 11,
                 'auto_increment' => true,
             ],
-            'id_periode' => [
+            'id_batch' => [
                 'type' => 'INT',
                 'constraint' => 11,
+                'unsigned' => true,
             ],
             'id_karyawan' => [
                 'type' => 'INT',
@@ -38,7 +39,7 @@ class SummaryRosso extends Migration
             ],
         ]);
         $this->forge->addKey('id_sr', true);
-        $this->forge->addForeignKey('id_periode', 'periode', 'id_periode', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_batch', 'batch', 'id_batch', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_karyawan', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');
         $this->forge->createTable('summary_rosso');
     }
