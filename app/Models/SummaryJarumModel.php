@@ -66,10 +66,10 @@ class SummaryJarumModel extends Model
 
     public function getTop3Produksi($area_utama, $id_batch)
     {
-        return $this->select('summary_jarum.avg_used_needle, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
+        return $this->select('summary_jarum.avg_used_needle, karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
         ->join('karyawan', 'karyawan.id_karyawan = summary_jarum.id_karyawan')
         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
+        ->join('batch', 'batch.id_batch = summary_jarum.id_batch')
         ->where('bagian.area_utama', $area_utama)
             ->where('batch.id_batch', $id_batch)
             ->orderBy('summary_jarum.avg_used_needle', 'ASC') // Order by highest production
