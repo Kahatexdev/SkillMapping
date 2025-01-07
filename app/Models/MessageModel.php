@@ -52,4 +52,13 @@ class MessageModel extends Model
             ->countAllResults();
     }
 
+    public function getNewMessages($userId, $lastCheck)
+    {
+        return $this->where('receiver_id', $userId)
+            ->where('is_read', 0)
+            ->where('created_at >', $lastCheck) // Filter pesan yang baru masuk
+            ->orderBy('created_at', 'ASC') // Urutkan berdasarkan waktu
+            ->findAll();
+    }
+
 }

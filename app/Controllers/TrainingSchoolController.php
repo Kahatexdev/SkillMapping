@@ -75,17 +75,11 @@ class TrainingSchoolController extends BaseController
     {
         $tampilperarea = $this->bagianmodel->getAreaOnly();
         $sort = [
-            'KK1A',
-            'KK1B',
-            'KK2A',
-            'KK2B',
-            'KK2C',
+            'KK1',
+            'KK2',
             'KK5',
-            'KK7K',
-            'KK7L',
-            'KK8D',
-            'KK8F',
-            'KK8J',
+            'KK7',
+            'KK8',
             'KK9',
             'KK10',
             'KK11'
@@ -93,8 +87,8 @@ class TrainingSchoolController extends BaseController
 
         // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
         usort($tampilperarea, function ($a, $b) use ($sort) {
-            $pos_a = array_search($a['area'], $sort);
-            $pos_b = array_search($b['area'], $sort);
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
 
             // Jika tidak ditemukan, letakkan di akhir
             $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
@@ -124,8 +118,10 @@ class TrainingSchoolController extends BaseController
             $karyawan = $this->karyawanmodel->getKaryawanTanpaArea();
         } else {
             $karyawan = $this->karyawanmodel->getKaryawanByArea($area);
+            // dd ($karyawan);
         }
-        // dd($area);
+        // dd ($area);
+        // dd($karyawan);
         $bagianModel = new \App\Models\BagianModel();
         $bagian = $bagianModel->findAll();
         // dd($karyawan);

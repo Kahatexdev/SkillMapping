@@ -94,8 +94,8 @@ class BagianModel extends Model
     }
     public function getAreaOnly()
     {
-        return $this->select('GROUP_CONCAT(DISTINCT area) AS area')
-            ->groupBy('area')
+        return $this->select('GROUP_CONCAT(DISTINCT area_utama) AS area_utama')
+            ->groupBy('area_utama')
             ->findAll();
     }
 
