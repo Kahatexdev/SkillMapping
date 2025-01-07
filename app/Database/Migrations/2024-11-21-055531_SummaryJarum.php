@@ -18,9 +18,10 @@ class SummaryJarum extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
             ],
-            'id_periode' => [
+            'id_batch' => [
                 'type' => 'INT',
                 'constraint' => 11,
+                'unsigned' => true,
             ],
             'avg_used_needle' => [
                 'type' => 'INT',
@@ -35,7 +36,7 @@ class SummaryJarum extends Migration
         ]);
         $this->forge->addKey('id_sj', true);
         $this->forge->addForeignKey('id_karyawan', 'karyawan', 'id_karyawan', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_periode', 'periode', 'id_periode', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('id_batch', 'batch', 'id_batch', 'CASCADE', 'CASCADE');
         $this->forge->createTable('summary_jarum');
     }
     public function down()

@@ -140,6 +140,7 @@ class JarumController extends BaseController
             // $this->summaryRosso = new \App\Models\SummaryRossoModel();
 
             $batch = $this->request->getPost('id_batch');
+            // dd ($batch);
             $successCount = 0;
             $errorCount = 0;
             $errorMessages = [];

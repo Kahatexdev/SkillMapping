@@ -125,10 +125,10 @@ class SummaryRossoModel extends Model
 
     public function getTop3Produksi($area_utama, $id_batch)
     {
-        return $this->select('summary_rosso.average_produksi, summary_rosso.average_bs, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
+        return $this->select('summary_rosso.average_produksi, summary_rosso.average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
         ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
+        ->join('batch', 'batch.id_batch = summary_rosso.id_batch')
         ->where('bagian.area_utama', $area_utama)
             ->where('batch.id_batch', $id_batch)
             ->orderBy('summary_rosso.average_produksi', 'DESC') // Order by highest production
@@ -140,13 +140,34 @@ class SummaryRossoModel extends Model
 
     public function getMinAvgBS($area_utama, $id_batch)
     {
-        return $this->select('MIN(summary_rosso.average_bs) as min_avg_bs,summary_rosso.average_bs, summary_rosso.average_produksi, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, periode.nama_periode, batch.nama_batch')
+        return $this->select('MIN(summary_rosso.average_bs) as min_avg_bs,summary_rosso.average_bs, summary_rosso.average_produksi,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, periode.nama_periode, batch.nama_batch')
             ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->join('periode', 'periode.id_periode = summary_rosso.id_periode')
             ->join('batch', 'batch.id_batch = periode.id_batch')
             ->where('bagian.area_utama', $area_utama)
             ->where('periode.id_batch', $id_batch)
             ->get()->getRowArray();
+    }
+
+    public function getTop3LowestBS($area_utama, $id_batch)
+    {
+        // Step 1: Get the top 7 data based on highest production
+        $top7Data = $this->select('summary_rosso.average_produksi, summary_rosso.average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
+        ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
+        ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+        ->join('batch', 'batch.id_batch = summary_rosso.id_batch')
+        ->where('bagian.area_utama', $area_utama)
+            ->where('batch.id_batch', $id_batch)
+            ->orderBy('summary_rosso.average_produksi', 'DESC') // Order by highest production
+            ->limit(7) // Limit to top 7 results based on production
+            ->get()->getResultArray();
+
+        // Step 2: Sort these 7 results by average_bs in ascending order
+        usort($top7Data, function ($a, $b) {
+            return $a['average_bs'] <=> $b['average_bs']; // Sort by average_bs (lowest first)
+        });
+
+        // Step 3: Return the first 3 with the lowest average_bs
+        return array_slice($top7Data, 0, 3); // Return the top 3 with the lowest defects
     }
 }
