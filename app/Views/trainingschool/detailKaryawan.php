@@ -497,7 +497,7 @@
     $(document).on('click', '.edit-btn', function() {
         // Ambil data nama_bagian lama
         var bagianOld = $(this).data('nama_bagian');
-        console.log('Bagian Old:', bagianOld);
+        // console.log('Bagian Old:', bagianOld);
 
         // Simpan data bagian lama ke elemen dropdown
         $('#bagian').data('nama_bagian', bagianOld);
@@ -527,14 +527,12 @@
         // Tampilkan nilai lama dan baru
         var readonlyInputOld = `
     <div class="form-group mb-2" id="${readonlyInputIdOld}">
-        <label for="readonly_bagian_old">Bagian Lama</label>
-        <input type="text" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
+        <input type="hidden" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
     </div>`;
 
         var readonlyInputNew = `
     <div class="form-group mb-2" id="${readonlyInputIdNew}">
-        <label for="readonly_bagian_new">Bagian Baru</label>
-        <input type="text" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
+        <input type="hidden" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
     </div>`;
 
         var tgl_pindah = `
@@ -555,11 +553,11 @@
 
     $(document).on('click', '.edit-btn', function() {
         var bagianOld = $(this).data('nama_bagian');
-        console.log('Bagian Old (Saat Klik Edit):', bagianOld);
+        // console.log('Bagian Old (Saat Klik Edit):', bagianOld);
         $('#bagian').data('nama_bagian', bagianOld);
 
         // Verifikasi data yang diset
-        console.log('Data nama_bagian diset ke #bagian:', $('#bagian').data('nama_bagian'));
+        // console.log('Data nama_bagian diset ke #bagian:', $('#bagian').data('nama_bagian'));
     });
 </script>
 

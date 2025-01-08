@@ -60,4 +60,22 @@ class HistoryPindahKaryawanModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    // Fungsi untuk mendapatkan data fluktuasi grade
+    public function getGradeFluctuation()
+    {
+        // Contoh data fluktuasi grade (bisa disesuaikan dengan query dari tabel terkait)
+        return [
+            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // Label bulan
+            'grades' => [3, 4, 3, 5, 4], // Nilai grade tiap bulan
+        ];
+    }
+
+    // Fungsi untuk mendapatkan data karyawan yang dipindah area
+    public function getKaryawanDipindah()
+    {
+        return $this->where('id_bagian_asal !=', 'id_bagian_baru')
+            ->orderBy('tgl_pindah', 'DESC')
+            ->findAll();
+    }
 }

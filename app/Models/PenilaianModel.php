@@ -357,4 +357,18 @@ class PenilaianModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    public function getFluktuasiGrade()
+    {
+        $query = $this->db->query("
+        SELECT 
+            MONTH(periode.end_date) AS month, 
+            AVG(penilaian.index_nilai) AS average_grade
+        FROM penilaian
+        JOIN periode ON penilaian.id_periode = periode.id_periode
+        GROUP BY MONTH(periode.end_date)
+        ORDER BY MONTH(periode.end_date)
+    ");
+        return $query->getResultArray();
+    }
 }

@@ -29,12 +29,12 @@
     <div class="row">
         <?php foreach ($tampildata as $key => $ar) : ?>
             <?php
-            if ($ar['area'] == "-" || $ar['area'] == NULL) {
+            if ($ar['area_utama'] == "-" || $ar['area_utama'] == NULL) {
                 $judul = "Area belum di input";
                 $area = "EMPTY";
             } else {
-                $judul = $ar['area'];
-                $area = $ar['area'];
+                $judul = $ar['area_utama'];
+                $area = $ar['area_utama'];
             } ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
                 <a href="<?= base_url($role . '/dataKaryawan/' . $area) ?>">
