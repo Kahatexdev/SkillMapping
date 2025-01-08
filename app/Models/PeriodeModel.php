@@ -58,4 +58,30 @@ class PeriodeModel extends Model
             ->where('id_periode', $id_periode)
             ->first();
     }
+    public function getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode)
+    {
+        $result = $this->select('periode.id_periode, periode.nama_periode, batch.id_batch, batch.nama_batch, periode.start_date, periode.end_date, periode.jml_libur')
+        ->join('batch', 'batch.id_batch = periode.id_batch')
+        ->where('batch.nama_batch', $nama_batch)
+            ->where('periode.nama_periode', $nama_periode)
+            ->first();
+
+        // Jika hasil ditemukan, tambahkan format nama bulan
+        if ($result) {
+            $formatter = new \IntlDateFormatter(
+                'id_ID', // Locale untuk Bahasa Indonesia
+                \IntlDateFormatter::LONG,
+                \IntlDateFormatter::NONE,
+                null,
+                \IntlDateFormatter::GREGORIAN,
+                'MMMM' // Format untuk nama bulan penuh
+            );
+
+            $result['nama_bulan'] = $formatter->format(new \DateTime($result['end_date']));
+        }
+
+        return $result;
+    }
+
+
 }

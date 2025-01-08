@@ -1415,7 +1415,9 @@ class PenilaianController extends BaseController
     public function excelReportPerPeriode($area_utama, $nama_batch, $nama_periode) {
     
     $reportbatch = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
-
+        // dd($reportbatch);
+    $bulan = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode);
+        // dd(date('M', strtotime($bulan)));
     $uniqueSheets = [];
     foreach ($reportbatch as $item) {
         $key = $item['area'] . ' - ' . $item['nama_bagian'];
@@ -1439,23 +1441,26 @@ class PenilaianController extends BaseController
             return $item['area'] === $currentArea && $item['nama_bagian'] === $currentBagian;
         });
 
+            // Ambil nama bulan dari end_date
+            $namaBulan = isset($bulan['nama_bulan']) ? strtoupper($bulan['nama_bulan']) : '';
         // Kelompokkan berdasarkan shift
         $dataByShift = $this->groupByShift($dataFiltered);
 
-        // Header Utama
-        $sheet->mergeCells('A1:G1')->setCellValue('A1', 'REPORT PENILAIAN - ' . strtoupper($sheetName));
-        $sheet->mergeCells('A2:G2')->setCellValue('A2', 'DEPARTEMEN KAOS KAKI');
-        $sheet->mergeCells('A3:G3')->setCellValue('A3', '(PERIODE ' . strtoupper(date('M', strtotime($nama_periode))) . ' ' . strtoupper($nama_batch) . ')');
-        $sheet->getStyle('A1:A3')->applyFromArray([
-            'font' => ['bold' => true, 'size' => 16, 'name' => 'Times New Roman'],
-            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
-        ]);
+            // Header Utama
+            $sheet->mergeCells('A1:G1')->setCellValue('A1', 'REPORT PENILAIAN - ' . strtoupper($sheetName));
+            $sheet->mergeCells('A2:G2')->setCellValue('A2', 'DEPARTEMEN KAOS KAKI');
+            $sheet->mergeCells('A3:G3')->setCellValue('A3', '(PERIODE ' . $namaBulan . ' ' . strtoupper($nama_batch) . ')');
+            $sheet->getStyle('A1:A3')->applyFromArray([
+                'font' => ['bold' => true, 'size' => 16, 'name' => 'Times New Roman'],
+                'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            ]);
 
         // Header Kolom Statis
-        $headers = ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'SHIFT', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'BEFORE'];
+        $headers = ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'SHIFT', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'PREVIOUS GRADE'];
         $startCol = 1; // Kolom A
         foreach ($headers as $header) {
             $colLetter = Coordinate::stringFromColumnIndex($startCol);
+            $sheet->getStyle($colLetter . '5')->getAlignment()->setWrapText(true);
             $sheet->mergeCells($colLetter . '5:' . $colLetter . '6')->setCellValue($colLetter . '5', $header);
             $sheet->getStyle($colLetter . '5:' . $colLetter . '6')->applyFromArray([
                 'font' => ['bold' => true],
@@ -1560,7 +1565,7 @@ class PenilaianController extends BaseController
                 $sheet->setCellValue('E' . $row, $p['jenis_kelamin']);
                 $sheet->setCellValue('F' . $row, $p['tgl_masuk']);
                 $sheet->setCellValue('G' . $row, $p['nama_bagian']);
-                $sheet->setCellValue('H' . $row, 1); // Placeholder "BEFORE"
+                $sheet->setCellValue('H' . $row, $p['previous_grade'] ?? '-');
                     // Decode nilai
                     $nilai = json_decode($p['bobot_nilai'] ?? '[]', true);
                     // dd($nilai);
@@ -1575,6 +1580,7 @@ class PenilaianController extends BaseController
                         }
 
                         $average = $totalBobot / count($nilai);
+                        $previous_grade = $p['previous_grade'] ?? '-';
                         $grade = $p['index_nilai'] ?? '-'; // Default grade jika tidak ada
                         $skor = $this->calculateSkor($grade);
 
@@ -1606,7 +1612,7 @@ class PenilaianController extends BaseController
                     $hasil_akhir = $skor + $accumulasi;
                     $grade_akhir = $this->calculateGradeBatch($hasil_akhir);
                     // dd ($grade_akhir);
-                    $trakcing = $grade . $grade_akhir;
+                    $tracking = $previous_grade . $grade_akhir;
 
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $sakit);
                     $colIndex++;
@@ -1628,7 +1634,7 @@ class PenilaianController extends BaseController
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $grade_akhir);
                     $colIndex++;
                     //tracking
-                    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $trakcing);
+                    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $tracking);
                     // $colIndex++;
 
                     //style from array
@@ -1649,7 +1655,7 @@ class PenilaianController extends BaseController
             $sheet->mergeCells('B' . $row . ':C' . $row);
             $sheet->setCellValue('D' . $row, count($karyawan));
             $sheet->getStyle('B' . $row . ':D' . $row)->applyFromArray([
-                'font' => ['bold' => true],
+                'font' => ['bold' => false],
                 'alignment' => [
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,

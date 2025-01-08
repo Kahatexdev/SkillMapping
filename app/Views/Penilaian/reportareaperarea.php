@@ -40,9 +40,9 @@ $this->extend('Layout/index'); ?>
                 <!-- Tampilkan nama batch hanya jika berbeda dengan batch sebelumnya -->
                 <?php if ($periode['nama_batch'] !== $currentBatch) : ?>
                     <?php $currentBatch = $periode['nama_batch']; ?>
-                    <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-5">
+                    <div class="col-xl-12 col-sm-12 mb-xl-0 mb-3 mt-3">
                         <div class="card">
-                            <div class="card-body w-100">
+                            <div class="card-body p-3">
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
