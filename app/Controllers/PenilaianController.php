@@ -524,7 +524,7 @@ class PenilaianController extends BaseController
     public function reportExcel($area_utama, $nama_batch, $nama_periode)
     {
         $penilaian = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
-       
+
         // Kelompokkan data berdasarkan id_bagian dan jobrole
         $penilaianByGroup = $this->groupByBagianAndJobrole($penilaian);
 
@@ -863,7 +863,7 @@ class PenilaianController extends BaseController
         // getPenilaianGroupByBatchAndAreaByIdBatch
         $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
         $getAreaUtama = $this->bagianmodel->getAreaGroupByAreaUtama();
-        
+
         // Ambil daftar bagian unik
         $bagianList = array_unique(array_column($reportbatch, 'nama_bagian'));
         $nama_batch = $this->batchmodel->find($id_batch);
@@ -1016,7 +1016,7 @@ class PenilaianController extends BaseController
 
 
                 // jika karayawan di $getTop3 maka berikan angka 1/2/3 sesuai urutan
-                
+
                 $activesheet = $spreadsheet->getActiveSheet();
 
                 if ("OPERATOR" == $activesheet->getTitle()) {
@@ -1044,7 +1044,7 @@ class PenilaianController extends BaseController
                         $data[] = NULL;
                     }
                     $data[] = "";
-                } elseif("ROSSO" == $activesheet->getTitle()) {
+                } elseif ("ROSSO" == $activesheet->getTitle()) {
                     if ($getTop3Rosso) {
                         $noTop3Rosso = 1;
                         foreach ($getTop3Rosso as $top3Rosso) {
@@ -1069,7 +1069,7 @@ class PenilaianController extends BaseController
                         $data[] = NULL;
                     }
                     $data[] = "";
-                } else{
+                } else {
                     $data[] = "";
                     $data[] = "";
                     if ($getTop3UsedNeedle) {
@@ -1086,12 +1086,12 @@ class PenilaianController extends BaseController
                 }
 
 
-                
+
                 // set rumus excel untuk point =K5+IF(M5<>"";1;0)+IF(N5<>"";1;0)+IF(O5<>"";1;0)
                 $sum = "=SUM(K" . $row . ",(IF(M" . $row . "<>\"\",1,0)),(IF(N" . $row . "<>\"\",1,0)),(IF(O" . $row . "<>\"\",1,0)))";
                 $sheet->setCellValue("P" . $row, $sum);
 
-                
+
                 // set rumus excel untuk gradeakhir =IF(P5>3,5;"A";IF(P5>2,5;"B";IF(P5>1,75;"C";IF(P5<1,75;"D";""))))
                 $konversigradeakhir = "=IF(P" . $row . ">3.5,\"A\",IF(P" . $row . ">2.5,\"B\",IF(P" . $row . ">1.75,\"C\",IF(P" . $row . "<1.75,\"D\",\"D\"))))";
                 // $konvesigradeakhir = "=IF(P" . $row . ">3,5;\"A\";IF(P" . $row . ">2,5;\"B\";IF(P" . $row . ">1,75;\"C\";IF(P" . $row . "<1,75;\"D\";\"\"))))";
@@ -1110,7 +1110,7 @@ class PenilaianController extends BaseController
                 $row++;
                 $no++;
             }
-      
+
             // Tambahkan total karyawan
             $sheet->mergeCells('A' . $row . ':B' . $row);
             $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
@@ -1412,39 +1412,40 @@ class PenilaianController extends BaseController
         return 'D';
     }
 
-    public function excelReportPerPeriode($area_utama, $nama_batch, $nama_periode) {
-    
-    $reportbatch = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
+    public function excelReportPerPeriode($area_utama, $nama_batch, $nama_periode)
+    {
+
+        $reportbatch = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
         // dd($reportbatch);
-    $bulan = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode);
-        // dd(date('M', strtotime($bulan)));
-    $uniqueSheets = [];
-    foreach ($reportbatch as $item) {
-        $key = $item['area'] . ' - ' . $item['nama_bagian'];
-        if (!in_array($key, $uniqueSheets)) {
-            $uniqueSheets[] = $key;
+        $bulan = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode);
+
+        $uniqueSheets = [];
+        foreach ($reportbatch as $item) {
+            $key = $item['area'] . ' - ' . $item['nama_bagian'];
+            if (!in_array($key, $uniqueSheets)) {
+                $uniqueSheets[] = $key;
+            }
         }
-    }
 
-    $spreadsheet = new Spreadsheet();
-    $spreadsheet->removeSheetByIndex(0); // Hapus sheet default
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0); // Hapus sheet default
 
-    foreach ($uniqueSheets as $sheetName) {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle(substr($sheetName, 0, 31)); // Nama sheet sesuai area dan bagian
+        foreach ($uniqueSheets as $sheetName) {
+            $sheet = $spreadsheet->createSheet();
+            $sheet->setTitle(substr($sheetName, 0, 31)); // Nama sheet sesuai area dan bagian
 
-        // Pisahkan area dan nama bagian
-        list($currentArea, $currentBagian) = explode(' - ', $sheetName, 2);
+            // Pisahkan area dan nama bagian
+            list($currentArea, $currentBagian) = explode(' - ', $sheetName, 2);
 
-        // Filter data untuk sheet ini
-        $dataFiltered = array_filter($reportbatch, function ($item) use ($currentArea, $currentBagian) {
-            return $item['area'] === $currentArea && $item['nama_bagian'] === $currentBagian;
-        });
+            // Filter data untuk sheet ini
+            $dataFiltered = array_filter($reportbatch, function ($item) use ($currentArea, $currentBagian) {
+                return $item['area'] === $currentArea && $item['nama_bagian'] === $currentBagian;
+            });
 
             // Ambil nama bulan dari end_date
             $namaBulan = isset($bulan['nama_bulan']) ? strtoupper($bulan['nama_bulan']) : '';
-        // Kelompokkan berdasarkan shift
-        $dataByShift = $this->groupByShift($dataFiltered);
+            // Kelompokkan berdasarkan shift
+            $dataByShift = $this->groupByShift($dataFiltered);
 
             // Header Utama
             $sheet->mergeCells('A1:G1')->setCellValue('A1', 'REPORT PENILAIAN - ' . strtoupper($sheetName));
@@ -1455,23 +1456,23 @@ class PenilaianController extends BaseController
                 'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
             ]);
 
-        // Header Kolom Statis
-        $headers = ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'SHIFT', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'PREVIOUS GRADE'];
-        $startCol = 1; // Kolom A
-        foreach ($headers as $header) {
-            $colLetter = Coordinate::stringFromColumnIndex($startCol);
-            $sheet->getStyle($colLetter . '5')->getAlignment()->setWrapText(true);
-            $sheet->mergeCells($colLetter . '5:' . $colLetter . '6')->setCellValue($colLetter . '5', $header);
-            $sheet->getStyle($colLetter . '5:' . $colLetter . '6')->applyFromArray([
-                'font' => ['bold' => true],
-                'alignment' => [
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ],
-                'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
-            ]);
-            $startCol++;
-        }
+            // Header Kolom Statis
+            $headers = ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'SHIFT', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'PREVIOUS GRADE'];
+            $startCol = 1; // Kolom A
+            foreach ($headers as $header) {
+                $colLetter = Coordinate::stringFromColumnIndex($startCol);
+                $sheet->getStyle($colLetter . '5')->getAlignment()->setWrapText(true);
+                $sheet->mergeCells($colLetter . '5:' . $colLetter . '6')->setCellValue($colLetter . '5', $header);
+                $sheet->getStyle($colLetter . '5:' . $colLetter . '6')->applyFromArray([
+                    'font' => ['bold' => true],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                    'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+                ]);
+                $startCol++;
+            }
 
             // Header Dinamis untuk keterangan dan jobdesc
             $currentCol = 9; // Dimulai dari kolom I
@@ -1552,20 +1553,20 @@ class PenilaianController extends BaseController
                 ]);
                 $currentCol++;
             }
-        // Tulis Data Karyawan Berdasarkan Shift
-        $row = 7;
-        foreach ($dataByShift as $shift => $karyawan) {
-            // Tulis Data Karyawan
-            $no = 1;
-            foreach ($karyawan as $p) {
-                $sheet->setCellValue('A' . $row, $no++);
-                $sheet->setCellValue('B' . $row, $p['kode_kartu']);
-                $sheet->setCellValue('C' . $row, $p['nama_karyawan']);
-                $sheet->setCellValue('D' . $row, $p['shift']);
-                $sheet->setCellValue('E' . $row, $p['jenis_kelamin']);
-                $sheet->setCellValue('F' . $row, $p['tgl_masuk']);
-                $sheet->setCellValue('G' . $row, $p['nama_bagian']);
-                $sheet->setCellValue('H' . $row, $p['previous_grade'] ?? '-');
+            // Tulis Data Karyawan Berdasarkan Shift
+            $row = 7;
+            foreach ($dataByShift as $shift => $karyawan) {
+                // Tulis Data Karyawan
+                $no = 1;
+                foreach ($karyawan as $p) {
+                    $sheet->setCellValue('A' . $row, $no++);
+                    $sheet->setCellValue('B' . $row, $p['kode_kartu']);
+                    $sheet->setCellValue('C' . $row, $p['nama_karyawan']);
+                    $sheet->setCellValue('D' . $row, $p['shift']);
+                    $sheet->setCellValue('E' . $row, $p['jenis_kelamin']);
+                    $sheet->setCellValue('F' . $row, $p['tgl_masuk']);
+                    $sheet->setCellValue('G' . $row, $p['nama_bagian']);
+                    $sheet->setCellValue('H' . $row, $p['previous_grade'] ?? '-');
                     // Decode nilai
                     $nilai = json_decode($p['bobot_nilai'] ?? '[]', true);
                     // dd($nilai);
@@ -1583,7 +1584,7 @@ class PenilaianController extends BaseController
                         $previous_grade = $p['previous_grade'] ?? '-';
                         $grade = $p['index_nilai'] ?? '-'; // Default grade jika tidak ada
                         $skor = $this->calculateSkor($grade);
-
+                        
                         // Set job description and additional columns
                         foreach ($nilai as $value) {
                             $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $value);
@@ -1604,16 +1605,30 @@ class PenilaianController extends BaseController
                     $mangkir = $p['mangkir'] ?? 0;
                     $cuti = $p['cuti'] ?? 0;
                     $totalAbsen = ($sakit * 1) + ($izin * 2) + ($mangkir * 3);
-                    $kehadiran = 100 - $totalAbsen;
+                    // $kehadiran = 100 - $totalAbsen;
+                    //Set Persentase Kehadiran
+                    $start_date = new \DateTime($bulan['start_date']);
+                    $end_date = new \DateTime($bulan['end_date']);
+                    $selisih = $start_date->diff($end_date);
+                    $totalHari = $selisih->days + 1; // +1 untuk menyertakan hari pertama
+                    $jmlLibur = $bulan['jml_libur'];
+                    $persentaseKehadiran = (($totalHari - $jmlLibur - $totalAbsen) / ($totalHari - $jmlLibur)) * 100;
+                    // dd($totalHari, $jmlLibur, $totalAbsen, $persentaseKehadiran);
                     // =IF(BW9<0.94,"-1",IF(BW9>0.93,"0"))
-                    $accumulasi = $kehadiran < 94 ? -1 : 0;
+                    $accumulasi = $persentaseKehadiran < 94 ? -1 : 0;
 
                     // hasil akhir = skor + accumulasi
                     $hasil_akhir = $skor + $accumulasi;
                     $grade_akhir = $this->calculateGradeBatch($hasil_akhir);
-                    // dd ($grade_akhir);
+                    $id_karyawan = $p['karyawan_id'];
+                    $id_periode = $p['id_periode'];
+                    $id_batch = $p['id_batch'];
+                    $data = $grade_akhir;
+                    // dd($data);
+                    // $ga = $this->penilaianmodel->updateGradeAkhir($id_karyawan, $id_periode, $id_batch, $data);
+                    // dd ($ga);
                     $tracking = $previous_grade . $grade_akhir;
-
+                    // dd($nama_periode, $previous_grade, $grade, $grade_akhir, $tracking);
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $sakit);
                     $colIndex++;
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $izin);
@@ -1625,7 +1640,7 @@ class PenilaianController extends BaseController
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $totalAbsen);
                     $colIndex++;
                     //persentase kehadiran
-                    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $kehadiran);
+                    $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, round($persentaseKehadiran) . '%'); // Tambahkan , 2 jika ingin menampilkan desimal
                     $colIndex++;
                     //accumulasi absensi
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $accumulasi);
@@ -1646,40 +1661,39 @@ class PenilaianController extends BaseController
                         ],
                         'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
                     ]);
+                    $row++;
+                }
+
+                // Tulis Total Karyawan
+                // $sheet->setCellValue('B' . $row, 'TOTAL' . $shift);
+                $sheet->setCellValue('B' . $row, 'TOTAL');
+                $sheet->mergeCells('B' . $row . ':C' . $row);
+                $sheet->setCellValue('D' . $row, count($karyawan));
+                $sheet->getStyle('B' . $row . ':D' . $row)->applyFromArray([
+                    'font' => ['bold' => false],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                    'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+                ]);
                 $row++;
             }
 
-            // Tulis Total Karyawan
-            // $sheet->setCellValue('B' . $row, 'TOTAL' . $shift);
-            $sheet->setCellValue('B' . $row, 'TOTAL');
-            $sheet->mergeCells('B' . $row . ':C' . $row);
-            $sheet->setCellValue('D' . $row, count($karyawan));
-            $sheet->getStyle('B' . $row . ':D' . $row)->applyFromArray([
-                'font' => ['bold' => false],
-                'alignment' => [
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ],
-                'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
-            ]);
-            $row++;
+            // Set auto-size untuk semua kolom
+            foreach ($sheet->getColumnIterator() as $column) {
+                $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+            }
         }
 
-        // Set auto-size untuk semua kolom
-        foreach ($sheet->getColumnIterator() as $column) {
-            $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
-        }
+        // Simpan file Excel
+        $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit();
     }
-
-    // Simpan file Excel
-    $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="' . $filename . '"');
-    header('Cache-Control: max-age=0');
-
-    $writer = new Xlsx($spreadsheet);
-    $writer->save('php://output');
-    exit();
-}
-
 }

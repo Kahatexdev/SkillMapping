@@ -12,7 +12,7 @@ class PenilaianModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_penilaian', 'karyawan_id', 'id_periode', 'bobot_nilai', 'index_nilai', 'id_user', 'id_jobrole', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_penilaian', 'karyawan_id', 'id_periode', 'bobot_nilai', 'index_nilai', 'grade_akhir','id_user', 'id_jobrole', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -280,7 +280,7 @@ class PenilaianModel extends Model
         ->where('bagian.area_utama', $area_utama)
             ->groupBy('batch.id_batch, penilaian.id_periode, bagian.area_utama')
             // urutkan berdasarkan bulan dari kolom end_date secara ascending
-            ->orderBy('MONTH(periode.end_date)', 'ASC')
+            ->orderBy('periode.start_date', 'ASC')
             // ->orderBy('batch.id_batch', 'ASC') // Urutkan jika diperlukan
             ->get()
             ->getResultArray();
@@ -348,7 +348,7 @@ class PenilaianModel extends Model
         ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
         ->join('job_role', 'job_role.id_jobrole = penilaian.id_jobrole')
         ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
-        ->join('absen', 'absen.id_karyawan = karyawan.id_karyawan')
+        ->join('absen', 'absen.id_periode = penilaian.id_periode')
         ->join('periode', 'periode.id_periode = penilaian.id_periode')
         ->join('batch', 'batch.id_batch = periode.id_batch')
         ->where('bagian.area_utama', $area_utama)
@@ -371,4 +371,13 @@ class PenilaianModel extends Model
     ");
         return $query->getResultArray();
     }
+    public function updateGradeAkhir($id_karyawan, $id_periode, $id_batch, $data)
+    {
+        return $this->db->table('penilaian')
+        ->whereIn('penilaian.karyawan_id', $id_karyawan)
+        ->whereIn('periode.id_periode', $id_periode)
+        ->whereIn('batch.id_batch', $id_batch)
+            ->update($data);
+    }
+
 }
