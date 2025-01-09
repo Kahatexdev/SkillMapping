@@ -85,15 +85,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($karyawan as $index => $data): ?>
-                                            <tr>
-                                                <td><?= $index + 1 ?></td>
-                                                <td><?= $data['nama'] ?></td>
-                                                <td><?= $data['area_lama'] ?></td>
-                                                <td><?= $data['area_baru'] ?></td>
-                                                <td><?= $data['tanggal'] ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
+                                        
                                     </tbody>
                                 </table>
                             </div>

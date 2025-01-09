@@ -135,8 +135,8 @@
                                 data-contact-name="<?= $contactData['contact']['username'] ?>"
                                 style="cursor: pointer;">
                                 <img src="<?= base_url('assets/img/user.png') ?>" alt="Profile" class="rounded-circle" width="40">
-                                <div class="ms-3">
-                                    <h6><?= htmlspecialchars($contactData['contact']['username'], ENT_QUOTES, 'UTF-8') ?></h6>
+                                <div class="ms-3" id="contact-<?= $contactData['contact']['id_user'] ?>">
+                                    <h6 class="contact-name"><?= htmlspecialchars($contactData['contact']['username'], ENT_QUOTES, 'UTF-8') ?></h6>
                                     <small class="text-muted">
                                         <?= htmlspecialchars($contactData['last_message']['message'] ?? 'No messages yet', ENT_QUOTES, 'UTF-8') ?>
                                     </small>

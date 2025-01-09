@@ -141,7 +141,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
     $routes->post('mark-messages-as-read/(:num)', 'ChatController::markMessagesAsRead/$1');
     $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
-
+    $routes->get('check-new-messages', 'ChatController::checkNewMessages');
+    $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
 });
 
@@ -200,7 +201,8 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
     $routes->post('mark-messages-as-read/(:num)', 'ChatController::markMessagesAsRead/$1');
     $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
-
+    $routes->get('check-new-messages', 'ChatController::checkNewMessages');
+    $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
 });
 
@@ -232,7 +234,8 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('getContacts/(:num)', 'ChatController::getContacts/$1');
     $routes->post('mark-messages-as-read/(:num)', 'ChatController::markMessagesAsRead/$1');
     $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
-
+    $routes->get('check-new-messages', 'ChatController::checkNewMessages');
+    $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
 });
 

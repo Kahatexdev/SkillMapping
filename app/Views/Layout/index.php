@@ -196,6 +196,83 @@
     <script src="<?= base_url('assets/js/buttons.html5.min.js') ?>"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script> -->
     <script>
+        const baseUrl = "<?= base_url() ?>"; // Gunakan base_url() dari CodeIgniter
+        const role = "<?= session()->get('role') ?>"; // Dapatkan role dari session
+        let lastCheck = new Date().toISOString(); // Waktu awal pengecekan
+
+        async function checkNewMessages() {
+            try {
+                const response = await fetch(`${baseUrl}/${role}/check-new-messages?last_check=${lastCheck}`);
+                const data = await response.json();
+
+                if (data.status === 'success' && data.new_messages.length > 0) {
+                    data.new_messages.forEach(message => {
+                        showNotification(message.sender_name, message.message);
+                    });
+
+                    // Perbarui timestamp terakhir
+                    lastCheck = new Date().toISOString();
+                }
+            } catch (error) {
+                console.error('Error checking messages:', error);
+            }
+        }
+
+        function showNotification(senderId, message) {
+            if (!("Notification" in window)) {
+                alert("Browser Anda tidak mendukung notifikasi desktop.");
+                return;
+            }
+            // Ambil username pengirim pesan
+            // var username = document.querySelector(`#contact-${senderId} .contact-name`).textContent;
+
+            if (Notification.permission === "granted") {
+                new Notification("Pesan Baru!", {
+                    body: `Dari: ${senderId}\nPesan: ${message}`,
+                    icon: "<?= base_url('assets/img/user.png') ?>"
+                });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        showNotification(senderId, message);
+                    }
+                });
+            }
+        }
+
+        // Jalankan pengecekan pesan baru setiap 5 menit
+        setInterval(checkNewMessages, 300000);
+
+        // let lastCheck = new Date().toISOString(); // Waktu awal pengecekan
+
+        // async function longPollMessages() {
+        //     try {
+        //         const response = await fetch(`${baseUrl}/${role}/long-poll-new-messages?last_check=${lastCheck}`);
+        //         const data = await response.json();
+
+        //         if (data.status === 'success' && data.new_messages.length > 0) {
+        //             data.new_messages.forEach(message => {
+        //                 showNotification(message.sender_name, message.message);
+        //             });
+
+        //             // Perbarui timestamp terakhir
+        //             lastCheck = new Date().toISOString();
+        //         }
+
+        //         // Lanjutkan long polling
+        //         longPollMessages();
+        //     } catch (error) {
+        //         console.error('Error checking messages:', error);
+
+        //         // Retry setelah error
+        //         setTimeout(longPollMessages, 5000);
+        //     }
+        // }
+
+        // // Mulai long polling
+        // longPollMessages();
+    </script>
+    <script>
         function fetchUnreadCount() {
             // Tentukan base URL secara dinamis
             const baseUrl = "<?= base_url() ?>"; // Gunakan base_url() dari CodeIgniter

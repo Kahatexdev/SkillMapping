@@ -54,11 +54,25 @@ class MessageModel extends Model
 
     public function getNewMessages($userId, $lastCheck)
     {
-        return $this->where('receiver_id', $userId)
-            ->where('is_read', 0)
-            ->where('created_at >', $lastCheck) // Filter pesan yang baru masuk
-            ->orderBy('created_at', 'ASC') // Urutkan berdasarkan waktu
+        return $this->select('messages.*, user.username AS sender_name')
+        ->join('user', 'user.id_user = messages.sender_id') // Join dengan tabel user untuk mendapatkan nama pengirim
+        ->where('messages.receiver_id', $userId)
+            ->where('messages.is_read', 0) // Hanya pesan yang belum dibaca
+            ->where('messages.created_at >', $lastCheck) // Hanya pesan setelah lastCheck
+            ->orderBy('messages.created_at', 'ASC')
             ->findAll();
     }
+
+    public function getNewMessagesWithSenderName($userId, $lastCheck)
+    {
+        return $this->select('messages.*, user.username AS sender_name')
+        ->join('user', 'user.id_user = messages.sender_id') // Join dengan tabel user untuk mendapatkan nama pengirim
+        ->where('messages.receiver_id', $userId)
+            ->where('messages.is_read', 0) // Hanya pesan yang belum dibaca
+            ->where('messages.created_at >', $lastCheck) // Hanya pesan setelah lastCheck
+            ->orderBy('messages.created_at', 'ASC')
+            ->findAll();
+    }
+
 
 }

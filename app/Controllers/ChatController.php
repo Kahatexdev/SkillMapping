@@ -132,5 +132,68 @@ class ChatController extends BaseController
             'message' => 'Messages marked as read.'
         ]);
     }
+    public function getAllContacts()
+    {
+        $contacts = $this->userModel->select('id_user, username')->findAll();
+        return $this->response->setJSON($contacts);
+    }
+
+    public function checkNewMessages()
+    {
+        $userId = session('id_user'); // ID pengguna yang login
+        $lastCheck = $this->request->getGet('last_check'); // Timestamp terakhir pengecekan
+
+        if (!$userId || !$lastCheck) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invalid request'
+            ])->setStatusCode(400);
+        }
+
+        // Ambil pesan baru
+        $newMessages = $this->messageModel->getNewMessages($userId, $lastCheck);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'new_messages' => $newMessages
+        ]);
+    }
+
+    public function longPollNewMessages()
+    {
+        $userId = session('id_user');
+        $lastCheck = $this->request->getGet('last_check');
+
+        if (!$userId || !$lastCheck) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Invalid request'
+            ])->setStatusCode(400);
+        }
+
+        $startTime = time();
+        $timeout = 30; // Maksimum waktu tunggu 30 detik
+
+        while (time() - $startTime < $timeout) {
+            // Cek apakah ada pesan baru
+            $newMessages = $this->messageModel->getNewMessagesWithSenderName($userId, $lastCheck);
+
+            if (!empty($newMessages)) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'new_messages' => $newMessages
+                ]);
+            }
+
+            sleep(1); // Tunggu 1 detik sebelum mencoba lagi
+        }
+
+        // Tidak ada pesan baru setelah timeout
+        return $this->response->setJSON([
+            'status' => 'success',
+            'new_messages' => []
+        ]);
+    }
+
 
 }
