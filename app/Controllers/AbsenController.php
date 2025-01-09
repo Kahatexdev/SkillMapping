@@ -327,7 +327,7 @@ class AbsenController extends BaseController
         // header
         $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', ' Nama Karyawan');
-        $sheet->setCellValue('C1', 'Bulan');
+        $sheet->setCellValue('C1', 'Periode');
         $sheet->setCellValue('D1', 'Izin');
         $sheet->setCellValue('E1', 'Sakit');
         $sheet->setCellValue('F1', 'Mangkir');
@@ -358,7 +358,7 @@ class AbsenController extends BaseController
         foreach ($data as $row) {
             $sheet->setCellValue('A' . $column, $no++);
             $sheet->setCellValue('B' . $column, $row['nama_karyawan']);
-            $sheet->setCellValue('C' . $column, $row['bulan']);
+            $sheet->setCellValue('C' . $column, $row['id_periode']);
             $sheet->setCellValue('D' . $column, $row['izin']);
             $sheet->setCellValue('E' . $column, $row['sakit']);
             $sheet->setCellValue('F' . $column, $row['mangkir']);

@@ -41,7 +41,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('dataPeriode', 'MonitoringController::periode');
     $routes->get('periodeCreate', 'PeriodeController::create');
     $routes->post('periodeStore', 'PeriodeController::store');
-    $routes->get('periodeEdit/(:num)', 'PeriodeController::edit/$1');
+    // $routes->get('periodeEdit/(:num)', 'PeriodeController::edit/$1');
     $routes->post('periodeUpdate/(:num)', 'PeriodeController::update/$1');
     $routes->get('periodeDelete/(:num)', 'PeriodeController::delete/$1');
     // user
