@@ -1414,7 +1414,6 @@ class PenilaianController extends BaseController
 
     public function excelReportPerPeriode($area_utama, $nama_batch, $nama_periode)
     {
-
         $reportbatch = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
         // dd($reportbatch);
         $bulan = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode);
@@ -1584,7 +1583,7 @@ class PenilaianController extends BaseController
                         $previous_grade = $p['previous_grade'] ?? '-';
                         $grade = $p['index_nilai'] ?? '-'; // Default grade jika tidak ada
                         $skor = $this->calculateSkor($grade);
-                        
+
                         // Set job description and additional columns
                         foreach ($nilai as $value) {
                             $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $value);
@@ -1606,7 +1605,7 @@ class PenilaianController extends BaseController
                     $cuti = $p['cuti'] ?? 0;
                     $totalAbsen = ($sakit * 1) + ($izin * 2) + ($mangkir * 3);
                     // $kehadiran = 100 - $totalAbsen;
-                    
+
                     //Set Persentase Kehadiran
                     $start_date = new \DateTime($bulan['start_date']);
                     $end_date = new \DateTime($bulan['end_date']);
@@ -1626,7 +1625,7 @@ class PenilaianController extends BaseController
                     $this->penilaianmodel->updateGradeAkhir($p['karyawan_id'], $p['id_periode'], $grade_akhir);
 
                     $tracking = $previous_grade . $grade_akhir;
-                    
+
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $sakit);
                     $colIndex++;
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $izin);
