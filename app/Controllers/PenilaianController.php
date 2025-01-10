@@ -1606,6 +1606,7 @@ class PenilaianController extends BaseController
                     $cuti = $p['cuti'] ?? 0;
                     $totalAbsen = ($sakit * 1) + ($izin * 2) + ($mangkir * 3);
                     // $kehadiran = 100 - $totalAbsen;
+                    
                     //Set Persentase Kehadiran
                     $start_date = new \DateTime($bulan['start_date']);
                     $end_date = new \DateTime($bulan['end_date']);
@@ -1613,22 +1614,19 @@ class PenilaianController extends BaseController
                     $totalHari = $selisih->days + 1; // +1 untuk menyertakan hari pertama
                     $jmlLibur = $bulan['jml_libur'];
                     $persentaseKehadiran = (($totalHari - $jmlLibur - $totalAbsen) / ($totalHari - $jmlLibur)) * 100;
-                    // dd($totalHari, $jmlLibur, $totalAbsen, $persentaseKehadiran);
+
                     // =IF(BW9<0.94,"-1",IF(BW9>0.93,"0"))
                     $accumulasi = $persentaseKehadiran < 94 ? -1 : 0;
 
                     // hasil akhir = skor + accumulasi
                     $hasil_akhir = $skor + $accumulasi;
                     $grade_akhir = $this->calculateGradeBatch($hasil_akhir);
-                    $id_karyawan = $p['karyawan_id'];
-                    $id_periode = $p['id_periode'];
-                    $id_batch = $p['id_batch'];
-                    $data = $grade_akhir;
-                    // dd($data);
-                    // $ga = $this->penilaianmodel->updateGradeAkhir($id_karyawan, $id_periode, $id_batch, $data);
-                    // dd ($ga);
+
+                    // Update grade akhir ke database
+                    $this->penilaianmodel->updateGradeAkhir($p['karyawan_id'], $p['id_periode'], $grade_akhir);
+
                     $tracking = $previous_grade . $grade_akhir;
-                    // dd($nama_periode, $previous_grade, $grade, $grade_akhir, $tracking);
+                    
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $sakit);
                     $colIndex++;
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $izin);

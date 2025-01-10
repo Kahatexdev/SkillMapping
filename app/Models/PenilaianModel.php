@@ -371,13 +371,12 @@ class PenilaianModel extends Model
     ");
         return $query->getResultArray();
     }
-    public function updateGradeAkhir($id_karyawan, $id_periode, $id_batch, $data)
+    
+    public function updateGradeAkhir($id_karyawan, $id_periode, $data)
     {
-        return $this->db->table('penilaian')
-        ->whereIn('penilaian.karyawan_id', $id_karyawan)
-        ->whereIn('periode.id_periode', $id_periode)
-        ->whereIn('batch.id_batch', $id_batch)
-            ->update($data);
+    return $this->db->table('penilaian')
+        ->where('karyawan_id', $id_karyawan)
+        ->where('id_periode', $id_periode)
+        ->update(['grade_akhir' => $data]);
     }
-
 }
