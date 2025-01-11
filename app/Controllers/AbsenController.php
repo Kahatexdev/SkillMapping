@@ -234,7 +234,7 @@ class AbsenController extends BaseController
                 $errorMessage = "Row {$row}: ";
 
                 // Get cell values
-                $kodeKartu = $dataSheet->getCell('A' . $row)->getFormattedValue();
+                $kodeKartu = $dataSheet->getCell('A' . $row)->getValue();
                 $namaKaryawan = $dataSheet->getCell('D' . $row)->getValue();
                 $sakit = $dataSheet->getCell('I' . $row)->getValue();
                 $izin = $dataSheet->getCell('J' . $row)->getValue();
@@ -277,7 +277,9 @@ class AbsenController extends BaseController
                         ];
 
                         // kalau ada data karyawan dan tanggal absen sama maka tidak bisa diinputkan
-                        $absen = $absenModel->where('id_karyawan', $karyawan['id_karyawan'])->first();
+                        $absen = $absenModel->where('id_karyawan', $karyawan['id_karyawan'])
+                            ->where('id_periode', $id_periode)
+                            ->first();
                         if ($absen) {
                             $isValid = false;
                             $errorMessage .= "Data absen sudah ada. ";

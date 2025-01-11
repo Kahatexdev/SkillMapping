@@ -973,7 +973,7 @@ class PenilaianController extends BaseController
 
                 // Proses data untuk setiap periode
                 foreach ($getBulanData as $b) {
-                    $hurufNilai = $b['index_nilai'] ?? ''; // Pastikan nilai default jika tidak ada
+                    $hurufNilai = $b['grade_akhir'] ?? ''; // Pastikan nilai default jika tidak ada
                     $angkaNilai = $this->convertHurufToAngka($hurufNilai);
 
                     // Tentukan kolom sesuai dengan periode
@@ -1031,6 +1031,7 @@ class PenilaianController extends BaseController
                     } else {
                         $data[] = NULL;
                     }
+                    $data[] = "";
                     // jika karayawan di $getMinAvgBS maka berikan angka 1/2/3 sesuai urutan
                     if ($getMinAvgBS) {
                         $noMinAvgBS = 1;
@@ -1056,6 +1057,7 @@ class PenilaianController extends BaseController
                     } else {
                         $data[] = NULL;
                     }
+                    $data[] = "";
                     // jika karyawan di $getMinAvgBSRosso maka berikan angka 1/2/3 sesuai urutan
                     if ($getMinAvgBSRosso) {
                         $noMinAvgBSRosso = 1;
@@ -1420,11 +1422,12 @@ class PenilaianController extends BaseController
 
         $uniqueSheets = [];
         foreach ($reportbatch as $item) {
-            $key = $item['area'] . ' - ' . $item['nama_bagian'];
+            $key = $item['nama_bagian'];
             if (!in_array($key, $uniqueSheets)) {
                 $uniqueSheets[] = $key;
             }
         }
+        // dd ($uniqueSheets);
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->removeSheetByIndex(0); // Hapus sheet default
@@ -1434,11 +1437,11 @@ class PenilaianController extends BaseController
             $sheet->setTitle(substr($sheetName, 0, 31)); // Nama sheet sesuai area dan bagian
 
             // Pisahkan area dan nama bagian
-            list($currentArea, $currentBagian) = explode(' - ', $sheetName, 2);
+            list($currentBagian) = explode(' - ', $sheetName, 2);
 
             // Filter data untuk sheet ini
-            $dataFiltered = array_filter($reportbatch, function ($item) use ($currentArea, $currentBagian) {
-                return $item['area'] === $currentArea && $item['nama_bagian'] === $currentBagian;
+            $dataFiltered = array_filter($reportbatch, function ($item) use ($currentBagian) {
+                return $item['nama_bagian'] === $currentBagian;
             });
 
             // Ambil nama bulan dari end_date

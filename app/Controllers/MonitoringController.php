@@ -52,7 +52,8 @@ class MonitoringController extends BaseController
     {
         // Data untuk grafik fluktuasi grade
         $fluktuasiGrade = $this->penilaianmodel->getFluktuasiGrade();
-        // dd ($fluktuasiGrade);
+        $coba = $this->penilaianmodel->getKenaikanGrade();
+        // dd ($coba);
         $labels = array_map(fn($item) => date('F', mktime(0, 0, 0, $item['month'], 10)), $fluktuasiGrade);
         $grades = array_column($fluktuasiGrade, 'average_grade');
 

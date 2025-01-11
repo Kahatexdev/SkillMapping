@@ -169,7 +169,7 @@ class PenilaianModel extends Model
     public function getPenilaianGroupByBulan($id_karyawan, $id_batch, $id_jobrole)
     {
         return $this->db->table('penilaian')
-            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur, MONTH(periode.end_date) as bulan')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.grade_akhir, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur, MONTH(periode.end_date) as bulan')
             ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
@@ -338,7 +338,7 @@ class PenilaianModel extends Model
             periode.nama_periode,
             periode.start_date,
             periode.end_date,
-            (SELECT index_nilai 
+            (SELECT grade_akhir 
              FROM penilaian AS prev_penilaian
              JOIN periode AS prev_periode ON prev_penilaian.id_periode = prev_periode.id_periode
              WHERE prev_penilaian.karyawan_id = penilaian.karyawan_id
@@ -349,7 +349,8 @@ class PenilaianModel extends Model
             ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole = penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
-            ->join('absen', 'absen.id_periode = penilaian.id_periode')
+            ->join('absen', 'absen.id_karyawan = penilaian.karyawan_id')
+            ->where('absen.id_periode = penilaian.id_periode')
             ->join('periode', 'periode.id_periode = penilaian.id_periode')
             ->join('batch', 'batch.id_batch = periode.id_batch')
             ->where('bagian.area_utama', $area_utama)
@@ -379,5 +380,36 @@ class PenilaianModel extends Model
             ->where('karyawan_id', $id_karyawan)
             ->where('id_periode', $id_periode)
             ->update(['grade_akhir' => $data]);
+    }
+
+    public function getKenaikanGrade()
+    {
+        $query = $this->db->query("
+        SELECT 
+            karyawan.id_karyawan,
+            karyawan.kode_kartu,
+            karyawan.nama_karyawan,
+            karyawan.jenis_kelamin,
+            karyawan.tgl_masuk,
+            karyawan.shift,
+            job_role.jobdesc,
+            job_role.keterangan,
+            bagian.nama_bagian,
+            batch.nama_batch,
+            periode.nama_periode,
+            periode.start_date,
+            periode.end_date,
+            penilaian.index_nilai,
+            penilaian.grade_akhir,
+            (penilaian.grade_akhir - penilaian.index_nilai) AS kenaikan_grade
+        FROM penilaian
+        JOIN karyawan ON penilaian.karyawan_id = karyawan.id_karyawan
+        JOIN job_role ON penilaian.id_jobrole = job_role.id_jobrole
+        JOIN bagian ON job_role.id_bagian = bagian.id_bagian
+        JOIN periode ON penilaian.id_periode = periode.id_periode
+        JOIN batch ON periode.id_batch = batch.id_batch
+        WHERE penilaian.grade_akhir IS NOT NULL
+        ORDER BY kenaikan_grade DESC
+    ");
     }
 }
