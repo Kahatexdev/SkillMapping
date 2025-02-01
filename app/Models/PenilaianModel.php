@@ -382,34 +382,56 @@ class PenilaianModel extends Model
             ->update(['grade_akhir' => $data]);
     }
 
-    public function getKenaikanGrade()
+
+    public function getGradeChangeData()
     {
-        $query = $this->db->query("
-        SELECT 
-            karyawan.id_karyawan,
-            karyawan.kode_kartu,
-            karyawan.nama_karyawan,
-            karyawan.jenis_kelamin,
-            karyawan.tgl_masuk,
-            karyawan.shift,
-            job_role.jobdesc,
-            job_role.keterangan,
-            bagian.nama_bagian,
-            batch.nama_batch,
-            periode.nama_periode,
-            periode.start_date,
-            periode.end_date,
-            penilaian.index_nilai,
-            penilaian.grade_akhir,
-            (penilaian.grade_akhir - penilaian.index_nilai) AS kenaikan_grade
-        FROM penilaian
-        JOIN karyawan ON penilaian.karyawan_id = karyawan.id_karyawan
-        JOIN job_role ON penilaian.id_jobrole = job_role.id_jobrole
-        JOIN bagian ON job_role.id_bagian = bagian.id_bagian
-        JOIN periode ON penilaian.id_periode = periode.id_periode
-        JOIN batch ON periode.id_batch = batch.id_batch
-        WHERE penilaian.grade_akhir IS NOT NULL
-        ORDER BY kenaikan_grade DESC
-    ");
+        $db = \Config\Database::connect();
+
+        $query = "
+        WITH grade_mapping AS (
+            SELECT 'D' AS grade, 1 AS grade_numeric
+            UNION ALL SELECT 'C', 2
+            UNION ALL SELECT 'B', 3
+            UNION ALL SELECT 'A', 4
+        ),
+        data_with_numeric AS (
+            SELECT
+                t.karyawan_id,
+                t.id_periode,
+                t.index_nilai AS grade_awal,
+                t.grade_akhir,
+                gm1.grade_numeric AS grade_awal_numeric,
+                gm2.grade_numeric AS grade_akhir_numeric
+            FROM penilaian t
+            LEFT JOIN grade_mapping gm1 ON t.index_nilai = gm1.grade
+            LEFT JOIN grade_mapping gm2 ON t.grade_akhir = gm2.grade
+        ),
+        grade_changes AS (
+            SELECT
+                karyawan_id,
+                CONCAT(grade_awal, grade_akhir) AS grade_change,
+                grade_awal_numeric,
+                grade_akhir_numeric,
+                grade_akhir_numeric - grade_awal_numeric AS diff
+            FROM data_with_numeric
+            WHERE grade_awal_numeric IS NOT NULL
+              AND grade_akhir_numeric IS NOT NULL
+              AND grade_akhir_numeric > grade_awal_numeric
+        )
+        SELECT
+            grade_change,
+            COUNT(*) AS jumlah,
+            CASE
+                WHEN diff = 1 THEN 'Kenaikan Satu Tingkat'
+                ELSE 'Kenaikan Lebih Dari Satu Tingkat'
+            END AS kategori
+        FROM grade_changes
+        GROUP BY grade_change, kategori
+        ORDER BY kategori, grade_change;
+        ";
+
+        // Execute the query and return the result
+        return $db->query($query)->getResultArray();
     }
+
 }

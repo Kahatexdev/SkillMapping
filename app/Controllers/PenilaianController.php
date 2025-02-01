@@ -1686,6 +1686,201 @@ class PenilaianController extends BaseController
             }
         }
 
+        // sheet baru untuk report tracking
+        $sheet = $spreadsheet->createSheet();
+        $sheet->setTitle('TRACKING');
+
+        // Header Utama
+        $sheet->mergeCells('A1:G1')->setCellValue('A1', 'REPORT TRACKING - ' . strtoupper($area_utama));
+        $sheet->mergeCells('A2:G2')->setCellValue('A2', 'DEPARTEMEN KAOS KAKI');
+        $sheet->mergeCells('A3:G3')->setCellValue('A3', '(PERIODE ' . strtoupper($nama_batch) . ' ' . strtoupper($nama_periode) . ')');
+        $sheet->getStyle('A1:A3')->applyFromArray([
+            'font' => ['bold' => true, 'size' => 16, 'name' => 'Times New Roman'],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+        ]);
+
+        // Header Kolom Statis
+        $headers = ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'SHIFT', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'AREA', 'TRACKING'];
+        $startCol = 1; // Kolom A
+        foreach ($headers as $header) {
+            $colLetter = Coordinate::stringFromColumnIndex($startCol);
+            $sheet->getStyle($colLetter . '5')->getAlignment()->setWrapText(true);
+            $sheet->mergeCells($colLetter . '5:' . $colLetter . '6')->setCellValue($colLetter . '5', $header);
+            $sheet->getStyle($colLetter . '5:' . $colLetter . '6')->applyFromArray([
+                'font' => [
+                    'name' => 'Times New Roman',
+                    'size' => 10,
+                    'bold' => true,
+                ],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+            ]);
+            $startCol++;
+        }
+
+        // sort data by kode kartu
+        $sortOrders = [
+            'KKMA',
+            'KKMB',
+            'KKMC',
+            'KKMNS',
+            'KKSA',
+            'KKSB',
+            'KKSC',
+            'KKJHA',
+            'KKJHB',
+            'KKJHC',
+            'KK2MA',
+            'KK2MB',
+            'KK2MC',
+            'KK2MNS',
+            'KK2SA',
+            'KK2SB',
+            'KK2SC',
+            'KK5A',
+            'KK5B',
+            'KK5C',
+            'KK5NS',
+            'KK7A',
+            'KK7B',
+            'KK7C',
+            'KK7NS',
+            'KK8MA',
+            'KK8MB',
+            'KK8MC',
+            'KK8MNS',
+            'KK8SA',
+            'KK8SB',
+            'KK8SC',
+            'KK9A',
+            'KK9B',
+            'KK9C',
+            'KK9NS',
+            'KK10A',
+            'KK10B',
+            'KK10C',
+            'KK10NS',
+            'KK11A',
+            'KK11B',
+            'KK11C',
+            'KK11NS'
+        ];
+
+        $sortedData = [];
+        foreach ($reportbatch as $p) {
+            $sortedData[] = [
+                'kode_kartu' => $p['kode_kartu'],
+                'nama_karyawan' => $p['nama_karyawan'],
+                'shift' => $p['shift'],
+                'jenis_kelamin' => $p['jenis_kelamin'],
+                'tgl_masuk' => $p['tgl_masuk'],
+                'nama_bagian' => $p['nama_bagian'],
+                'area' => $p['area'],
+                'index_nilai' => $p['index_nilai'],
+                'keterangan' => json_decode($p['keterangan'], true),
+                'jobdesc' => json_decode($p['jobdesc'], true),
+            ];
+        }
+
+        // Sort the flattened array by kode_kartu
+        usort($sortedData, function ($a, $b) use ($sortOrders) {
+            // Ekstrak prefix kode kartu
+            preg_match('/^[A-Z]+/', $a['kode_kartu'], $matchA);
+            preg_match('/^[A-Z]+/', $b['kode_kartu'], $matchB);
+
+            $prefixA = $matchA[0] ?? '';
+            $prefixB = $matchB[0] ?? '';
+
+            // Cari posisi prefix di array $sortOrders
+            $posA = array_search($prefixA, $sortOrders);
+            $posB = array_search($prefixB, $sortOrders);
+
+            // Jika tidak ditemukan, posisikan di akhir
+            $posA = ($posA === false) ? PHP_INT_MAX : $posA;
+            $posB = ($posB === false) ? PHP_INT_MAX : $posB;
+
+            // Bandingkan berdasarkan posisi prefix
+            if ($posA !== $posB) {
+                return $posA <=> $posB;
+            }
+
+            // Jika prefix sama, bandingkan berdasarkan angka di kode kartu
+            preg_match('/\d+/', $a['kode_kartu'], $numberA);
+            preg_match('/\d+/', $b['kode_kartu'], $numberB);
+
+            $numA = (int)($numberA[0] ?? PHP_INT_MAX); // Default jika tidak ada angka
+            $numB = (int)($numberB[0] ?? PHP_INT_MAX);
+
+            return $numA <=> $numB;
+        });
+
+        // Reorganize sorted data back by grade
+        $dataByGrade = [];
+        foreach ($sortedData as $sortedEmployee) {
+            $dataByGrade[$sortedEmployee['kode_kartu']] = $sortedEmployee;
+        }
+
+        // Tulis Data Karyawan Berdasarkan Shift
+        $row = 7;
+
+        foreach ($dataByGrade as $p) {
+            $sheet->setCellValue('A' . $row, $row - 6);
+            $sheet->setCellValue('B' . $row, $p['kode_kartu']);
+            $sheet->setCellValue('C' . $row, $p['nama_karyawan']);
+            $sheet->setCellValue('D' . $row, $p['shift']);
+            $sheet->setCellValue('E' . $row, $p['jenis_kelamin']);
+            $sheet->setCellValue('F' . $row, $p['tgl_masuk']);
+            $sheet->setCellValue('G' . $row, $p['nama_bagian']);
+            if ($p['area']){
+                $sheet->setCellValue('H' . $row, $p['area']);
+            }else{
+                $sheet->setCellValue('H' . $row, '-');
+            }
+
+            // set tracking
+            $tracking = $previous_grade . $grade;
+            $sheet->setCellValue('I' . $row, $tracking);
+
+            //style from array
+            $sheet->getStyle('A' . $row . ':I' . $row)->applyFromArray([
+                'font' => ['name' => 'Times New Roman', 'size' => 10],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+            ]);
+
+            $row++;
+
+            
+        }
+        // total karyawan
+        $sheet->mergeCells('A' . $row . ':G' . $row);
+        $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
+        $sheet->setCellValue('H' . $row, count($dataByGrade));
+        $sheet->getStyle('A' . $row . ':I' . $row)
+        ->getFont()
+            ->setName('Times New Roman')
+            ->setBold(true)
+            ->setSize(10);
+        $sheet->getStyle('A' . $row . ':I' . $row)
+        ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        // center
+        $sheet->getStyle('A' . $row . ':I' . $row)
+        ->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        // Set wrap text
+
+        $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setWrapText(true);
         // Simpan file Excel
         $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
