@@ -1,6 +1,5 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
 <link href="<?= base_url('assets/css/select2.min.css') ?>" rel="stylesheet" />
 <div class="container-fluid py-4">
     <div class="row mt-4">
@@ -47,14 +46,13 @@
                         <div class="row">
                             <div class="col-md-12 mb-3">
                                 <label for="karyawan">Pilih Karyawan</label>
-                                <select class="form-select" id="karyawan" name="karyawan[]" multiple required>
+                                <select class="form-select select2-multiple" id="karyawan" name="karyawan[]" multiple required>
                                     <option value="">Pilih Karyawan</option>
                                 </select>
                             </div>
                         </div>
                         <input type="hidden" class="form-control" id="id_jobrole" name="id_jobrole" required>
                         <button type="submit" class="btn bg-gradient-info w-100">Buat Form Penilaian</button>
-
                     </form>
                 </div>
             </div>
@@ -137,7 +135,7 @@
                         data.forEach(item => {
                             const option = document.createElement('option');
                             option.value = item.id_karyawan; // Sesuaikan properti dari respons API
-                            option.textContent = item.nama_karyawan; // Sesuaikan properti dari respons API
+                            option.textContent = item.nama_karyawan + ' - ' + item.kode_kartu; // Sesuaikan properti dari respons API
                             karyawanSelect.appendChild(option);
                         });
                     })
@@ -153,18 +151,6 @@
             allowClear: true
         });
 
-        // Validasi sebelum submit form
-        // $('form').on('submit', function(e) {
-        //     if ($('#karyawan').val().length === 0) {
-        //         e.preventDefault();
-        //         // Swal.fire({
-        //         //     icon: 'error',
-        //         //     title: 'Oops!',
-        //         //     text: 'Harap pilih minimal satu karyawan sebelum melanjutkan.',
-        //         // });
-        //         console.log('Harap pilih minimal satu karyawan sebelum melanjutkan.');
-        //     }
-        // });
     });
 </script>
 <script>

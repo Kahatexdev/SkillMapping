@@ -96,17 +96,11 @@ class MandorController extends BaseController
     {
         $tampilperarea = $this->bagianmodel->getAreaOnly();
         $sort = [
-            'KK1A',
-            'KK1B',
-            'KK2A',
-            'KK2B',
-            'KK2C',
+            'KK1',
+            'KK2',
             'KK5',
-            'KK7K',
-            'KK7L',
-            'KK8D',
-            'KK8F',
-            'KK8J',
+            'KK7',
+            'KK8',
             'KK9',
             'KK10',
             'KK11'
@@ -114,8 +108,8 @@ class MandorController extends BaseController
 
         // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
         usort($tampilperarea, function ($a, $b) use ($sort) {
-            $pos_a = array_search($a['area'], $sort);
-            $pos_b = array_search($b['area'], $sort);
+            $pos_a = array_search($a['area_utama'], $sort);
+            $pos_b = array_search($b['area_utama'], $sort);
 
             // Jika tidak ditemukan, letakkan di akhir
             $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
@@ -445,5 +439,71 @@ class MandorController extends BaseController
         }
 
         return redirect()->back()->with('error', 'Gagal menyimpan penilaian.');
+    }
+
+    public function penilaianPerArea($area_utama)
+    {
+        $area_utama = session()->get('username');
+
+        // jika karakter diakhir username itu sebuah huruf, maka hapus huruf tersebut
+        if (ctype_alpha(substr($area_utama, -1))) {
+            $area_utama = substr($area_utama, 0, -1);
+        } else {
+            $area_utama = $area_utama;
+        }
+
+        // dd ($area_utama);
+        // dd ($area_utama);
+        // dd ($id_periode);
+        $penilaian = $this->penilaianmodel->getPenilaianPerArea($area_utama);
+        // dd ($penilaian);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Report Penilaian',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'penilaian' => $penilaian,
+            'area_utama' => $area_utama
+        ];
+        // dd ($data);
+
+        return view(session()->get('role') . '/reportareaperarea', $data);
+    }
+    public function penilaianPerPeriode($area_utama, $id_periode)
+    {
+        $area_utama = urldecode($area_utama);
+        // jika karakter diakhir username itu sebuah huruf, maka hapus huruf tersebut
+        if (ctype_alpha(substr($area_utama, -1))) {
+            $area_utama = substr($area_utama, 0, -1);
+        } else {
+            $area_utama = $area_utama;
+        }
+        // dd ($area_utama);
+        $id_periode = (int) $id_periode;
+        // dd ($id_periode);
+        $penilaian = $this->penilaianmodel->getPenilaianPerPeriode($area_utama, $id_periode);
+        // dd ($penilaian);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Report Penilaian',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'penilaian' => $penilaian
+        ];
+        // dd ($data);
+
+        return view(session()->get('role') . '/reportareaperperiode', $data);
     }
 }

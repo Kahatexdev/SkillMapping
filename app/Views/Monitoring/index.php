@@ -8,7 +8,6 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     <h6>Total Karyawan</h6>
-                    <h3><?= $total_karyawan ?></h3>
                 </div>
             </div>
         </div>
@@ -16,7 +15,6 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     <h6>Perpindahan Bulan Ini</h6>
-                    <h3><?= $total_perpindahan_bulan ?></h3>
                 </div>
             </div>
         </div>
@@ -24,7 +22,6 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     <h6>Rata-rata Grade</h6>
-                    <h3><?= $rata_rata_grade ?></h3>
                 </div>
             </div>
         </div>
@@ -104,10 +101,10 @@
     const gradeChart = new Chart(gradeChartCtx, {
         type: 'line',
         data: {
-            labels: <?= json_encode($labels) ?>,
+            labels: ,
             datasets: [{
                 label: 'Grade Fluctuation',
-                data: <?= json_encode($grades) ?>,
+                data: ,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderWidth: 2,

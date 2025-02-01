@@ -29,10 +29,6 @@ class PenilaianTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => 20,
             ],
-            'grade_akhir' => [
-                'type' => 'VARCHAR',
-                'constraint' => 20,
-            ],
             'id_user' => [
                 'type' => 'INT',
                 'constraint' => 11,

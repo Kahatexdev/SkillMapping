@@ -51,31 +51,10 @@ class MonitoringController extends BaseController
     public function index()
     {
         // Data untuk grafik fluktuasi grade
-        $fluktuasiGrade = $this->penilaianmodel->getFluktuasiGrade();
-        $summary = $this->penilaianmodel->getGradeChangeData();
-        // dd ($summary);
-        $labels = array_map(fn($item) => date('F', mktime(0, 0, 0, $item['month'], 10)), $fluktuasiGrade);
-        $grades = array_column($fluktuasiGrade, 'average_grade');
-
-        // Data untuk tabel karyawan yang dipindah area
-        $karyawan = $this->historyPindahKaryawanModel->getKaryawanDipindah();
-
-        // Statistik tambahan (opsional)
-        $totalKaryawan = $this->karyawanmodel->countAll();
-        $totalPerpindahanBulan = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))
-            ->where('id_bagian_asal !=', 'id_bagian_baru')
-            ->countAllResults();
-        $rataRataGrade = $this->penilaianmodel->selectAvg('index_nilai')->get()->getRow()->index_nilai;
 
         return view(session()->get('role') . '/index', [
             'role' => session()->get('role'),
             'title' => 'Dashboard',
-            'labels' => $labels,
-            'grades' => $grades,
-            'karyawan' => $karyawan,
-            'total_karyawan' => $totalKaryawan,
-            'total_perpindahan_bulan' => $totalPerpindahanBulan,
-            'rata_rata_grade' => $rataRataGrade,
         ]);
     }
 

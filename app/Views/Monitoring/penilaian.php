@@ -135,7 +135,7 @@
                         data.forEach(item => {
                             const option = document.createElement('option');
                             option.value = item.id_karyawan; // Sesuaikan properti dari respons API
-                            option.textContent = item.nama_karyawan; // Sesuaikan properti dari respons API
+                            option.textContent = item.nama_karyawan + ' - ' + item.kode_kartu; // Sesuaikan properti dari respons API
                             karyawanSelect.appendChild(option);
                         });
                     })
