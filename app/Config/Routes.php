@@ -171,7 +171,7 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     // $routes->post('absenStoreImport', 'AbsenController::upload');
     // $routes->get('absenEmpty', 'AbsenController::empty');
 
-    $routes->get('dataPenilaian', 'MonitoringController::penilaian');
+    $routes->get('dataPenilaian', 'MandorController::penilaian');
     $routes->get('getAreaUtama', 'MandorController::getAreaUtama');
     $routes->get('getArea', 'MandorController::getArea');
     $routes->get('getJobRole', 'MandorController::getJobRole');

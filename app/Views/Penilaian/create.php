@@ -100,6 +100,26 @@
             width: 100%;
         }
     }
+
+    @media (min-width: 992px) {
+        .modal-dialog-custom {
+            max-width: 90%;
+        }
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
 </style>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/soft-ui-dashboard/2.1.0/css/soft-ui-dashboard.min.css"
     rel="stylesheet" />
@@ -147,6 +167,10 @@
                                 <i class="fas fa-solid fa-arrow-left text-sm opacity-10"></i>
                                 Kembali
                             </a>
+                            <!-- button modal instruksi pengisian nilai -->
+                            <button class="btn bg-gradient-info btn-sm" data-bs-toggle="modal" data-bs-target="#modal-instruksi">
+                                <i class="fas fa-info-circle text-sm opacity-10"></i> Instruksi
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -159,7 +183,10 @@
             <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
                 <div class="card">
                     <div class="card-body">
-                        <h6>Jumlah Karyawan yang dinilai : <?= $karyawanCount ?> (Org)</h6>
+                        <div class="d-flex justify-content-between">
+                            <h6>Jumlah Karyawan yang dinilai : <?= $karyawanCount ?> (Org)</h6>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -172,7 +199,7 @@
                             <?php foreach ($jobdescWithKet as $keterangan => $deskripsiList) : ?>
                                 <!-- Tampilkan Keterangan -->
                                 <h6 class="mt-4">
-                                        <!-- <strong>Memperbaiki mesin sesuai dengan tingkat kesulitannya</strong> -->
+                                    <!-- <strong>Memperbaiki mesin sesuai dengan tingkat kesulitannya</strong> -->
                                 </h6>
 
                                 <!-- Tabel Deskripsi Pekerjaan -->
@@ -221,6 +248,109 @@
         </div>
     </form>
 </div>
+
+<div class="modal fade" id="modal-instruksi" tabindex="-1" aria-labelledby="modal-instruksi" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-custom">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Keterangan</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="bg-gradient-dark text-center" colspan="2">GRADE</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-gradient-dark text-center">Nilai</th>
+                                    <th class="bg-gradient-dark text-center">Deskripsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td class="text-wrap">Tidak mengetahui jobdesc</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">2</td>
+                                    <td class="text-wrap">Mengetahui jobdesc namun tidak menjalankan</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">3</td>
+                                    <td class="text-wrap">Menjalankan jobdesc namun masih perlu training</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">4</td>
+                                    <td class="text-wrap">Menjalankan jobdesc tapi perlu pengawasan</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">5</td>
+                                    <td class="text-wrap">Selalu Menjalankan jobdesc dengan benar</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">6</td>
+                                    <td class="text-wrap">Mampu menjadi trainer</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-6">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="bg-gradient-dark text-center" colspan="2">Indikator 6S</th>
+                                </tr>
+                                <tr>
+                                    <th class="bg-gradient-dark text-center">Nilai</th>
+                                    <th class="bg-gradient-dark text-center">Deskripsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">1</td>
+                                    <td class="text-wrap">Tidak mengetahui 6S</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">2</td>
+                                    <td class="text-wrap">Mengetahui namun tidak menjalankan</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">3</td>
+                                    <td class="text-wrap">Menjalankan namun tidak sering (cenderung tidak menjalankan)</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">4</td>
+                                    <td class="text-wrap">Menjalankan tapi tidak sering (cenderung menjalankan)</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">5</td>
+                                    <td class="text-wrap">Disiplin menjalankan 6S</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center">6</td>
+                                    <td class="text-wrap">Peduli dengan lingkungan sekitar dan mampu menjadi trainer</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var myModal = new bootstrap.Modal(document.getElementById("modal-instruksi"));
+        myModal.show();
+    });
+</script>
+
 <?php $this->endSection(); ?>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/soft-ui-dashboard/2.1.0/js/soft-ui-dashboard.min.js"></script>

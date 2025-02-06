@@ -215,7 +215,7 @@ class MandorController extends BaseController
         // Siapkan data untuk view
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Penilaian Karyawan',
+            'title' => 'Penilaian',
             'active1' => '',
             'active2' => 'active',
             'active3' => '',
@@ -318,7 +318,7 @@ class MandorController extends BaseController
         // dd ($temp);
         $data = [
             'role' => session()->get('role'),
-            'title' => 'Penilaian Mandor',
+            'title' => 'Penilaian',
             'active1' => '',
             'active2' => '',
             'active3' => '',
