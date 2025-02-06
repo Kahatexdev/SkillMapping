@@ -337,7 +337,7 @@ class MandorController extends BaseController
 
         // dd ($data);
 
-        return view('penilaian/create', $data);
+        return view('Penilaian/create', $data);
     }
 
     const bobot_nilai = [
