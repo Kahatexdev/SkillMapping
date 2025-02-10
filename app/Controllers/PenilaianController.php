@@ -14,6 +14,7 @@ use App\Models\SummaryJarumModel;
 use App\Models\SummaryRossoModel;
 use App\Models\BsmcModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Month;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -1376,10 +1377,110 @@ class PenilaianController extends BaseController
                 // Set wrap text
                 $newSheet->getStyle('A' . ($rowCount + 2) . ':H' . ($rowCount + 2))->getAlignment()->setWrapText(true);
             }
+
+
         }
 
+        // create sheet untuk REPORT GRADE PREMI
+        $sheet = $spreadsheet->createSheet();
+        $sheet->setTitle('REPORT GRADE');
 
+        // Header utama
+        $sheet->mergeCells('A5:F5');
+        $sheet->setCellValue('A5', 'REPORT GRADE PREMI');
 
+        // Header
+        $sheet->mergeCells('A7:F7');
+        $sheet->setCellValue('A7', 'PERIODE ' . $nama_batch['nama_batch']);
+
+        // Header 
+        $sheet->mergeCells('A8:F8');
+        $sheet->setCellValue('A8', 'AGUSTUS - OKTOBER 2024');
+
+        // Header kolom
+        $sheet->setCellValue('B10', 'GRADE');
+        $sheet->setCellValue('C10', 'PREMI');
+        $sheet->setCellValue('D10', 'JML ORANG');
+        $sheet->setCellValue('E10', 'TOTAL');
+
+        // Style untuk header
+        $sheet->getStyle('A5:F8')->getFont()->setBold(true); // Bold font for header
+        $sheet->getStyle('A5:F8')->getFont()->setName('Times New Roman'); // Set font name
+        $sheet->getStyle('A5:F8')->getFont()->setSize(16); // Set font size
+        $sheet->getStyle('A5:F8')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Center align header
+        $sheet->getStyle('A5:F8')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('B0C4DE'); // Light Blue background for header
+
+        // Style untuk header kolom
+        $sheet->getStyle('B10:E10')->getFont()->setBold(true); // Bold font for header
+        $sheet->getStyle('B10:E10')->getFont()->setName('Times New Roman'); // Set font name
+        $sheet->getStyle('B10:E10')->getFont()->setSize(12); // Set font size
+        $sheet->getStyle('B10:E10')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Center align header
+        $sheet->getStyle('B10:E10')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('B0C4DE'); // Light Blue background for header
+
+        // Set width kolom
+        $sheet->getColumnDimension('A')->setWidth(10);  // GRADE
+        $sheet->getColumnDimension('B')->setWidth(10); // PREMI
+        $sheet->getColumnDimension('C')->setWidth(10); // JML ORANG
+        $sheet->getColumnDimension('D')->setWidth(10); // TOTAL
+
+        // Set wrap text
+        $sheet->getStyle('A5:F8')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('B10:E10')->getAlignment()->setWrapText(true);
+
+        // Set font untuk data
+        $sheet->getStyle('A5:F8')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('A5:F8')->getFont()->setSize(12);
+
+        // Set font untuk data
+        $sheet->getStyle('B10:E10')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('B10:E10')->getFont()->setSize(10);
+
+        // Set border untuk header
+        $sheet->getStyle('A5:F8')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        // Set border untuk header kolom
+        $sheet->getStyle('B10:E10')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        // Set data untuk REPORT GRADE PREMI
+        $data = [
+            ['A', 'Rp. 1.000.000', 10, '10000000'],
+            ['B', 'Rp. 2.000.000', 20, '40000000'],
+            ['C', 'Rp. 3.000.000', 30, '90000000'],
+            ['D', 'Rp. 4.000.000', 40, '160000000'],
+        ];
+
+        // Set data ke sheet
+        $sheet->fromArray($data, null, 'B11');
+
+        // Set style untuk data
+        $sheet->getStyle('B11:E14')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN); // Add borders to data rows
+        $sheet->getStyle('B11:E14')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Center align data
+        $sheet->getStyle('B11:E14')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Vertical center for data
+
+        // Set font untuk data
+        $sheet->getStyle('B11:E14')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('B11:E14')->getFont()->setSize(10);
+
+        // Alternating row color for better readability
+        $rowCount = count($data);
+        for ($i = 11; $i <= $rowCount + 10; $i++) {
+            if ($i % 2 == 0) {
+                // Apply light grey background for even rows
+                $sheet->getStyle('B' . $i . ':E' . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('F2F2F2');
+            }
+        }
+
+        // Set wrap text
+        $sheet->getStyle('B11:E14')->getAlignment()->setWrapText(true);
+
+        // Set rumus excel untuk total
+        $sum = "=SUM(D11:D14)";
+
+        // Set rumus excel untuk total
+        $sumtotal = "=SUM(E11:E14)";
+
+        $sheet->setCellValue("D15", $sum);
+        $sheet->setCellValue("E15", $sumtotal);
 
 
         // Simpan file Excel
@@ -1693,7 +1794,7 @@ class PenilaianController extends BaseController
         // Header Utama
         $sheet->mergeCells('A1:G1')->setCellValue('A1', 'REPORT TRACKING - ' . strtoupper($area_utama));
         $sheet->mergeCells('A2:G2')->setCellValue('A2', 'DEPARTEMEN KAOS KAKI');
-        $sheet->mergeCells('A3:G3')->setCellValue('A3', '(PERIODE ' . strtoupper($nama_batch) . ' ' . strtoupper($nama_periode) . ')');
+        $sheet->mergeCells('A3:G3')->setCellValue('A3', '(PERIODE ' . strtoupper($nama_periode)  . ' ' . strtoupper($nama_batch) . ')');
         $sheet->getStyle('A1:A3')->applyFromArray([
             'font' => ['bold' => true, 'size' => 16, 'name' => 'Times New Roman'],
             'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
@@ -1780,11 +1881,13 @@ class PenilaianController extends BaseController
                 'nama_bagian' => $p['nama_bagian'],
                 'area' => $p['area'],
                 'index_nilai' => $p['index_nilai'],
+                'grade_akhir' => $p['grade_akhir'],
+                'previous_grade' => $p['previous_grade'],
                 'keterangan' => json_decode($p['keterangan'], true),
                 'jobdesc' => json_decode($p['jobdesc'], true),
             ];
         }
-
+        
         // Sort the flattened array by kode_kartu
         usort($sortedData, function ($a, $b) use ($sortOrders) {
             // Ekstrak prefix kode kartu
@@ -1822,7 +1925,7 @@ class PenilaianController extends BaseController
         foreach ($sortedData as $sortedEmployee) {
             $dataByGrade[$sortedEmployee['kode_kartu']] = $sortedEmployee;
         }
-
+        // dd ($dataByGrade);
         // Tulis Data Karyawan Berdasarkan Shift
         $row = 7;
 
@@ -1841,7 +1944,7 @@ class PenilaianController extends BaseController
             }
 
             // set tracking
-            $tracking = $previous_grade . $grade;
+            $tracking = $p['previous_grade'] . $p['grade_akhir'];
             $sheet->setCellValue('I' . $row, $tracking);
 
             //style from array
@@ -1881,6 +1984,9 @@ class PenilaianController extends BaseController
         // Set wrap text
 
         $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setWrapText(true);
+
+        
+
         // Simpan file Excel
         $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

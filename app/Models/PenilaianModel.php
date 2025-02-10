@@ -291,7 +291,7 @@ class PenilaianModel extends Model
     public function getPenilaianPerPeriode($area_utama, $id_periode)
     {
         return $this->table('penilaian')
-            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.grade_akhir, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date')
             ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
@@ -312,6 +312,7 @@ class PenilaianModel extends Model
             penilaian.id_periode,
             penilaian.bobot_nilai,
             penilaian.index_nilai,
+            penilaian.grade_akhir,
             penilaian.id_user,
             penilaian.id_jobrole,
             penilaian.created_at,
