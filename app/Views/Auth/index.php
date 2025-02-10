@@ -45,12 +45,16 @@
                     <?= csrf_field() ?>
                     <label>Username</label>
                     <div class="mb-3">
-                      <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon" name="username">
+                      <input type="text" class="form-control" placeholder="Username" aria-label="Username"
+                        aria-describedby="username-addon" name="username">
                     </div>
                     <label>Password</label>
                     <div class="mb-3 position-relative">
                       <input type="password" class="form-control" placeholder="Password" aria-label="Password"
                         aria-describedby="password-addon" name="password" id="password">
+                    </div>
+                    <div class="mb-3">
+                      <input type="checkbox" id="show-password"> Show Password
                     </div>
                     <div class="text-center">
                       <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
@@ -102,6 +106,17 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="<?= base_url('assets/js/soft-ui-dashboard.min.js?v=1.1.0') ?>"></script>
+
+  <script>
+    document.getElementById('show-password').addEventListener('change', function() {
+      var passwordField = document.getElementById('password');
+      if (this.checked) {
+        passwordField.type = 'text';
+      } else {
+        passwordField.type = 'password';
+      }
+    });
+  </script>
 </body>
 
 </html>
