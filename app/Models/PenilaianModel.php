@@ -434,5 +434,4 @@ class PenilaianModel extends Model
         // Execute the query and return the result
         return $db->query($query)->getResultArray();
     }
-
 }

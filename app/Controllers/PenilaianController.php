@@ -25,7 +25,7 @@ use PhpOffice\PhpSpreadsheet\Cell\ValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
-
+use DateTime;
 
 
 
@@ -1377,10 +1377,21 @@ class PenilaianController extends BaseController
                 // Set wrap text
                 $newSheet->getStyle('A' . ($rowCount + 2) . ':H' . ($rowCount + 2))->getAlignment()->setWrapText(true);
             }
-
-
         }
 
+        $periode = $this->periodeModel->getPeriodeByBatch($id_batch);
+
+        // Ambil semua end_date
+        $end_dates = array_column($periode, 'end_date');
+
+        // Ubah ke nama bulan
+        $bulan_list = [];
+        foreach ($end_dates as $date) {
+            $bulan_list[] = strtoupper((new DateTime($date))->format('F'));
+        }
+
+        // Gabungkan bulan menjadi teks
+        $periode = implode(' - ', $bulan_list) . ' ' . (new DateTime(end($end_dates)))->format('Y');
         // create sheet untuk REPORT GRADE PREMI
         $sheet = $spreadsheet->createSheet();
         $sheet->setTitle('REPORT GRADE');
@@ -1395,7 +1406,7 @@ class PenilaianController extends BaseController
 
         // Header 
         $sheet->mergeCells('A8:F8');
-        $sheet->setCellValue('A8', 'AGUSTUS - OKTOBER 2024');
+        $sheet->setCellValue('A8', $periode);
 
         // Header kolom
         $sheet->setCellValue('B10', 'GRADE');
@@ -1887,7 +1898,7 @@ class PenilaianController extends BaseController
                 'jobdesc' => json_decode($p['jobdesc'], true),
             ];
         }
-        
+
         // Sort the flattened array by kode_kartu
         usort($sortedData, function ($a, $b) use ($sortOrders) {
             // Ekstrak prefix kode kartu
@@ -1937,9 +1948,9 @@ class PenilaianController extends BaseController
             $sheet->setCellValue('E' . $row, $p['jenis_kelamin']);
             $sheet->setCellValue('F' . $row, $p['tgl_masuk']);
             $sheet->setCellValue('G' . $row, $p['nama_bagian']);
-            if ($p['area']){
+            if ($p['area']) {
                 $sheet->setCellValue('H' . $row, $p['area']);
-            }else{
+            } else {
                 $sheet->setCellValue('H' . $row, '-');
             }
 
@@ -1958,26 +1969,24 @@ class PenilaianController extends BaseController
             ]);
 
             $row++;
-
-            
         }
         // total karyawan
         $sheet->mergeCells('A' . $row . ':G' . $row);
         $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
         $sheet->setCellValue('H' . $row, count($dataByGrade));
         $sheet->getStyle('A' . $row . ':I' . $row)
-        ->getFont()
+            ->getFont()
             ->setName('Times New Roman')
             ->setBold(true)
             ->setSize(10);
         $sheet->getStyle('A' . $row . ':I' . $row)
-        ->getBorders()
+            ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         // center
         $sheet->getStyle('A' . $row . ':I' . $row)
-        ->getAlignment()
+            ->getAlignment()
             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
@@ -1985,7 +1994,7 @@ class PenilaianController extends BaseController
 
         $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setWrapText(true);
 
-        
+
 
         // Simpan file Excel
         $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';

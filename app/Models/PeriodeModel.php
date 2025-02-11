@@ -61,8 +61,8 @@ class PeriodeModel extends Model
     public function getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode)
     {
         $result = $this->select('periode.id_periode, periode.nama_periode, batch.id_batch, batch.nama_batch, periode.start_date, periode.end_date, periode.jml_libur')
-        ->join('batch', 'batch.id_batch = periode.id_batch')
-        ->where('batch.nama_batch', $nama_batch)
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->where('batch.nama_batch', $nama_batch)
             ->where('periode.nama_periode', $nama_periode)
             ->first();
 
@@ -83,5 +83,10 @@ class PeriodeModel extends Model
         return $result;
     }
 
-
+    public function getPeriodeByBatch($id_batch)
+    {
+        return $this->select('end_date')
+            ->where('id_batch', $id_batch)
+            ->findAll();
+    }
 }
