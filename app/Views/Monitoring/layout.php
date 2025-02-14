@@ -122,7 +122,7 @@
                     </a>
                 </li>
                 <!-- User -->
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link <?= $title == 'User' ? 'active' : '' ?>"
                         href="<?= base_url('monitoring/dataUser') ?>">
                         <div
@@ -152,7 +152,7 @@
                         </div>
                         <span class="nav-link-text ms-1">User</span>
                     </a>
-                </li>
+                </li> -->
                 <!-- Bagian -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Bagian' ? 'active' : '' ?>"
