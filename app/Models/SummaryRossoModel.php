@@ -65,7 +65,7 @@ class SummaryRossoModel extends Model
         return $this->db->table('summary_rosso')
             ->join('karyawan', 'karyawan.id_karyawan = summary_rosso.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            -> join('batch', 'batch.id_batch = summary_jarum.id_batch')
+            -> join('batch', 'batch.id_batch = summary_rosso.id_batch')
             ->where('batch.id_batch', $id_batch)
             ->where('bagian.area_utama', $area_utama)
             ->get()->getResultArray();

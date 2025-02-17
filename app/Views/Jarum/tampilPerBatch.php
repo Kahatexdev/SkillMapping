@@ -25,8 +25,8 @@
         </div>
     </div>
     <div class="row">
+        <?php foreach ($batch as $b) : ?>
         <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
-            <?php foreach ($batch as $b) : ?>
                 <a href="<?= base_url('Monitoring/reportSummaryJarum/' . $area_utama . '/' . $b['id_batch']) ?>">
                     <div class="card">
                         <div class="card-body p-3">
@@ -48,8 +48,8 @@
                         </div>
                     </div>
                 </a>
+            </div>
             <?php endforeach ?>
-        </div>
     </div>
 </div>
 

@@ -1045,7 +1045,7 @@ class PenilaianController extends BaseController
                     } else {
                         $data[] = NULL;
                     }
-                    $data[] = "";
+                    // $data[] = "";
                 } elseif ("ROSSO" == $activesheet->getTitle()) {
                     if ($getTop3Rosso) {
                         $noTop3Rosso = 1;
@@ -1071,7 +1071,7 @@ class PenilaianController extends BaseController
                     } else {
                         $data[] = NULL;
                     }
-                    $data[] = "";
+                    // $data[] = "";
                 } else {
                     $data[] = "";
                     $data[] = "";
@@ -1489,28 +1489,30 @@ class PenilaianController extends BaseController
         $data = [
             ['A',
                 'Rp25,000',
-                'Rp' . $totalA,
-                'Rp' . $totalA * 25000
+                $totalA,
+                $totalA * 25000
             ],
             ['B',
                 'Rp20,000',
-                'Rp' . $totalB,
-                'Rp' . $totalB * 20000
+                $totalB,
+                $totalB * 20000
             ],
             ['C',
                 'Rp15,000',
-                'Rp' . $totalC,
-                'Rp' . $totalC * 15000
+                $totalC,
+                $totalC * 15000
             ],
             ['D',
                 'Rp0',
-                'Rp' . $totalD,
-                'Rp'.$totalD * 0
+                $totalD,
+                $totalD * 0
             ],
         ];
 
-        // Tempatkan data mulai dari sel B11
         $sheet->fromArray($data, null, 'B11');
+
+        // Terapkan format mata uang ke kolom total (D11:D14)
+        $sheet->getStyle("E11:E15")->getNumberFormat()->setFormatCode('"Rp" #,##0');
 
         $sheet->mergeCells('B15:C15');
         $sheet->setCellValue('B15', 'TOTAL');

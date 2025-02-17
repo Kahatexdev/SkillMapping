@@ -434,4 +434,31 @@ class PenilaianModel extends Model
         // Execute the query and return the result
         return $db->query($query)->getResultArray();
     }
+
+    public function getRataRataGrade()
+    {
+        $sql = "SELECT 
+                    CASE 
+                        WHEN avg_value >= 3.5 THEN 'A'
+                        WHEN avg_value >= 2.5 THEN 'B'
+                        WHEN avg_value >= 1.5 THEN 'C'
+                        ELSE 'D'
+                    END AS average_grade_letter
+                FROM (
+                    SELECT 
+                        AVG(
+                            CASE 
+                                WHEN grade_akhir = 'A' THEN 4
+                                WHEN grade_akhir = 'B' THEN 3
+                                WHEN grade_akhir = 'C' THEN 2
+                                WHEN grade_akhir = 'D' THEN 1
+                            END
+                        ) AS avg_value
+                    FROM penilaian
+                ) AS avg_table";
+
+        $query = $this->db->query($sql);
+
+        return $query->getRowArray();
+    }
 }

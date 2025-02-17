@@ -50,11 +50,25 @@ class MonitoringController extends BaseController
 
     public function index()
     {
-        // Data untuk grafik fluktuasi grade
+        $TtlKaryawan = $this->karyawanmodel->where('status', 'Aktif')->countAll();
+        $PerpindahanBulanIni = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))->countAllResults();
+        $RatarataGrade = 0;
+        $SkillGap = 0;
+
+        $RatarataGrade = $this->penilaianmodel->getRataRataGrade();
+
+        // dd ($RatarataGrade);
 
         return view(session()->get('role') . '/index', [
             'role' => session()->get('role'),
             'title' => 'Dashboard',
+            'active1' => 'active',
+            'active2' => '',
+            'active3' => '',
+            'TtlKaryawan' => $TtlKaryawan,
+            'PerpindahanBulanIni' => $PerpindahanBulanIni,
+            'RataRataGrade' => $RatarataGrade['average_grade_letter'],
+            'SkillGap' => $SkillGap
         ]);
     }
 
