@@ -53,7 +53,7 @@ class PeriodeController extends BaseController
         $tempNamaPeriode = $this->periodeModel->where('nama_periode', $namaPeriode)->where('id_batch', $idBatch)->first();
         if ($tempNamaPeriode) {
             $errors['nama_periode'] = 'Nama periode sudah ada';
-        } 
+        }
         if ($startDate > $endDate) {
             $errors['start_date'] = 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai';
         }
@@ -68,7 +68,7 @@ class PeriodeController extends BaseController
 
         if ($errors) {
             session()->setFlashdata('errors', $errors);
-            return redirect()->to(base_url('Monitoring/periodeCreate'));
+            return redirect()->to(base_url('Monitoring/dataPeriode'));
         } else {
             $this->periodeModel->save([
                 'nama_periode' => $namaPeriode,
@@ -80,7 +80,6 @@ class PeriodeController extends BaseController
             session()->setFlashdata('success', 'Data berhasil ditambahkan');
             return redirect()->to(base_url('Monitoring/dataPeriode'));
         }
-        
     }
 
     public function edit($id)
@@ -115,7 +114,7 @@ class PeriodeController extends BaseController
         $tempNamaPeriode = $this->periodeModel->where('nama_periode', $namaPeriode)->where('id_batch', $idBatch)->where('id_periode !=', $id)->first();
         if ($tempNamaPeriode) {
             $errors['nama_periode'] = 'Nama periode sudah ada';
-        } 
+        }
         if ($startDate > $endDate) {
             $errors['start_date'] = 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai';
         }
@@ -130,7 +129,7 @@ class PeriodeController extends BaseController
 
         if ($errors) {
             session()->setFlashdata('errors', $errors);
-            return redirect()->to(base_url('Monitoring/periodeEdit/' . $id));
+            return redirect()->to(base_url('Monitoring/dataPeriode/'));
         } else {
             $this->periodeModel->update($id, [
                 'nama_periode' => $namaPeriode,
