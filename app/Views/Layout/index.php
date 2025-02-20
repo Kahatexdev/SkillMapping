@@ -114,7 +114,7 @@
                             <li class="nav-item d-flex align-items-center">
                                 <a href="" data-bs-toggle="modal" data-bs-target="#LogoutModal" class=" nav-link text-body font-weight-bold px-0">
                                     <img src="<?= base_url('assets/img/user.png') ?>" alt="User Icon" width="20">
-                                    <span class="d-sm-inline d-none"><?= session()->get('username') ?>-<?= session()->get('role') ?></span>
+                                    <span class="d-sm-inline d-none"><?= session()->get('username') ?>-<?= session()->get('area') ?></span>
                                 </a>
                             </li>
                             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
