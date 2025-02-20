@@ -24,18 +24,16 @@
                                     <i class="fas fa-file-excel text-lg opacity-10" aria-hidden="true"></i>
                                     Export Excel
                                 </a>
-                                <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
+                                <!-- <a href="<?= base_url('Monitoring/downloadTemplateKaryawan') ?>"
                                     class="btn bg-gradient-success me-2">
-                                    <!-- icon download -->
                                     <i class="fas fa-download text-lg opacity-10" aria-hidden="true"></i>
                                     Template Excel
                                 </a>
                                 <a href="<?= base_url('Monitoring/karyawanCreate') ?>"
                                     class="btn bg-gradient-info add-btn" data-bs-toggle="modal" data-bs-target="#addKaryawan">
-                                    <!-- icon tambah karyawan-->
                                     <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
                                     Data Karyawan
-                                </a>
+                                </a> -->
                                 <div> &nbsp;</div>
                             </div>
                         </div>
@@ -153,14 +151,13 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2 mt-2">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
                         Import Data Karyawan
                     </h5>
-                    <!-- form import  data karyawan -->
                     <form action="<?= base_url('Monitoring/karyawanStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="upload-container">
@@ -179,7 +176,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row mt-1">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
@@ -197,7 +194,7 @@
                                 <th>Warna Baju</th>
                                 <th>Bagian</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <!-- <th>Aksi</th> -->
                             </thead>
                             <tbody>
                                 <?php if (!empty($karyawan)) : ?>
@@ -213,8 +210,8 @@
                                             <td><?= $karyawan['nama_bagian'] . ' - ' . $karyawan['area_utama'] . ' - ' . $karyawan['area'] ?></td>
                                             <input type="hidden" name="id_bagian" value="<?= $karyawan['id_bagian'] ?>">
                                             <td><?= $karyawan['status_aktif'] ?></td>
-                                            <td>
-                                                <a class="btn btn-warning edit-btn"
+                                            <!-- <td> -->
+                                                <!-- <a class="btn btn-warning edit-btn"
                                                     data-id="<?= $karyawan['id_karyawan'] ?> "
                                                     data-kode_kartu="<?= $karyawan['kode_kartu'] ?>"
                                                     data-nama="<?= $karyawan['nama_karyawan'] ?>"
@@ -231,15 +228,13 @@
                                                     data-nama_bagian="<?= $karyawan['id_bagian'] ?>"
                                                     data-status_aktif="<?= $karyawan['status_aktif'] ?>"
                                                     data-bs-toggle="modal" data-bs-target="#editUser">
-                                                    <!-- icon edit -->
                                                     <i class="fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
-                                                </a>
-                                                <button class="btn bg-gradient-danger btn-sm"
+                                                </a> -->
+                                                <!-- <button class="btn bg-gradient-danger btn-sm"
                                                     onclick="confirmDelete('<?= $karyawan['id_karyawan'] ?>')">
-                                                    <!-- icon hapus -->
                                                     <i class="fas fa-trash text-lg opacity-10" aria-hidden="true"></i>
-                                                </button>
-                                            </td>
+                                                </button> -->
+                                            <!-- </td> -->
                                         </tr>
                                     <?php endforeach ?>
                                 <?php else : ?>
@@ -493,37 +488,29 @@
 </script>
 
 <script>
-    $(document).on('click', '.edit-btn', function() {
-        // Ambil data nama_bagian lama
-        var bagianOld = $(this).data('nama_bagian');
-        // console.log('Bagian Old:', bagianOld);
-
-        // Simpan data bagian lama ke elemen dropdown
-        $('#bagian').data('nama_bagian', bagianOld);
-    });
-
     $(document).on('change', '#bagian', function() {
+        // Jika modal yang aktif adalah modal tambah, jangan tampilkan input tambahan
+        if ($(this).closest('.modal').attr('id') === 'addKaryawan') {
+            return;
+        }
+
         var readonlyInputIdOld = 'readonlyInputOld';
         var readonlyInputIdNew = 'readonlyInputNew';
-        var tgl_pindah = 'tgl_pindah';
-        var keterangan = 'keterangan';
+        var tgl_pindah_id = 'tgl_pindah';
+        var keterangan_id = 'keterangan';
 
-        // Ambil nilai lama
+        // Ambil nilai lama dari data atribut yang sudah diset saat klik tombol edit
         var oldValue = $('#bagian').data('nama_bagian');
-        // console.log('Old Value:', oldValue);
-
-        // Ambil nilai baru dengan menghapus spasi ekstra
-        // var tes = $('#ModalEdit').find('#bagian').val(oldValue);
+        // Ambil nilai baru (nama bagian dari option yang dipilih)
         var newValue = $(this).find(':selected').text().trim();
-        // console.log('Selected Value:', newValue);
 
-        // Hapus elemen readonly sebelumnya
+        // Hapus elemen tambahan sebelumnya (jika ada)
         $('#' + readonlyInputIdOld).remove();
         $('#' + readonlyInputIdNew).remove();
-        $('#' + tgl_pindah).remove();
-        $('#' + keterangan).remove();
+        $('#' + tgl_pindah_id).remove();
+        $('#' + keterangan_id).remove();
 
-        // Tampilkan nilai lama dan baru
+        // Buat markup untuk menampilkan nilai lama dan baru, serta input tanggal dan keterangan
         var readonlyInputOld = `
     <div class="form-group mb-2" id="${readonlyInputIdOld}">
         <input type="hidden" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
@@ -534,29 +521,20 @@
         <input type="hidden" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
     </div>`;
 
-        var tgl_pindah = `
-    <div class="form-group mb-2" id="${tgl_pindah}">
+        var tgl_pindah_input = `
+    <div class="form-group mb-2" id="${tgl_pindah_id}">
         <label for="tgl_pindah">Tanggal Pindah</label>
         <input type="date" class="form-control" name="tgl_pindah" id="tgl_pindah" required>
     </div>`;
 
-        var keterangan = `
-    <div class="form-group mb-2" id="${keterangan}">
+        var keterangan_input = `
+    <div class="form-group mb-2" id="${keterangan_id}">
         <label for="keterangan">Keterangan</label>
         <textarea class="form-control" name="keterangan" id="keterangan" required></textarea>
     </div>`;
 
-
-        $(this).closest('.form-group').before(readonlyInputOld + readonlyInputNew + tgl_pindah + keterangan);
-    });
-
-    $(document).on('click', '.edit-btn', function() {
-        var bagianOld = $(this).data('nama_bagian');
-        // console.log('Bagian Old (Saat Klik Edit):', bagianOld);
-        $('#bagian').data('nama_bagian', bagianOld);
-
-        // Verifikasi data yang diset
-        // console.log('Data nama_bagian diset ke #bagian:', $('#bagian').data('nama_bagian'));
+        // Sisipkan elemen-elemen baru sebelum form-group yang berisi select #bagian
+        $(this).closest('.form-group').before(readonlyInputOld + readonlyInputNew + tgl_pindah_input + keterangan_input);
     });
 </script>
 
