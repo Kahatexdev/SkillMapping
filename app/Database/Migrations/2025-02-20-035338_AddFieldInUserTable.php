@@ -4,21 +4,21 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddFieldInPenilaianTable extends Migration
+class AddFieldInUserTable extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('penilaian', [
-            'grade_akhir' => [
+        $this->forge->addColumn('user', [
+            'area' => [
                 'type' => 'VARCHAR',
                 'constraint' => 20,
-                'after' => 'index_nilai',
+                'after' => 'role',
             ],
         ]);
     }
 
     public function down()
     {
-        $this->forge->dropColumn('penilaian', 'grade_akhir');
+        $this->forge->dropColumn('user', 'area');
     }
 }
