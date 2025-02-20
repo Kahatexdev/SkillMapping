@@ -52,18 +52,18 @@ class PeriodeController extends BaseController
 
         $tempNamaPeriode = $this->periodeModel->where('nama_periode', $namaPeriode)->where('id_batch', $idBatch)->first();
         if ($tempNamaPeriode) {
-            $errors['nama_periode'] = 'Nama periode sudah ada';
+            $errors['nama_periode'] = session()->setFlashdata('error', 'Periode Sudah Ada');
         }
         if ($startDate > $endDate) {
-            $errors['start_date'] = 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai';
+            $errors['start_date'] =  session()->setFlashdata('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai');;
         }
         $tempDate = $this->periodeModel->where('start_date <=', $startDate)->where('end_date >=', $startDate)->where('id_batch', $idBatch)->first();
         if ($tempDate) {
-            $errors['start_date'] = 'Tanggal mulai tidak boleh beririsan dengan periode lain';
+            $errors['start_date'] = session()->setFlashdata('error', 'Tanggal mulai tidak boleh beririsan dengan periode lain');
         }
         $tempDate = $this->periodeModel->where('start_date <=', $endDate)->where('end_date >=', $endDate)->where('id_batch', $idBatch)->first();
         if ($tempDate) {
-            $errors['end_date'] = 'Tanggal selesai tidak boleh beririsan dengan periode lain';
+            $errors['end_date'] = session()->setFlashdata('error', 'Tanggal selesai tidak boleh beririsan dengan periode lain');
         }
 
         if ($errors) {

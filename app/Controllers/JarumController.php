@@ -290,14 +290,14 @@ class JarumController extends BaseController
         $getTop3 = $this->summaryJarum->getTop3Produksi($area_utama, $id_batch);
         // dd($getTop3);
         // Header untuk Top 3 Produksi
-        $sheet->mergeCells('J6:Q6');
+        $sheet->mergeCells('J6:P6');
         $sheet->setCellValue('J6', 'TOP 3 AVG USED NEEDLE');
         $sheet->getStyle('J6')->getFont()->setBold(true);
         $sheet->getStyle('J6')->getFont()->setName('Times New Roman');
         $sheet->getStyle('J6')->getFont()->setSize(10);
         $sheet->getStyle('J6')->getAlignment()->setHorizontal('center');
         $sheet->getStyle('J6')->getAlignment()->setVertical('center');
-        $sheet->getStyle('J6:Q6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('J6:P6')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
         // Sub-header untuk kolom Top 3 Produksi
         $sheet->setCellValue('J7', 'NO');
