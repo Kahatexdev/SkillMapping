@@ -1,6 +1,17 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 
+<?php 
+// swall alert
+if (session()->getFlashdata('success')) {
+    echo '<div class="alert" role="alert">';
+    echo '</div>';
+}
+if (session()->getFlashdata('error')) {
+    echo '<div class="alert" role="alert">';
+    echo '</div>';
+}
+?>
 <div class="container-fluid">
     <div class="row my-2">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-2">
@@ -93,7 +104,7 @@
                     </button>
                 </div>
                 <div class="modal-body ">
-                    <form action="<?= base_url('Monitoring/userAdd'); ?>" method="post">
+                    <form action="<?= base_url('Monitoring/userStore'); ?>" method="post">
                         <div class="row">
                             <div class="col-lg-12 col-sm-12">
                                 <div class="form-group">

@@ -1,6 +1,17 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 
+<style>
+    canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+
+    .card-header {
+        background-color: #5e72e4;
+    }
+</style>
 <div class="container-fluid py-4">
     <!-- Statistik Cards -->
     <div class="row">
@@ -98,77 +109,157 @@
     </div>
 
     <!-- Grafik Data -->
-    <!-- <div class="row mt-4">
-        <div class="col-xl-6 col-lg-12 mb-xl-0 mb-4">
+    <div class="row mt-4">
+        <!-- Diagram Batang: Total Karyawan Berdasarkan Bagian -->
+        <div class="col-5 mb-4">
             <div class="card">
-                <div class="card-header bg-gradient-primary text-white">
-                    <h6 class="mb-0">Distribusi Skill</h6>
-                </div>
                 <div class="card-body">
-                    <canvas id="skillChart"></canvas>
+                    <canvas id="karyawanBarChart" style="width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-12 mb-xl-0 mb-4">
+
+        <!-- Diagram Batang: Grafik Pindahan Karyawan -->
+        <div class="col-7 mb-4">
             <div class="card">
-                <div class="card-header bg-gradient-primary text-white">
-                    <h6 class="mb-0">Tren Performa Karyawan</h6>
-                </div>
                 <div class="card-body">
-                    <canvas id="performanceChart"></canvas>
+                    <canvas id="pindahanBarChart" style="width: 100%; height: 300px;"></canvas>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 </div>
 
 <!-- Library Chart.js -->
+<!-- Library Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    // Inisialisasi Chart Distribusi Skill
-    var ctxSkill = document.getElementById('skillChart').getContext('2d');
-    var skillChart = new Chart(ctxSkill, {
-        type: 'pie',
+    // Contoh data dari PHP (sesuaikan dengan data Anda)
+    <?php
+    $labels = [];
+    $values = [];
+    foreach ($karyawanByBagian as $row) {
+        if ($row['nama_bagian'] == '-') {
+            continue;
+        }
+        $labels[] = $row['nama_bagian'];
+        $values[] = (int)$row['jumlah_karyawan'];
+    }
+    ?>
+
+    // Chart Batang untuk Total Karyawan Berdasarkan Bagian
+    // Chart Batang untuk Total Karyawan Berdasarkan Bagian
+    var ctxBar = document.getElementById('karyawanBarChart').getContext('2d');
+    var karyawanBarChart = new Chart(ctxBar, {
+        type: 'bar',
         data: {
-            labels: ['Skill A', 'Skill B', 'Skill C'],
+            labels: <?= json_encode($labels) ?>,
             datasets: [{
-                data: [30, 40, 30], // Ganti dengan data dinamis
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                label: 'Total Karyawan',
+                data: <?= json_encode($values) ?>,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Bagian'
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Karyawan'
+                    }
+                }
+            },
             plugins: {
+                title: {
+                    display: true,
+                    text: 'Total Karyawan Berdasarkan Bagian'
+                },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return context.label + ': ' + context.parsed + '%';
+                            return 'Jumlah: ' + context.parsed.y;
                         }
                     }
+                },
+                legend: {
+                    display: true
                 }
             }
         }
     });
+</script>
 
-    // Inisialisasi Chart Tren Performa Karyawan
-    var ctxPerformance = document.getElementById('performanceChart').getContext('2d');
-    var performanceChart = new Chart(ctxPerformance, {
-        type: 'line',
+<script>
+    // Chart Batang untuk Grafik Pindahan Karyawan
+    var ctxBar2 = document.getElementById('pindahanBarChart').getContext('2d');
+    var pindahanBarChart = new Chart(ctxBar2, {
+        type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // Contoh label waktu
+            labels: <?= json_encode($labelsKar) ?>,
             datasets: [{
-                label: 'Performa',
-                data: [65, 59, 80, 81, 56], // Ganti dengan data dinamis
-                fill: false,
-                borderColor: '#4BC0C0',
-                tension: 0.1
+                label: 'Jumlah Pindahan',
+                data: <?= json_encode($valuesKar) ?>,
+                backgroundColor: 'rgba(255, 159, 64, 0.6)', // Sesuaikan warna
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1,
+                // Pengaturan lebar batang
+                barPercentage: 0.6,
+                categoryPercentage: 0.6
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+            // indexAxis: 'y', // Jika ingin horizontal bar, aktifkan ini
             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tanggal'
+                    },
+                    // Jika label tanggal terlalu panjang, silakan atur rotasi:
+                    // ticks: {
+                    //     maxRotation: 45,
+                    //     minRotation: 0
+                    // }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Pindahan'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Grafik Pindahan Karyawan'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Jumlah: ' + context.parsed.y;
+                        }
+                    }
+                },
+                legend: {
+                    display: true
                 }
             }
         }

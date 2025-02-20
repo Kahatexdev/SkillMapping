@@ -156,4 +156,14 @@ class KaryawanModel extends Model
         ->join('user', 'user.id_user = history_pindah_karyawan.updated_by')
         ->findAll(); // Ambil semua data tanpa filter
     }
+
+    public function getActiveKaryawanByBagian()
+    {
+        $builder = $this->db->table($this->table);
+        $builder->select('COUNT(karyawan.nama_karyawan) AS jumlah_karyawan, bagian.nama_bagian');
+        $builder->join('bagian', 'karyawan.id_bagian = bagian.id_bagian');
+        $builder->where('karyawan.status_aktif', 'Aktif');
+        $builder->groupBy('bagian.nama_bagian');
+        return $builder->get()->getResultArray();
+    }
 }

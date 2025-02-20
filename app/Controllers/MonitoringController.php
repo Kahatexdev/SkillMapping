@@ -52,12 +52,27 @@ class MonitoringController extends BaseController
     {
         $TtlKaryawan = $this->karyawanmodel->where('status', 'Aktif')->countAll();
         $PerpindahanBulanIni = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))->countAllResults();
+        $dataKaryawan = $this->karyawanmodel->getActiveKaryawanByBagian();
         $RatarataGrade = 0;
         $SkillGap = 0;
-
+        
+        // Hitung total karyawan (jika diperlukan)
+        $totalKaryawan = 0;
+        foreach ($dataKaryawan as $row) {
+            $totalKaryawan += $row['jumlah_karyawan'];
+        }
+        
         $RatarataGrade = $this->penilaianmodel->getRataRataGrade();
 
-        // dd ($RatarataGrade);
+        $dataPindah = $this->historyPindahKaryawanModel->getPindahGroupedByDate();
+        // dd ($makan);
+        // Siapkan data untuk grafik line
+        $labelsKar = [];
+        $valuesKar = [];
+        foreach ($dataPindah as $row) {
+            $labelsKar[] = $row['tgl'];
+            $valuesKar[] = (int)$row['jumlah'];
+        }
 
         return view(session()->get('role') . '/index', [
             'role' => session()->get('role'),
@@ -68,7 +83,10 @@ class MonitoringController extends BaseController
             'TtlKaryawan' => $TtlKaryawan,
             'PerpindahanBulanIni' => $PerpindahanBulanIni,
             'RataRataGrade' => $RatarataGrade['average_grade_letter'],
-            'SkillGap' => $SkillGap
+            'SkillGap' => $SkillGap,
+            'karyawanByBagian' => $dataKaryawan,
+            'labelsKar' => $labelsKar,
+            'valuesKar' => $valuesKar
         ]);
     }
 
