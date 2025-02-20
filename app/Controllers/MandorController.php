@@ -246,6 +246,10 @@ class MandorController extends BaseController
             $area = null;
         }
 
+        if ($area != session()->get('area')) {
+            return redirect()->back()->with('error', 'Bukan Hak Kamu.');
+        }
+
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
 
         if (!$id_bagian) {
@@ -443,7 +447,7 @@ class MandorController extends BaseController
 
     public function penilaianPerArea($area_utama)
     {
-        $area_utama = session()->get('username');
+        $area_utama = session()->get('area');
 
         // jika karakter diakhir username itu sebuah huruf, maka hapus huruf tersebut
         if (ctype_alpha(substr($area_utama, -1))) {

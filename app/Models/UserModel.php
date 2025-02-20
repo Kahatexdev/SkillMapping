@@ -12,7 +12,7 @@ class UserModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_user', 'username', 'password', 'role'];
+    protected $allowedFields    = ['id_user', 'username', 'password', 'role', 'area'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -56,7 +56,8 @@ class UserModel extends Model
         return [
             'id_user' => $user['id_user'],
             'role' => $user['role'],
-            'username' => $user['username']
+            'username' => $user['username'],
+            'area' => $user['area']
         ];
     }
 

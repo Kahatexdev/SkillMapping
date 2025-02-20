@@ -223,10 +223,15 @@ class PenilaianController extends BaseController
         $area_utama = $this->request->getPost('area_utama');
         $area = $this->request->getPost('area');
 
+        $area = null;
         if ($area == 'null') {
             $area = null;
         }
-
+        
+        if ($area != session()->get('area')) {
+            return redirect()->back()->with('error', 'Bukan Hak Kamu.');
+        }
+        
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
 
         if (!$id_bagian) {
