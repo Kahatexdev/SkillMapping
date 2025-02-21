@@ -247,7 +247,7 @@ class MandorController extends BaseController
         }
 
         if ($area != session()->get('area')) {
-            return redirect()->back()->with('error', 'Bukan Hak Kamu.');
+            return redirect()->back()->with('error', 'Pilih Sesuai Area Anda! (Area: ' . session()->get('area') . ')');
         }
 
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);

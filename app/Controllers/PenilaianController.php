@@ -222,6 +222,7 @@ class PenilaianController extends BaseController
         $nama_bagian = $this->request->getPost('nama_bagian');
         $area_utama = $this->request->getPost('area_utama');
         $area = $this->request->getPost('area');
+        $role = $this->request->getPost('role');
 
         $area = null;
         if ($area == 'null') {
@@ -229,7 +230,8 @@ class PenilaianController extends BaseController
         }
         
         if ($area != session()->get('area')) {
-            return redirect()->back()->with('error', 'Bukan Hak Kamu.');
+            return redirect()->back()->with('error', 'Pilih Sesuai'. session()->get('area') . 'Anda!');
+        } elseif ($role == 'Monitoring') {
         }
         
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
