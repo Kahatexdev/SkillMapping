@@ -461,4 +461,26 @@ class PenilaianModel extends Model
 
         return $query->getRowArray();
     }
+
+    public function getMandorEvaluationStatus()
+    {
+        $builder = $this->db->table('user');
+        $builder->select('
+        user.id_user, 
+        user.username, 
+        COUNT(DISTINCT karyawan.id_karyawan) AS total_karyawan, 
+        COUNT(DISTINCT penilaian.id_penilaian) AS total_penilaian
+    ');
+        // Asumsikan kolom "area" di tabel bagian cocok dengan area mandor di tabel user
+        $builder->join('bagian', 'bagian.area = user.area', 'left');
+        $builder->join('karyawan', 'karyawan.id_bagian = bagian.id_bagian', 'left');
+        // Mengambil penilaian yang dilakukan oleh mandor (id_user) untuk karyawan terkait
+        $builder->join('penilaian', 'penilaian.karyawan_id = karyawan.id_karyawan AND penilaian.id_user = user.id_user', 'left');
+        $builder->where('user.role', 'mandor');
+        // $builder->where('user.area', $area);
+        $builder->groupBy('user.id_user');
+
+        return $builder->get()->getResultArray();
+    }
+
 }

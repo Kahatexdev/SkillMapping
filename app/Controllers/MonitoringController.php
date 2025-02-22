@@ -746,4 +746,26 @@ class MonitoringController extends BaseController
         // dd ($summaryRosso);
         return view(session()->get('role') . '/reportsummaryrosso', $data);
     }
+
+    public function cekPenilaian()
+    {
+        $periode = $this->periodeModel->getPeriode();
+        $cekPenilaian = $this->penilaianmodel->getMandorEvaluationStatus();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Cek Penilaian',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => 'active',
+            'periode' => $periode,
+            'cekPenilaian' => $cekPenilaian
+        ];
+        // dd ($data);
+        return view(session()->get('role') . '/cekpenilaian', $data);
+    }
 }

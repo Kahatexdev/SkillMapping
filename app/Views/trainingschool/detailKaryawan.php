@@ -363,11 +363,15 @@
                                     <select name="bagian" id="bagian" class="form-control" required>
                                         <option value="">Pilih Bagian</option>
                                         <?php foreach ($bagian as $row) : ?>
-                                            <option value="<?= $row['id_bagian'] ?>">
-                                                <?= $row['nama_bagian'] . ' - ' . $row['area_utama'] . ' - ' . $row['area'] ?></option>
+                                            <option value="<?= $row['id_bagian'] ?>" <?= ($row['id_bagian'] == $karyawan['id_bagian']) ? 'selected' : '' ?>>
+                                                <?= $row['nama_bagian'] . ' - ' . $row['area_utama'] . ' - ' . $row['area'] ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <!-- Input hidden untuk menyimpan id_bagian_asal -->
+                                <input type="hidden" name="id_bagian_asal" id="id_bagian_asal" value="<?= $karyawan['id_bagian'] ?>">
+
                                 <div class="form-group mb-2">
                                     <label for="status_aktif">Status Aktif</label>
                                     <select name="status_aktif" id="status_aktif" class="form-control" required>

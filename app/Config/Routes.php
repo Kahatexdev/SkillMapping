@@ -144,6 +144,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('check-new-messages', 'ChatController::checkNewMessages');
     $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
+    $routes->get('cekPenilaian', 'MonitoringController::cekPenilaian');
+
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {

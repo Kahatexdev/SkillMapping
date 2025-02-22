@@ -425,7 +425,7 @@ class KaryawanController extends BaseController
 
         $karyawanModel->update($id, $data);
 
-        $oldBagian = $this->request->getPost('readonly_bagian_old');
+        $oldBagian = $this->request->getPost('id_bagian_asal');
         $tgl_pindah = $this->request->getPost('tgl_pindah');
         $keterangan = $this->request->getPost('keterangan');
         $item = [
@@ -437,7 +437,7 @@ class KaryawanController extends BaseController
             'created_at' => date('Y-m-d H:i:s'),
             'updated_by' => session()->get('id_user')
         ];
-        // dd ($item);
+        // dd ($oldBagian, $tgl_pindah, $keterangan, $item);
         $this->historyPindahKaryawanModel->insert($item);
 
 
