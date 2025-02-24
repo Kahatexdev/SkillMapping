@@ -24,7 +24,7 @@
                             <div class="col-8">
                                 <div class="numbers">
                                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Karyawan</p>
-                                    <h5 class="font-weight-bolder mb-0"><?= $TtlKaryawan ?></h5>
+                                    <h5 class="font-weight-bolder mb-0"><?= $TtlKaryawan ?> Orang</h5>
                                 </div>
                             </div>
                             <div class="col-4 text-end">
@@ -40,14 +40,14 @@
 
         <!-- Card Perpindahan Bulan Ini -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-            <a href="#">
+            <a href="<?= base_url($role . '/historyPindahKaryawan'); ?>">
                 <div class="card">
                     <div class="card-body p-3">
                         <div class="row">
                             <div class="col-8">
                                 <div class="numbers">
                                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Perpindahan Bulan Ini</p>
-                                    <h5 class="font-weight-bolder mb-0"><?= $PerpindahanBulanIni ?></h5>
+                                    <h5 class="font-weight-bolder mb-0"><?= $PerpindahanBulanIni ?> Orang</h5>
                                 </div>
                             </div>
                             <div class="col-4 text-end">
@@ -124,6 +124,61 @@
             <div class="card">
                 <div class="card-body">
                     <canvas id="pindahanBarChart" style="width: 100%; height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Header Monitoring -->
+            <div class="card card-frame mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 font-weight-bolder">Monitoring Penilaian Karyawan</h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabel Monitoring -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="cekPenilaianTable" class="table table-striped table-hover table-bordered w-100">
+                            <thead>
+                                <tr>
+                                    <th>Area</th>
+                                    <th>Jumlah Karyawan</th>
+                                    <th>Sudah Dinilai</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($cekPenilaian)) : ?>
+                                    <?php foreach ($cekPenilaian as $mandor) : ?>
+                                        <?php if ($mandor['total_karyawan'] == 0) {
+                                            continue;
+                                        } ?>
+                                        <tr>
+                                            <td><?= esc($mandor['username']); ?></td>
+                                            <td><?= esc($mandor['total_karyawan']); ?></td>
+                                            <td><?= esc($mandor['total_penilaian']); ?></td>
+                                            <td>
+                                                <?php if ($mandor['total_penilaian'] >= $mandor['total_karyawan']) : ?>
+                                                    <span class="badge bg-info">Selesai</span>
+                                                <?php else : ?>
+                                                    <span class="badge bg-danger">Belum Selesai</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <tr>
+                                        <td colspan="4">Tidak ada data</td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -266,4 +321,9 @@
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+        $('#cekPenilaianTable').DataTable({});
+    });
+</script>
 <?php $this->endSection(); ?>

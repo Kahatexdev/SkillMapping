@@ -145,11 +145,13 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
     $routes->get('cekPenilaian', 'MonitoringController::cekPenilaian');
+    $routes->get('historyPindahKaryawan', 'MonitoringController::historyPindahKaryawan');
+    $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
 
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
-    $routes->get('', 'MandorController::listArea');
+    $routes->get('', 'MandorController::dashboard');
     $routes->get('dataKaryawan', 'MandorController::listArea');
     $routes->get('dataKaryawan/(:any)', 'MandorController::detailKaryawanPerArea/$1');
 
@@ -205,6 +207,8 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('count-unread-messages', 'ChatController::countUnreadMessages');
     $routes->get('check-new-messages', 'ChatController::checkNewMessages');
     $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
+
+    $routes->get('evaluasiKaryawan/(:any)/(:any)', 'MandorController::getEmployeeEvaluationStatus/$1/$2');
 
 });
 

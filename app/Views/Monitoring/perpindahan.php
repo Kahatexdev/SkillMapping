@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <a href="<?= base_url('TrainingSchool/reportHistoryPindahKaryawan') ?>"
+                            <a href="<?= base_url($role. '/reportHistoryPindahKaryawan') ?>"
                                 class="btn bg-gradient-primary me-2">
                                 <!-- icon download -->
                                 <i class="fas fa-file-excel text-lg opacity-10" aria-hidden="true"></i>

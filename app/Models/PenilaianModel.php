@@ -483,4 +483,25 @@ class PenilaianModel extends Model
         return $builder->get()->getResultArray();
     }
 
+    public function getEmployeeEvaluationStatus($periode, $area)
+    {
+        // Menggunakan alias "k" untuk tabel karyawan
+        $builder = $this->db->table('karyawan as k');
+        $builder->select("
+        k.id_karyawan,
+        k.nama_karyawan,
+        bagian.nama_bagian,
+        bagian.area,
+        IF(p.id_penilaian IS NULL, 'Belum Dinilai', 'Sudah Dinilai') AS status
+    ", false);
+        $builder->join('bagian', 'bagian.id_bagian = k.id_bagian', 'left');
+        $builder->join('penilaian as p', "p.karyawan_id = k.id_karyawan AND p.id_periode = '{$periode}'", 'left');
+        $builder->where('bagian.area', $area);
+        $builder->groupBy('k.id_karyawan');
+        $builder->groupBy('p.id_periode');
+
+        return $builder->get()->getResultArray();
+    }
+
+
 }

@@ -345,6 +345,7 @@ class MandorController extends BaseController
     }
 
     const bobot_nilai = [
+        // 0 => 0,
         1 => 15,
         2 => 30,
         3 => 45,
@@ -396,11 +397,18 @@ class MandorController extends BaseController
         foreach ($bobotNilai as $karyawanId => $nilai) {
             $totalNilai = 0;
             $totalBobot = 0;
+            $count = 0;
             foreach ($nilai as $jobdesc => $value) {
                 $totalNilai += $value;
-                $totalBobot += self::bobot_nilai[$value];
+                if ($value == 0) {
+                    continue;
+                } else {
+                    $totalBobot += self::bobot_nilai[$value];
+                    $count++;
+                }
+                // $totalBobot += self::bobot_nilai[$value];
             }
-            $average = $totalBobot / count($nilai);
+            $average = $totalBobot / $count;
             // dd($average);
             $indexNilai[$karyawanId] = $average;
         }
@@ -509,5 +517,47 @@ class MandorController extends BaseController
         // dd ($data);
 
         return view(session()->get('role') . '/reportareaperperiode', $data);
+    }
+
+    public function getEmployeeEvaluationStatus($id_periode, $area)
+    {
+        // $id_periode = (int) $id_periode;
+        // $area = $area;
+        // $id_periode = '1';
+        // $area = 'KK1A';
+        // jika karakter diakhir username itu sebuah huruf, maka hapus huruf tersebut
+        // if (ctype_alpha(substr($area, -1))) {
+        //     $area = substr($area, 0, -1);
+        // } else {
+        //     $area = $area;
+        // }
+        // dd ($area);
+        $penilaian = $this->penilaianmodel->getEmployeeEvaluationStatus($id_periode, $area);
+        // dd ($penilaian);
+
+        // return view
+        
+        return $this->response->setJSON($penilaian);
+    }
+
+    // dashboard
+    public function dashboard()
+    {
+        $periode = $this->periodeModel->getPeriode();
+        $data = [
+            'role' => session()->get('role'),
+            'area' => session()->get('area'),
+            'title' => 'Dashboard',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'periode' => $periode
+        ];
+        return view(session()->get('role') . '/dashboard', $data);
     }
 }

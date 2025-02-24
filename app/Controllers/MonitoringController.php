@@ -53,6 +53,7 @@ class MonitoringController extends BaseController
         $TtlKaryawan = $this->karyawanmodel->where('status', 'Aktif')->countAll();
         $PerpindahanBulanIni = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))->countAllResults();
         $dataKaryawan = $this->karyawanmodel->getActiveKaryawanByBagian();
+        $cekPenilaian = $this->penilaianmodel->getMandorEvaluationStatus();
         $RatarataGrade = 0;
         $SkillGap = 0;
         
@@ -86,7 +87,8 @@ class MonitoringController extends BaseController
             'SkillGap' => $SkillGap,
             'karyawanByBagian' => $dataKaryawan,
             'labelsKar' => $labelsKar,
-            'valuesKar' => $valuesKar
+            'valuesKar' => $valuesKar,
+            'cekPenilaian' => $cekPenilaian
         ]);
     }
 
@@ -767,5 +769,19 @@ class MonitoringController extends BaseController
         ];
         // dd ($data);
         return view(session()->get('role') . '/cekpenilaian', $data);
+    }
+
+    public function historyPindahKaryawan()
+    {
+        $historyPindahKaryawan = $this->historyPindahKaryawanModel->getHistoryPindahKaryawan();
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'History Pindah Karyawan',
+            'active1' => '',
+            'active2' => '',
+            'active3' => 'active',
+            'historyPindahKaryawan' => $historyPindahKaryawan
+        ];
+        return view(session()->get('role') . '/perpindahan', $data);
     }
 }
