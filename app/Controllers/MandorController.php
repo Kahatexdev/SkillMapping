@@ -560,4 +560,21 @@ class MandorController extends BaseController
         ];
         return view(session()->get('role') . '/dashboard', $data);
     }
+
+    public function instruksiKerja()
+    {
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Instruksi Kerja',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+        ];
+        return view(session()->get('role') . '/instruksiKerja', $data);
+    }
 }

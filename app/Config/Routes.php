@@ -209,6 +209,7 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
     $routes->get('evaluasiKaryawan/(:any)/(:any)', 'MandorController::getEmployeeEvaluationStatus/$1/$2');
+    $routes->get('instruksiKerja', 'MandorController::instruksiKerja');
 
 });
 
