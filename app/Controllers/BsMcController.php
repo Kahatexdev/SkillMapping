@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\BsmcModel;
 use App\Models\BatchModel;
+use App\Models\BagianModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -19,6 +20,7 @@ class BsMcController extends BaseController
     protected $bsmcModel;
     protected $karyawanModel;
     protected $batchModel;
+    protected $bagianModel;
 
     public function __construct()
     {
@@ -26,49 +28,49 @@ class BsMcController extends BaseController
         $this->bsmcModel = new BsmcModel();
         $this->karyawanModel = new KaryawanModel();
         $this->batchModel = new BatchModel();
+        $this->bagianModel = new BagianModel();
     }
 
     public function downloadTemplate()
     {
         // Membuat spreadsheet baru
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
 
-        // Menyusun header kolom
-        $sheet->setCellValue('A1', 'KODE KARTU');
-        $sheet->setCellValue('B1', 'NAMA LENGKAP');
-        $sheet->setCellValue('C1', 'L/P');
-        $sheet->setCellValue('D1', 'TGL. MASUK KERJA');
-        $sheet->setCellValue('E1', 'BAGIAN');
-        $sheet->setCellValue('F1', 'RATA-RATA PRODUKSI');
-        $sheet->setCellValue('G1', 'RATA-RATA BS');
+        // Menambahkan 13 sheet dengan judul KK1A, KK1B, KK2A, KK2B, dst.
+        $titles = ['KK1A', 'KK1B', 'KK2A', 'KK2B', 'KK2C', 'KK5', 'KK7K', 'KK7L', 'KK8D', 'KK8J', 'KK9', 'KK10', 'KK11M'];
+        foreach ($titles as $index => $title) {
+            $sheet = $index === 0 ? $spreadsheet->getActiveSheet() : $spreadsheet->createSheet();
+            $sheet->setTitle($title);
 
-        // Mengatur lebar kolom
-        $sheet->getColumnDimension('A')->setWidth(20);
-        $sheet->getColumnDimension('B')->setWidth(20);
-        $sheet->getColumnDimension('C')->setWidth(20);
-        $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('E')->setWidth(20);
-        $sheet->getColumnDimension('F')->setWidth(20);
-        $sheet->getColumnDimension('G')->setWidth(20);
+            // Menyusun header kolom
+            $sheet->setCellValue('A1', 'TANGGAL');
+            $sheet->setCellValue('B1', 'NAMA LENGKAP');
+            $sheet->setCellValue('C1', 'KODE KARTU');
+            $sheet->setCellValue('D1', 'BS MC');
+            $sheet->setCellValue('E1', 'PRODUKSI');
 
+            // Mengatur lebar kolom
+            $sheet->getColumnDimension('A')->setWidth(20);
+            $sheet->getColumnDimension('B')->setWidth(20);
+            $sheet->getColumnDimension('C')->setWidth(20);
+            $sheet->getColumnDimension('D')->setWidth(20);
+            $sheet->getColumnDimension('E')->setWidth(20);
 
+            // Mengatur style header
+            $sheet->getStyle('A1:E1')->getFont()->setBold(true);
+            $sheet->getStyle('A1:E1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
+            $sheet->getStyle('A1:E1')->getAlignment()->setHorizontal('center');
 
-        // Mengatur style header
-        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:G1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
-        $sheet->getStyle('A1:G1')->getAlignment()->setHorizontal('center');
+            // Isi data contoh pada sheet pertama
+            if ($index === 0) {
+                $sheet->setCellValue('A2', '2025-1-25');
+                $sheet->setCellValue('B2', 'John Doe');
+                $sheet->setCellValue('C2', 'KK0001');
+                $sheet->setCellValue('D2', '1000');
+                $sheet->setCellValue('E2', '100');
+            }
+        }
 
-        // isi data
-        $sheet->setCellValue('A2', 'KK001');
-        $sheet->setCellValue('B2', 'John Doe');
-        $sheet->setCellValue('C2', 'L');
-        $sheet->setCellValue('D2', '24/05/2023');
-        $sheet->setCellValue('E2', 'KNITTER');
-        $sheet->setCellValue('F2', '515');
-        $sheet->setCellValue('G2', '2');
-
-        // 
         // Menentukan nama file
         $fileName = 'Template_Summary_Bs_Mesin.xlsx';
 
@@ -579,5 +581,119 @@ class BsMcController extends BaseController
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit;
+    }
+
+    public function import()
+    {
+        $file = $this->request->getFile('file');
+
+        if (!$file->isValid() || $file->getExtension() !== 'xlsx') {
+            return redirect()->back()->with('error', 'File tidak valid atau format tidak didukung.');
+        }
+
+        try {
+            $spreadsheet = IOFactory::load($file->getTempName());
+            $sheets = $spreadsheet->getSheetNames();
+
+            // Ambil semua data karyawan untuk mempercepat pencarian (berdasarkan kode_kartu)
+            $karyawanData = $this->karyawanModel->findAll();
+            $karyawanMap = [];
+            foreach ($karyawanData as $karyawan) {
+                $karyawanMap[strtolower(trim($karyawan['kode_kartu']))] = [
+                    'id_karyawan' => $karyawan['id_karyawan'],
+                    'id_bagian' => $karyawan['id_bagian']
+                ];
+            }
+
+            // Ambil data area berdasarkan id_bagian
+            $bagianData = $this->bagianModel->findAll();
+            $areaMap = [];
+            foreach ($bagianData as $bagian) {
+                $areaMap[$bagian['id_bagian']] = $bagian['area'];
+            }
+
+            $dataToInsert = [];
+            $duplicateEntries = [];
+            $wrongAreaEntries = [];
+            $invalidDateEntries = []; // Menyimpan data dengan tanggal melebihi hari ini
+
+            $currentDate = date('Y-m-d'); // Tanggal hari ini
+
+            foreach ($sheets as $sheetName) {
+                $worksheet = $spreadsheet->getSheetByName($sheetName);
+                $highestRow = $worksheet->getHighestRow();
+
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $tanggal = $worksheet->getCell('A' . $row)->getFormattedValue();
+                    // $nama = $worksheet->getCell('B' . $row)->getValue();
+                    $kode_kartu = strtolower(trim($worksheet->getCell('C' . $row)->getValue()));
+                    $bs_mc = $worksheet->getCell('D' . $row)->getValue();
+                    $produksi = $worksheet->getCell('E' . $row)->getValue();
+
+                    // Konversi tanggal ke format database (YYYY-MM-DD)
+                    $tgl_input = date('Y-m-d', strtotime(str_replace('/', '-', $tanggal)));
+
+                    // **Validasi tanggal input tidak boleh lebih dari tanggal hari ini**
+                    // if ($tgl_input > $currentDate) {
+                    //     $invalidDateEntries[] = "Kode Kartu: $kode_kartu, Tanggal Input: $tgl_input (Melebihi hari ini)";
+                    //     continue; // Lewati data jika tanggal lebih dari hari ini
+                    // }
+
+                    // Validasi kode_kartu (pastikan ada di database)
+                    if (!isset($karyawanMap[$kode_kartu])) {
+                        continue; // Lewati jika kode kartu tidak ditemukan
+                    }
+
+                    $id_karyawan = $karyawanMap[$kode_kartu]['id_karyawan'];
+                    $id_bagian = $karyawanMap[$kode_kartu]['id_bagian'];
+                    $area = $areaMap[$id_bagian] ?? null;
+
+                    // Validasi area (judul sheet harus sesuai dengan id_bagian)
+                    if ($sheetName !== $area) {
+                        $wrongAreaEntries[] = "Kode Kartu: $kode_kartu, Seharusnya: $area, Ditemukan di: $sheetName";
+                        continue;
+                    }
+
+                    // **VALIDASI: Cek apakah data sudah ada di database**
+                    $existingData = $this->bsmcModel->validasiKaryawan($id_karyawan);
+
+                    if ($existingData) {
+                        $duplicateEntries[] = "Tanggal: $tgl_input, Kode Kartu: $kode_kartu, Area: $area";
+                        continue; // Lewati jika data sudah ada
+                    }
+
+                    // Jika data valid, tambahkan ke array untuk insertBatch
+                    $dataToInsert[] = [
+                        'tgl_input' => $tgl_input,
+                        'id_karyawan' => $id_karyawan,
+                        'bs_mc' => is_numeric($bs_mc) ? $bs_mc : 0,
+                        'produksi' => is_numeric($produksi) ? $produksi : 0,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                }
+            }
+            dd($dataToInsert);
+            // **Tampilkan alert error
+            $errorMessage = "";
+            if (!empty($dataToInsert)) {
+                $this->bsmcModel->insertBatch($dataToInsert);
+                $errorMessage .= " ✅" . count($dataToInsert) . " Data BS Mesin Berhasil Diimport" . "<br><br>";
+            }
+            if (!empty($invalidDateEntries)) {
+                $messages[] = "⛔ Tanggal input tidak boleh lebih dari hari ini dan tidak diinput:<br>" . implode("<br>", $invalidDateEntries);
+            }
+            if (!empty($wrongAreaEntries)) {
+                $errorMessage .= "⚠️ Kode kartu berikut dimasukkan ke area yang salah dan tidak diinput:<br>" . implode("<br>", $wrongAreaEntries) . "<br><br>";
+            }
+            if (!empty($duplicateEntries)) {
+                $errorMessage .= "⚠️ Data berikut sudah ada di database dan tidak diinput:<br>" . implode("<br>", $duplicateEntries);
+            }
+            if (!empty($errorMessage)) {
+                return redirect()->back()->with('error', $errorMessage);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat membaca file: ' . $e->getMessage());
+        }
     }
 }

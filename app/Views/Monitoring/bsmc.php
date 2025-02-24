@@ -12,20 +12,14 @@
                     <!-- form import  Summary BSMC -->
                     <form action="<?= base_url('Monitoring/bsmcStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="id_batch">Batch</label>
-                                    <select class="form-select" name="id_batch" id="id_batch" required>
-                                        <option value="">Pilih Batch</option>
-                                        <?php foreach ($getBatch as $p) : ?>
-                                            <option value="<?= $p['id_batch'] ?>"><?= $p['nama_batch'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                    <label for="">Tanggal Input</label>
+                                    <input type="date" class="form-control" name="tgl_input" required>
                                 </div>
                             </div>
-
-                        </div>
+                        </div> -->
                         <div class="upload-container">
                             <div class="upload-area" id="upload-area">
                                 <i class="fas fa-cloud-upload-alt fa-2x"></i>
