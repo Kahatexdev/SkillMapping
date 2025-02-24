@@ -78,4 +78,14 @@ class HistoryPindahKaryawanModel extends Model
             ->orderBy('tgl_pindah', 'DESC')
             ->findAll();
     }
+
+    public function getPindahGroupedByDate()
+    {
+        // Ambil data pindahan
+        $builder = $this->db->table($this->table);
+        $builder->select("DATE(tgl_pindah) AS tgl, COUNT(*) AS jumlah");
+        $builder->groupBy("DATE(tgl_pindah)");
+        $builder->orderBy("tgl", "ASC");
+        return $builder->get()->getResultArray();
+    }
 }

@@ -363,11 +363,15 @@
                                     <select name="bagian" id="bagian" class="form-control" required>
                                         <option value="">Pilih Bagian</option>
                                         <?php foreach ($bagian as $row) : ?>
-                                            <option value="<?= $row['id_bagian'] ?>">
-                                                <?= $row['nama_bagian'] . ' - ' . $row['area_utama'] . ' - ' . $row['area'] ?></option>
+                                            <option value="<?= $row['id_bagian'] ?>" <?= ($row['id_bagian'] == $karyawan['id_bagian']) ? 'selected' : '' ?>>
+                                                <?= $row['nama_bagian'] . ' - ' . $row['area_utama'] . ' - ' . $row['area'] ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <!-- Input hidden untuk menyimpan id_bagian_asal -->
+                                <input type="hidden" name="id_bagian_asal" id="id_bagian_asal" value="<?= $karyawan['id_bagian'] ?>">
+
                                 <div class="form-group mb-2">
                                     <label for="status_aktif">Status Aktif</label>
                                     <select name="status_aktif" id="status_aktif" class="form-control" required>
@@ -494,37 +498,29 @@
     });
 </script>
 <script>
-    $(document).on('click', '.edit-btn', function() {
-        // Ambil data nama_bagian lama
-        var bagianOld = $(this).data('nama_bagian');
-        // console.log('Bagian Old:', bagianOld);
-
-        // Simpan data bagian lama ke elemen dropdown
-        $('#bagian').data('nama_bagian', bagianOld);
-    });
-
     $(document).on('change', '#bagian', function() {
+        // Jika modal yang aktif adalah modal tambah, jangan tampilkan input tambahan
+        if ($(this).closest('.modal').attr('id') === 'addKaryawan') {
+            return;
+        }
+
         var readonlyInputIdOld = 'readonlyInputOld';
         var readonlyInputIdNew = 'readonlyInputNew';
-        var tgl_pindah = 'tgl_pindah';
-        var keterangan = 'keterangan';
+        var tgl_pindah_id = 'tgl_pindah';
+        var keterangan_id = 'keterangan';
 
-        // Ambil nilai lama
+        // Ambil nilai lama dari data atribut yang sudah diset saat klik tombol edit
         var oldValue = $('#bagian').data('nama_bagian');
-        // console.log('Old Value:', oldValue);
-
-        // Ambil nilai baru dengan menghapus spasi ekstra
-        // var tes = $('#ModalEdit').find('#bagian').val(oldValue);
+        // Ambil nilai baru (nama bagian dari option yang dipilih)
         var newValue = $(this).find(':selected').text().trim();
-        // console.log('Selected Value:', newValue);
 
-        // Hapus elemen readonly sebelumnya
+        // Hapus elemen tambahan sebelumnya (jika ada)
         $('#' + readonlyInputIdOld).remove();
         $('#' + readonlyInputIdNew).remove();
-        $('#' + tgl_pindah).remove();
-        $('#' + keterangan).remove();
+        $('#' + tgl_pindah_id).remove();
+        $('#' + keterangan_id).remove();
 
-        // Tampilkan nilai lama dan baru
+        // Buat markup untuk menampilkan nilai lama dan baru, serta input tanggal dan keterangan
         var readonlyInputOld = `
     <div class="form-group mb-2" id="${readonlyInputIdOld}">
         <input type="hidden" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
@@ -535,29 +531,20 @@
         <input type="hidden" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
     </div>`;
 
-        var tgl_pindah = `
-    <div class="form-group mb-2" id="${tgl_pindah}">
+        var tgl_pindah_input = `
+    <div class="form-group mb-2" id="${tgl_pindah_id}">
         <label for="tgl_pindah">Tanggal Pindah</label>
         <input type="date" class="form-control" name="tgl_pindah" id="tgl_pindah" required>
     </div>`;
 
-        var keterangan = `
-    <div class="form-group mb-2" id="${keterangan}">
+        var keterangan_input = `
+    <div class="form-group mb-2" id="${keterangan_id}">
         <label for="keterangan">Keterangan</label>
         <textarea class="form-control" name="keterangan" id="keterangan" required></textarea>
     </div>`;
 
-
-        $(this).closest('.form-group').before(readonlyInputOld + readonlyInputNew + tgl_pindah + keterangan);
-    });
-
-    $(document).on('click', '.edit-btn', function() {
-        var bagianOld = $(this).data('nama_bagian');
-        // console.log('Bagian Old (Saat Klik Edit):', bagianOld);
-        $('#bagian').data('nama_bagian', bagianOld);
-
-        // Verifikasi data yang diset
-        // console.log('Data nama_bagian diset ke #bagian:', $('#bagian').data('nama_bagian'));
+        // Sisipkan elemen-elemen baru sebelum form-group yang berisi select #bagian
+        $(this).closest('.form-group').before(readonlyInputOld + readonlyInputNew + tgl_pindah_input + keterangan_input);
     });
 </script>
 
