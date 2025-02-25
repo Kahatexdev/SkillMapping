@@ -634,10 +634,10 @@ class BsMcController extends BaseController
                     $tgl_input = date('Y-m-d', strtotime(str_replace('/', '-', $tanggal)));
 
                     // **Validasi tanggal input tidak boleh lebih dari tanggal hari ini**
-                    // if ($tgl_input > $currentDate) {
-                    //     $invalidDateEntries[] = "Kode Kartu: $kode_kartu, Tanggal Input: $tgl_input (Melebihi hari ini)";
-                    //     continue; // Lewati data jika tanggal lebih dari hari ini
-                    // }
+                    if ($tgl_input > $currentDate) {
+                        $invalidDateEntries[] = "Kode Kartu: $kode_kartu, Tanggal Input: $tgl_input (Melebihi hari ini)";
+                        continue; // Lewati data jika tanggal lebih dari hari ini
+                    }
 
                     // Validasi kode_kartu (pastikan ada di database)
                     if (!isset($karyawanMap[$kode_kartu])) {
@@ -673,7 +673,7 @@ class BsMcController extends BaseController
                     ];
                 }
             }
-            dd($dataToInsert);
+
             // **Tampilkan alert error
             $errorMessage = "";
             if (!empty($dataToInsert)) {
@@ -681,7 +681,7 @@ class BsMcController extends BaseController
                 $errorMessage .= " ✅" . count($dataToInsert) . " Data BS Mesin Berhasil Diimport" . "<br><br>";
             }
             if (!empty($invalidDateEntries)) {
-                $messages[] = "⛔ Tanggal input tidak boleh lebih dari hari ini dan tidak diinput:<br>" . implode("<br>", $invalidDateEntries);
+                $errorMessage = "⛔ Tanggal input tidak boleh lebih dari hari ini dan tidak diinput:<br>" . implode("<br>", $invalidDateEntries) . "<br><br>";
             }
             if (!empty($wrongAreaEntries)) {
                 $errorMessage .= "⚠️ Kode kartu berikut dimasukkan ke area yang salah dan tidak diinput:<br>" . implode("<br>", $wrongAreaEntries) . "<br><br>";
