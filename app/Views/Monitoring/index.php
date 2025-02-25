@@ -1,17 +1,5 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-
-<style>
-    canvas {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-    }
-
-    .card-header {
-        background-color: #5e72e4;
-    }
-</style>
 <div class="container-fluid py-4">
     <!-- Statistik Cards -->
     <div class="row">
@@ -128,62 +116,66 @@
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Header Monitoring -->
-            <div class="card card-frame mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 font-weight-bolder">Monitoring Penilaian Karyawan</h5>
-                    </div>
-                </div>
-            </div>
-            <!-- Tabel Monitoring -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="cekPenilaianTable" class="table table-striped table-hover table-bordered w-100">
-                            <thead>
-                                <tr>
-                                    <th>Area</th>
-                                    <th>Jumlah Karyawan</th>
-                                    <th>Sudah Dinilai</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($cekPenilaian)) : ?>
-                                    <?php foreach ($cekPenilaian as $mandor) : ?>
-                                        <?php if ($mandor['total_karyawan'] == 0) {
-                                            continue;
-                                        } ?>
-                                        <tr>
-                                            <td><?= esc($mandor['username']); ?></td>
-                                            <td><?= esc($mandor['total_karyawan']); ?></td>
-                                            <td><?= esc($mandor['total_penilaian']); ?></td>
-                                            <td>
-                                                <?php if ($mandor['total_penilaian'] >= $mandor['total_karyawan']) : ?>
-                                                    <span class="badge bg-info">Selesai</span>
-                                                <?php else : ?>
-                                                    <span class="badge bg-danger">Belum Selesai</span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <tr>
-                                        <td colspan="4">Tidak ada data</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+</div>
+<div class="container py-4">
+    <!-- Header Monitoring -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title h4 mb-0">Monitoring Penilaian Karyawan</h2>
         </div>
     </div>
+
+    <!-- Card Monitoring -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <?php if (!empty($cekPenilaian)) : ?>
+            <?php foreach ($cekPenilaian as $mandor) : ?>
+                <?php
+                if ($mandor['total_karyawan'] == 0) {
+                    continue;
+                }
+                // Hitung persentase penilaian
+                $progress = round(($mandor['total_penilaian'] / $mandor['total_karyawan']) * 100);
+                $isComplete = $progress >= 100;
+                ?>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title"><?= esc($mandor['username']); ?></h5>
+                                <span class="badge <?= $isComplete ? 'bg-success' : 'bg-danger' ?>">
+                                    <?= $isComplete ? 'Selesai' : 'Belum Selesai'; ?>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <small class="text-muted">Karyawan: <?= esc($mandor['total_karyawan']); ?></small>
+                                <small class="text-muted">Dinilai: <?= esc($mandor['total_penilaian']); ?></small>
+                            </div>
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div class="progress-bar <?= $isComplete ? 'bg-success' : 'bg-info' ?>"
+                                    role="progressbar"
+                                    style="width: <?= $progress; ?>%; height: 20px;"
+                                    aria-valuenow="<?= $progress; ?>"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100">
+                                    <?= $progress; ?>%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    Tidak ada data yang tersedia.
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
+<!-- 
+
+</div> -->
 
 <!-- Library Chart.js -->
 <!-- Library Chart.js -->

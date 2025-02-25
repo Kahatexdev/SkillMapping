@@ -17,10 +17,16 @@
         color: white;
     }
 
+    #contacts-list {
+        max-height: 500px;
+        /* Atur tinggi maksimum sesuai kebutuhan */
+        overflow-y: auto;
+    }
+
     /* .bg-light {
         background-color: #f8f9fa !important;
         color: black;
-    } */
+    } */  
 
     /* Area chat dengan padding yang memadai */
     /* Area chat dengan padding yang memadai */
@@ -29,7 +35,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        height: 500px;
+        max-height: 400px;
         overflow-y: auto;
         background-color: #f8f9fa;
     }
@@ -128,21 +134,40 @@
                 </div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush" id="contacts-list">
-                        <?php foreach ($contacts as $contactData): ?>
-                            <?php if ($contactData['contact']['id_user'] == session('id_user')) continue; ?>
-                            <li class="list-group-item d-flex align-items-center contact-item"
-                                data-contact-id="<?= $contactData['contact']['id_user'] ?>"
-                                data-contact-name="<?= $contactData['contact']['username'] ?>"
-                                style="cursor: pointer;">
-                                <img src="<?= base_url('assets/img/user.png') ?>" alt="Profile" class="rounded-circle" width="40">
-                                <div class="ms-3" id="contact-<?= $contactData['contact']['id_user'] ?>">
-                                    <h6 class="contact-name"><?= htmlspecialchars($contactData['contact']['username'], ENT_QUOTES, 'UTF-8') ?></h6>
-                                    <small class="text-muted">
-                                        <?= htmlspecialchars($contactData['last_message']['message'] ?? 'No messages yet', ENT_QUOTES, 'UTF-8') ?>
-                                    </small>
-                                </div>
-                            </li>
-                        <?php endforeach; ?>
+                        <?php
+                        // Mengelompokkan kontak berdasarkan role
+                        $groupedContacts = [];
+                        foreach ($contacts as $contactData):
+                            // Jangan tampilkan kontak milik pengguna yang sedang login
+                            if ($contactData['contact']['id_user'] == session('id_user')) continue;
+                            $role = $contactData['contact']['role'];
+                            $groupedContacts[$role][] = $contactData;
+                        endforeach;
+                        ?>
+                        <?php if (!empty($groupedContacts)): ?>
+                            <?php foreach ($groupedContacts as $role => $contactsByRole): ?>
+                                <!-- Header Role -->
+                                <li class="list-group-item bg-light">
+                                    <strong><?= ucfirst($role); ?></strong>
+                                </li>
+                                <?php foreach ($contactsByRole as $contactData): ?>
+                                    <li class="list-group-item d-flex align-items-center contact-item"
+                                        data-contact-id="<?= $contactData['contact']['id_user'] ?>"
+                                        data-contact-name="<?= $contactData['contact']['username'] ?>"
+                                        style="cursor: pointer;">
+                                        <img src="<?= base_url('assets/img/user.png') ?>" alt="Profile" class="rounded-circle" width="40">
+                                        <div class="ms-3" id="contact-<?= $contactData['contact']['id_user'] ?>">
+                                            <h6 class="contact-name"><?= htmlspecialchars($contactData['contact']['username'], ENT_QUOTES, 'UTF-8') ?></h6>
+                                            <small class="text-muted">
+                                                <?= htmlspecialchars($contactData['last_message']['message'] ?? 'No messages yet', ENT_QUOTES, 'UTF-8') ?>
+                                            </small>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="list-group-item">No contacts found</li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
@@ -153,7 +178,6 @@
             <div class="card h-100 shadow border-0">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="text-dark mb-0">Chat with <span id="chat-contact-name">Select a contact</span></h5>
-                    <!-- <button class="btn btn-sm btn-outline-dark">Hapus Semua Pesan</button> -->
                 </div>
                 <div class="card-body overflow-auto" id="chat-area" style="height: 500px; background-color: #f8f9fa;">
                     <p class="text-muted text-center">Select a contact to view conversation</p>
