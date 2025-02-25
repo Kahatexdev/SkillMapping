@@ -83,7 +83,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('dataBsmc/(:segment)', 'BsMcController::tampilPerBatch/$1');
     $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::summaryBsmc/$1/$2');
     $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
-    $routes->post('bsmcStoreImport', 'BsMcController::upload');
+    $routes->post('bsmcStoreImport', 'BsMcController::import');
     $routes->get('bsmcCreate', 'BsMcController::create');
     $routes->get('fetchDataBsMc', 'BsMcController::fetchDataAPI');
     $routes->get('bsmcEdit/(:num)', 'BsMcController::edit/$1');
