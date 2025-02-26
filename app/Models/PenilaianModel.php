@@ -491,6 +491,7 @@ class PenilaianModel extends Model
         k.id_karyawan,
         k.kode_kartu,
         k.nama_karyawan,
+        k.shift,
         bagian.nama_bagian,
         bagian.area,
         IF(p.id_penilaian IS NULL, 'Belum Dinilai', 'Sudah Dinilai') AS status

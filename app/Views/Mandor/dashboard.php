@@ -39,6 +39,7 @@
                             <th>No</th>
                             <th>Kode Kartu</th>
                             <th>Nama Karyawan</th>
+                            <th>Shift</th>
                             <th>Bagian</th>
                             <th>Area</th>
                             <th>Status Evaluasi</th>
@@ -58,6 +59,7 @@
 <!-- Script AJAX untuk memuat data berdasarkan periode yang dipilih -->
 <script>
     $(document).ready(function() {
+
         function loadEvaluationData() {
             var id_periode = $('#periodeSelect').val();
             var area = "<?= $area ?>";
@@ -77,6 +79,7 @@
                             html += "<td class='text-center'>" + no + "</td>";
                             html += "<td>" + row.kode_kartu + "</td>";
                             html += "<td>" + row.nama_karyawan + "</td>";
+                            html += "<td>" + row.shift + "</td>";
                             html += "<td>" + row.nama_bagian + "</td>";
                             html += "<td>" + row.area + "</td>";
                             html += "<td class='text-center'>" +
@@ -108,10 +111,8 @@
         $('#periodeSelect').change(function() {
             loadEvaluationData();
         });
-
-
-
     });
+    
 </script>
 
 <?php $this->endSection(); ?>
