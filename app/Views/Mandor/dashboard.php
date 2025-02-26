@@ -37,6 +37,7 @@
                     <thead>
                         <tr class="text-center">
                             <th>No</th>
+                            <th>Kode Kartu</th>
                             <th>Nama Karyawan</th>
                             <th>Bagian</th>
                             <th>Area</th>
@@ -74,6 +75,7 @@
                         data.forEach(function(row) {
                             html += "<tr>";
                             html += "<td class='text-center'>" + no + "</td>";
+                            html += "<td>" + row.kode_kartu + "</td>";
                             html += "<td>" + row.nama_karyawan + "</td>";
                             html += "<td>" + row.nama_bagian + "</td>";
                             html += "<td>" + row.area + "</td>";

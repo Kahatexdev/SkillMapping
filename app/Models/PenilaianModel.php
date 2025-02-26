@@ -489,6 +489,7 @@ class PenilaianModel extends Model
         $builder = $this->db->table('karyawan as k');
         $builder->select("
         k.id_karyawan,
+        k.kode_kartu,
         k.nama_karyawan,
         bagian.nama_bagian,
         bagian.area,
