@@ -384,7 +384,7 @@
                             tbody.appendChild(tr);
                         });
                     } else {
-                        tbody.innerHTML = "<tr><td colspan='7'>Karyawan Sudah Dinilai Semua.</td></tr>";
+                        tbody.innerHTML = "<tr><td colspan='7' class='text-center'>Karyawan Sudah Dinilai Semua.</td></tr>";
                     }
                 })
                 .catch(error => {
