@@ -148,6 +148,9 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('historyPindahKaryawan', 'MonitoringController::historyPindahKaryawan');
     $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
 
+    $routes->get('evaluasiKaryawan/(:any)/(:any)', 'MandorController::getEmployeeEvaluationStatus/$1/$2');
+
+
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {

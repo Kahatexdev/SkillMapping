@@ -142,10 +142,13 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="card-title"><?= esc($mandor['username']); ?></h5>
-                                <span class="badge <?= $isComplete ? 'bg-success' : 'bg-danger' ?>">
+                                <!-- Tombol modal -->
+                                <button type="button" class="btn btn-sm <?= $isComplete ? 'btn-success' : 'btn-danger' ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalEmployeeEvaluation" data-area="<?= esc($mandor['username']); ?>">
                                     <?= $isComplete ? 'Selesai' : 'Belum Selesai'; ?>
-                                </span>
+                                </button>
                             </div>
+
                             <div class="d-flex justify-content-between mb-2">
                                 <small class="text-muted">Karyawan: <?= esc($mandor['total_karyawan']); ?></small>
                                 <small class="text-muted">Dinilai: <?= esc($mandor['total_penilaian']); ?></small>
@@ -163,6 +166,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal untuk menampilkan data karyawan yang belum dinilai -->
+                <div class="modal fade" id="modalEmployeeEvaluation" tabindex="-1" aria-labelledby="modalEmployeeEvaluationLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalEmployeeEvaluationLabel">Karyawan Belum Dinilai</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Kode Kartu</th>
+                                                <th>Nama Karyawan</th>
+                                                <th>Shift</th>
+                                                <th>Bagian</th>
+                                                <th>Area</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employeeEvaluationBody">
+                                            <!-- Data akan dimuat secara dinamis -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <?php endforeach; ?>
         <?php else : ?>
             <div class="col-12">
@@ -172,6 +207,7 @@
             </div>
         <?php endif; ?>
     </div>
+
 </div>
 <!-- 
 
@@ -314,8 +350,47 @@
 </script>
 
 <script>
-    $(document).ready(function() {
-        $('#cekPenilaianTable').DataTable({});
+    document.addEventListener("DOMContentLoaded", function() {
+        // Ambil referensi modal
+        var modalElement = document.getElementById('modalEmployeeEvaluation');
+
+        // Saat modal mulai ditampilkan
+        modalElement.addEventListener('show.bs.modal', function(event) {
+            // Tentukan id_periode dan area; sesuaikan nilainya dengan konteks Anda
+            var id_periode = '1'; // misal
+            var area = event.relatedTarget.getAttribute('data-area');
+
+            // Panggil endpoint untuk mendapatkan data evaluasi karyawan
+            fetch("<?= base_url('Monitoring/evaluasiKaryawan') ?>/" + id_periode + "/" + area)
+                .then(response => response.json())
+                .then(data => {
+                    // Filter hanya data dengan status "Belum Dinilai"
+                    var belumDinilai = data.filter(emp => emp.status === "Belum Dinilai");
+                    var tbody = document.getElementById("employeeEvaluationBody");
+                    tbody.innerHTML = ""; // kosongkan isi tabel
+
+                    if (belumDinilai.length > 0) {
+                        belumDinilai.forEach(function(emp) {
+                            var tr = document.createElement("tr");
+                            tr.innerHTML = 
+                            // nomor urut
+                            "<td>" + (tbody.rows.length + 1) + "</td>" +
+                                "<td>" + emp.kode_kartu + "</td>" +
+                                "<td>" + emp.nama_karyawan + "</td>" +
+                                "<td>" + emp.shift + "</td>" +
+                                "<td>" + emp.nama_bagian + "</td>" +
+                                "<td>" + emp.area + "</td>" +
+                                "<td><span class='badge bg-danger'>Belum Dinilai</span></td>";
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = "<tr><td colspan='7'>Karyawan Sudah Dinilai Semua.</td></tr>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        });
     });
 </script>
 <?php $this->endSection(); ?>
