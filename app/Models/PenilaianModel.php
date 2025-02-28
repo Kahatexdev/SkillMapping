@@ -502,6 +502,4 @@ class PenilaianModel extends Model
 
         return $builder->get()->getResultArray();
     }
-
-
 }

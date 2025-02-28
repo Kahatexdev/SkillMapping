@@ -103,7 +103,7 @@ class KaryawanModel extends Model
     public function getKaryawanByArea($area)
     {
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, bagian.keterangan, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
-            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')   
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             // ->where('bagian.area_utama', substr($area, 0, -1))
             ->where('bagian.area_utama', $area)
             ->findAll();
@@ -149,12 +149,12 @@ class KaryawanModel extends Model
     {
         // Buat query builder untuk mengambil seluruh data karyawan
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, bagian.nama_bagian, bagian.area_utama, bagian.area, karyawan.status_aktif, history_pindah_karyawan.id_pindah, history_pindah_karyawan.id_karyawan, history_pindah_karyawan.id_bagian_asal, bagian_asal.nama_bagian AS nama_bagian_asal, bagian_asal.area_utama AS area_utama_asal, bagian_asal.area AS area_asal, history_pindah_karyawan.id_bagian_baru, bagian_baru.nama_bagian AS bagian_aktual, bagian_baru.area_utama AS area_utama_aktual, bagian_baru.area AS area_aktual, history_pindah_karyawan.tgl_pindah, history_pindah_karyawan.keterangan, history_pindah_karyawan.updated_by, user.username')
-        ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('history_pindah_karyawan', 'history_pindah_karyawan.id_karyawan = karyawan.id_karyawan')
-        ->join('bagian as bagian_asal', 'bagian_asal.id_bagian = history_pindah_karyawan.id_bagian_asal')
-        ->join('bagian as bagian_baru', 'bagian_baru.id_bagian = history_pindah_karyawan.id_bagian_baru')
-        ->join('user', 'user.id_user = history_pindah_karyawan.updated_by')
-        ->findAll(); // Ambil semua data tanpa filter
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('history_pindah_karyawan', 'history_pindah_karyawan.id_karyawan = karyawan.id_karyawan')
+            ->join('bagian as bagian_asal', 'bagian_asal.id_bagian = history_pindah_karyawan.id_bagian_asal')
+            ->join('bagian as bagian_baru', 'bagian_baru.id_bagian = history_pindah_karyawan.id_bagian_baru')
+            ->join('user', 'user.id_user = history_pindah_karyawan.updated_by')
+            ->findAll(); // Ambil semua data tanpa filter
     }
 
     public function getActiveKaryawanByBagian()
@@ -165,5 +165,22 @@ class KaryawanModel extends Model
         $builder->where('karyawan.status_aktif', 'Aktif');
         $builder->groupBy('bagian.nama_bagian');
         return $builder->get()->getResultArray();
+    }
+
+    public function getKaryawanByBagian()
+    {
+        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.id_bagian')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->where('bagian.nama_bagian', 'Montir')
+            ->findAll();
+    }
+
+    public function getMontirByArea($area)
+    {
+        return $this->select('id_karyawan, nama_karyawan, kode_kartu')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->where('bagian.nama_bagian', 'Montir')
+            ->where('bagian.area', $area)
+            ->findAll();
     }
 }

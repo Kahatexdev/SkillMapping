@@ -9,23 +9,9 @@
                     <h4 class="card-title">
                         Import Summary Rosso
                     </h4>
-                    <!-- form import  Summary BSMC -->
+                    <!-- Form Import Summary BSMC -->
                     <form action="<?= base_url('Monitoring/rossoStoreImport') ?>" method="post"
                         enctype="multipart/form-data">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="id_batch">Batch</label>
-                                    <select class="form-select" name="id_batch" id="id_batch" required>
-                                        <option value="">Pilih Batch</option>
-                                        <?php foreach ($getBatch as $p) : ?>
-                                            <option value="<?= $p['id_batch'] ?>"><?= $p['nama_batch'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
                         <div class="upload-container">
                             <div class="upload-area" id="upload-area">
                                 <i class="fas fa-cloud-upload-alt fa-2x"></i>

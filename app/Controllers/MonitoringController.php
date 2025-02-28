@@ -56,13 +56,13 @@ class MonitoringController extends BaseController
         $cekPenilaian = $this->penilaianmodel->getMandorEvaluationStatus();
         $RatarataGrade = 0;
         $SkillGap = 0;
-        
+
         // Hitung total karyawan (jika diperlukan)
         $totalKaryawan = 0;
         foreach ($dataKaryawan as $row) {
             $totalKaryawan += $row['jumlah_karyawan'];
         }
-        
+
         $RatarataGrade = $this->penilaianmodel->getRataRataGrade();
 
         $dataPindah = $this->historyPindahKaryawanModel->getPindahGroupedByDate();
@@ -174,7 +174,7 @@ class MonitoringController extends BaseController
             'active4' => '',
             'active5' => 'active',
             'active6' => '',
-            'periode' => $periode, 
+            'periode' => $periode,
             'batch' => $batch
         ];
         return view(session()->get('role') . '/periode', $data);
@@ -402,26 +402,31 @@ class MonitoringController extends BaseController
     }
     public function bsmc()
     {
-        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $tampilperarea = $this->bagianmodel->getAreaGroupByArea();
         $periode = $this->periodeModel->getPeriode();
         $getBatch = $this->batchmodel->getBatch();
 
         $sort = [
-            'KK1',
-            'KK2',
+            'KK1A',
+            'KK1B',
+            'KK2A',
+            'KK2B',
+            'KK2C',
             'KK5',
-            'KK7',
-            'KK8',
+            'KK7K',
+            'KK7L',
+            'KK8D',
+            'KK8F',
+            'KK8J',
             'KK9',
             'KK10',
-            'KK11'
+            'KK11',
         ];
-        // dd($tampilperarea);
         // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
         // Urutkan data menggunakan usort
         usort($tampilperarea, function ($a, $b) use ($sort) {
-            $pos_a = array_search($a['area_utama'], $sort);
-            $pos_b = array_search($b['area_utama'], $sort);
+            $pos_a = array_search($a['area'], $sort);
+            $pos_b = array_search($b['area'], $sort);
 
             // Jika tidak ditemukan, letakkan di akhir
             $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
@@ -430,10 +435,6 @@ class MonitoringController extends BaseController
             return $pos_a - $pos_b;
         });
 
-        // $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
-        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
-        // $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
-        // dd($reportbatch);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Bs Mesin',
@@ -446,13 +447,10 @@ class MonitoringController extends BaseController
             'active7' => '',
             'active8' => '',
             'active9' => 'active',
-            // 'reportbatch' => $reportbatch,
-            // 'getArea' => $getArea,
             'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
             'periode' => $periode
         ];
-        // dd ($getBatch);
         return view(session()->get('role') . '/bsmc', $data);
     }
     public function rosso()
@@ -512,26 +510,33 @@ class MonitoringController extends BaseController
     }
     public function jarum()
     {
-        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $tampilperarea = $this->bagianmodel->getAreaGroupByArea();
         $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
+        $getArea = $this->bagianmodel->getAreaByNamaBagian('Montir');
+        $getKaryawan = $this->karyawanmodel->getKaryawanByBagian('Montir');
 
         $sort = [
-            'KK1',
-            'KK2',
+            'KK1A',
+            'KK1B',
+            'KK2A',
+            'KK2B',
+            'KK2C',
             'KK5',
-            'KK7',
-            'KK8',
+            'KK7K',
+            'KK7L',
+            'KK8D',
+            'KK8F',
+            'KK8J',
             'KK9',
             'KK10',
-            'KK11'
+            'KK11',
         ];
-        // dd($tampilperarea);
-        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+
         // Urutkan data menggunakan usort
         usort($tampilperarea, function ($a, $b) use ($sort) {
-            $pos_a = array_search($a['area_utama'], $sort);
-            $pos_b = array_search($b['area_utama'], $sort);
+            $pos_a = array_search($a['area'], $sort);
+            $pos_b = array_search($b['area'], $sort);
 
             // Jika tidak ditemukan, letakkan di akhir
             $pos_a = ($pos_a === false) ? PHP_INT_MAX : $pos_a;
@@ -540,10 +545,6 @@ class MonitoringController extends BaseController
             return $pos_a - $pos_b;
         });
 
-        // $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
-        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
-        // $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
-        // dd($reportbatch);
         $data = [
             'role' => session()->get('role'),
             'title' => 'Jarum',
@@ -556,11 +557,11 @@ class MonitoringController extends BaseController
             'active7' => '',
             'active8' => '',
             'active9' => 'active',
-            // 'reportbatch' => $reportbatch,
-            // 'getArea' => $getArea,
             'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
-            'periode' => $periode
+            'periode' => $periode,
+            'getArea' => $getArea,
+            'getKaryawan' => $getKaryawan
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/jarum', $data);
@@ -574,7 +575,7 @@ class MonitoringController extends BaseController
 
         // Default filter untuk karyawan
         $karyawanQuery = $this->karyawanmodel->select('karyawan.*')
-        ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join dengan tabel bagian
+            ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join dengan tabel bagian
 
         // Tambahkan filter berdasarkan nama_bagian
         if ($nama_bagian) {
@@ -783,5 +784,16 @@ class MonitoringController extends BaseController
             'historyPindahKaryawan' => $historyPindahKaryawan
         ];
         return view(session()->get('role') . '/perpindahan', $data);
+    }
+
+    public function getMontirByArea()
+    {
+        if ($this->request->isAJAX()) {
+            $area = $this->request->getPost('area');
+
+            $montir = $this->karyawanmodel->getMontirByArea($area);
+
+            return $this->response->setJSON($montir);
+        }
     }
 }

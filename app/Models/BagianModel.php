@@ -107,11 +107,28 @@ class BagianModel extends Model
             ->findAll();
     }
 
-    public function getAreaByBagianAndUtama($nama_bagian, $area_utama) 
+    public function getAreaByBagianAndUtama($nama_bagian, $area_utama)
     {
         return $this->select('area')
             ->where('nama_bagian', $nama_bagian)
             ->where('area_utama', $area_utama)
+            ->groupBy('area')
+            ->findAll();
+    }
+
+    public function getAreaByNamaBagian()
+    {
+        return $this->select('area')
+            ->where('nama_bagian', 'Montir')
+            ->where('area IS NOT NULL', null, false)
+            ->findAll();
+    }
+
+    public function getAreaGroupByArea()
+    {
+        // get area where nama_bagian = $nama_bagian and area_utama = $area_utama group by area
+        return $this->select('area')
+            ->where('area IS NOT NULL', null, false)
             ->groupBy('area')
             ->findAll();
     }

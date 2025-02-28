@@ -81,8 +81,10 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     // bsmc
     $routes->get('dataBsmc', 'MonitoringController::bsmc');
     $routes->get('dataBsmc/(:segment)', 'BsMcController::tampilPerBatch/$1');
-    $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::summaryBsmc/$1/$2');
+    // $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::summaryBsmc/$1/$2');
+    $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::sumBsMesin/$1/$2');
     $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
+    // $routes->post('bsmcStoreImport', 'BsMcController::upload');
     $routes->post('bsmcStoreImport', 'BsMcController::import');
     $routes->get('bsmcCreate', 'BsMcController::create');
     $routes->get('fetchDataBsMc', 'BsMcController::fetchDataAPI');
@@ -94,7 +96,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('dataRosso/(:segment)', 'SummaryRossoController::tampilPerBatch/$1');
     $routes->get('summaryRosso', 'SummaryRossoController::summaryRosso');
     $routes->get('downloadTemplateRosso', 'SummaryRossoController::downloadTemplate');
-    $routes->post('rossoStoreImport', 'SummaryRossoController::upload');
+    $routes->post('rossoStoreImport', 'SummaryRossoController::import');
     $routes->get('rossoCreate', 'SummaryRossoController::create');
     $routes->post('rossoStore', 'SummaryRossoController::store');
     $routes->get('rossoEdit/(:num)', 'SummaryRossoController::edit/$1');
@@ -107,7 +109,9 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('dataJarum/(:segment)', 'JarumController::tampilPerBatch/$1');
     $routes->get('summaryJarum', 'JarumController::summaryJarum');
     $routes->get('downloadTemplateJarum', 'JarumController::downloadTemplate');
-    $routes->post('jarumStoreImport', 'JarumController::upload');
+    // $routes->post('jarumStoreImport', 'JarumController::upload');
+    $routes->post('jarumStoreInput', 'JarumController::upload');
+    $routes->post('getMontirByArea', 'MonitoringController::getMontirByArea');
     $routes->get('reportSummaryJarum/(:segment)/(:num)', 'JarumController::excelSummaryJarum/$1/$2');
 
     // penilaian
@@ -147,7 +151,6 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('cekPenilaian', 'MonitoringController::cekPenilaian');
     $routes->get('historyPindahKaryawan', 'MonitoringController::historyPindahKaryawan');
     $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
-
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -210,7 +213,6 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
 
     $routes->get('evaluasiKaryawan/(:any)/(:any)', 'MandorController::getEmployeeEvaluationStatus/$1/$2');
     $routes->get('instruksiKerja', 'MandorController::instruksiKerja');
-
 });
 
 $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($routes) {

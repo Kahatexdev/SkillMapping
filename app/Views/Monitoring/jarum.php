@@ -1,43 +1,54 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-<div class="container-fluid py-4">
 
+<div class="container-fluid py-4">
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">
-                        Import Summary Jarum
+                        Input Pemakaian Jarum
                     </h4>
-                    <!-- form import  Summary Jarum -->
-                    <form action="<?= base_url('Monitoring/jarumStoreImport') ?>" method="post"
+                    <!-- Form Input Summary Jarum -->
+                    <form action="<?= base_url('Monitoring/jarumStoreInput') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="id_batch">Batch</label>
-                                    <select class="form-select" name="id_batch" id="id_batch" required>
-                                        <option value="">Pilih Batch</option>
-                                        <?php foreach ($getBatch as $p) : ?>
-                                            <option value="<?= $p['id_batch'] ?>"><?= $p['nama_batch'] ?></option>
-                                        <?php endforeach; ?>
+                                    <label for="id_batch">Pilih Tanggal Input</label>
+                                    <input type="date" class="form-control" id="tgl_input" name="tgl_input" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Area</label>
+                                    <select class="form-select" name="area" id="area" required>
+                                        <option value="">Pilih Area</option>
+                                        <?php foreach ($getArea as $key => $ar) : ?>
+                                            <option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>
+                                        <?php endforeach ?>
                                     </select>
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="upload-container">
-                            <div class="upload-area" id="upload-area">
-                                <i class="fas fa-cloud-upload-alt fa-2x"></i>
-                                <p>Drag & drop any file here</p>
-                                <span>or <label for="file-upload" class="browse-link">browse file</label> from
-                                    device</span>
-                                <input type="file" id="file-upload" class="file-input" name="file" hidden required>
+                            <div class="col-md-4">
+                                <label for="">Montir</label>
+                                <select class="form-control" id="id_karyawan" name="id_karyawan" required>
+                                    <option value="">Pilih Montir</option>
+                                </select>
                             </div>
-                            <button type="submit" class="upload-button w-100 mt-3">
-                                <i class="fas fa-upload"></i> Upload
-                            </button>
+                            <div class="col-md-4">
+                                <label for="">Pemakaian Jarum</label>
+                                <input type="number" class="form-control" name="used_needle" id="used_needle" required>
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="text-center">
+                                    <button type="submit" class="btn bg-gradient-info mt-3 w-100">Simpan</button>
+                                </div>
+                            </div>
                     </form>
                 </div>
             </div>
@@ -67,19 +78,18 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="row mt-2">
         <?php foreach ($tampilperarea as $key => $ar) : ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url($role . '/dataJarum/' . $ar['area_utama']) ?>">
+                <a href="<?= base_url($role . '/dataJarum/' . $ar['area']) ?>">
                     <div class="card">
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-8">
                                     <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"><?= $ar['area_utama'] ?></p>
+                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"><?= $ar['area'] ?></p>
                                         <h5 class="font-weight-bolder mb-0">
                                         </h5>
                                     </div>
@@ -96,11 +106,9 @@
                 </a>
             </div>
         <?php endforeach ?>
-
     </div>
-
 </div>
-<!-- datatable -->
+
 <script>
     $(document).ready(function() {
         // Initialize DataTable with export options
@@ -125,28 +133,35 @@
     });
 </script>
 <script>
-    const fileInput = document.getElementById('file-upload');
-    const uploadArea = document.getElementById('upload-area');
+    $(document).ready(function() {
+        $('#area').change(function() {
+            var area = $(this).val();
+            $('#id_karyawan').html('<option value="">Loading...</option>');
 
-    fileInput.addEventListener('change', (event) => {
-        const fileName = event.target.files[0] ? event.target.files[0].name : "No file selected";
-        uploadArea.querySelector('p').textContent = `Selected File: ${fileName}`;
-    });
-
-    uploadArea.addEventListener('dragover', (event) => {
-        event.preventDefault();
-        uploadArea.style.backgroundColor = "#e6f5ff";
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.style.backgroundColor = "#ffffff";
-    });
-
-    uploadArea.addEventListener('drop', (event) => {
-        event.preventDefault();
-        fileInput.files = event.dataTransfer.files;
-        const fileName = event.dataTransfer.files[0] ? event.dataTransfer.files[0].name : "No file selected";
-        uploadArea.querySelector('p').textContent = `Selected File: ${fileName}`;
+            if (area !== "") {
+                $.ajax({
+                    url: "<?= base_url($role . '/getMontirByArea') ?>",
+                    type: "POST",
+                    data: {
+                        area: area
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        var options = '<option value="">Pilih Montir</option>';
+                        $.each(response, function(index, montir) {
+                            options += '<option value="' + montir.id_karyawan + '">' + montir.nama_karyawan + ' | ' + montir.kode_kartu + '</option>';
+                        });
+                        $('#id_karyawan').html(options);
+                    },
+                    error: function() {
+                        $('#id_karyawan').html('<option value="">Error</option>');
+                    }
+                });
+            } else {
+                $('#id_karyawan').html('<option value="">Pilih Montir</option>');
+            }
+        });
     });
 </script>
+
 <?php $this->endSection(); ?>
