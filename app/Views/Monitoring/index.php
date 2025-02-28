@@ -1,17 +1,5 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
-
-<style>
-    canvas {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-    }
-
-    .card-header {
-        background-color: #5e72e4;
-    }
-</style>
 <div class="container-fluid py-4">
     <!-- Statistik Cards -->
     <div class="row">
@@ -128,62 +116,102 @@
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Header Monitoring -->
-            <div class="card card-frame mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 font-weight-bolder">Monitoring Penilaian Karyawan</h5>
-                    </div>
-                </div>
-            </div>
-            <!-- Tabel Monitoring -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="cekPenilaianTable" class="table table-striped table-hover table-bordered w-100">
-                            <thead>
-                                <tr>
-                                    <th>Area</th>
-                                    <th>Jumlah Karyawan</th>
-                                    <th>Sudah Dinilai</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($cekPenilaian)) : ?>
-                                    <?php foreach ($cekPenilaian as $mandor) : ?>
-                                        <?php if ($mandor['total_karyawan'] == 0) {
-                                            continue;
-                                        } ?>
-                                        <tr>
-                                            <td><?= esc($mandor['username']); ?></td>
-                                            <td><?= esc($mandor['total_karyawan']); ?></td>
-                                            <td><?= esc($mandor['total_penilaian']); ?></td>
-                                            <td>
-                                                <?php if ($mandor['total_penilaian'] >= $mandor['total_karyawan']) : ?>
-                                                    <span class="badge bg-info">Selesai</span>
-                                                <?php else : ?>
-                                                    <span class="badge bg-danger">Belum Selesai</span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <tr>
-                                        <td colspan="4">Tidak ada data</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+</div>
+<div class="container py-4">
+    <!-- Header Monitoring -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title h4 mb-0">Monitoring Penilaian Karyawan</h2>
         </div>
     </div>
+
+    <!-- Card Monitoring -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <?php if (!empty($cekPenilaian)) : ?>
+            <?php foreach ($cekPenilaian as $mandor) : ?>
+                <?php
+                if ($mandor['total_karyawan'] == 0) {
+                    continue;
+                }
+                // Hitung persentase penilaian
+                $progress = round(($mandor['total_penilaian'] / $mandor['total_karyawan']) * 100);
+                $isComplete = $progress >= 100;
+                ?>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title"><?= esc($mandor['username']); ?></h5>
+                                <!-- Tombol modal -->
+                                <button type="button" class="btn btn-sm <?= $isComplete ? 'btn-success' : 'btn-danger' ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalEmployeeEvaluation" data-area="<?= esc($mandor['username']); ?>">
+                                    <?= $isComplete ? 'Selesai' : 'Belum Selesai'; ?>
+                                </button>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <small class="text-muted">Karyawan: <?= esc($mandor['total_karyawan']); ?></small>
+                                <small class="text-muted">Dinilai: <?= esc($mandor['total_penilaian']); ?></small>
+                            </div>
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div class="progress-bar <?= $isComplete ? 'bg-success' : 'bg-info' ?>"
+                                    role="progressbar"
+                                    style="width: <?= $progress; ?>%; height: 20px;"
+                                    aria-valuenow="<?= $progress; ?>"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100">
+                                    <?= $progress; ?>%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal untuk menampilkan data karyawan yang belum dinilai -->
+                <div class="modal fade" id="modalEmployeeEvaluation" tabindex="-1" aria-labelledby="modalEmployeeEvaluationLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalEmployeeEvaluationLabel">Karyawan Belum Dinilai</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Kode Kartu</th>
+                                                <th>Nama Karyawan</th>
+                                                <th>Shift</th>
+                                                <th>Bagian</th>
+                                                <th>Area</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employeeEvaluationBody">
+                                            <!-- Data akan dimuat secara dinamis -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    Tidak ada data yang tersedia.
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
 </div>
+<!-- 
+
+</div> -->
 
 <!-- Library Chart.js -->
 <!-- Library Chart.js -->
@@ -322,8 +350,47 @@
 </script>
 
 <script>
-    $(document).ready(function() {
-        $('#cekPenilaianTable').DataTable({});
+    document.addEventListener("DOMContentLoaded", function() {
+        // Ambil referensi modal
+        var modalElement = document.getElementById('modalEmployeeEvaluation');
+
+        // Saat modal mulai ditampilkan
+        modalElement.addEventListener('show.bs.modal', function(event) {
+            // Tentukan id_periode dan area; sesuaikan nilainya dengan konteks Anda
+            var id_periode = '1'; // misal
+            var area = event.relatedTarget.getAttribute('data-area');
+
+            // Panggil endpoint untuk mendapatkan data evaluasi karyawan
+            fetch("<?= base_url('Monitoring/evaluasiKaryawan') ?>/" + id_periode + "/" + area)
+                .then(response => response.json())
+                .then(data => {
+                    // Filter hanya data dengan status "Belum Dinilai"
+                    var belumDinilai = data.filter(emp => emp.status === "Belum Dinilai");
+                    var tbody = document.getElementById("employeeEvaluationBody");
+                    tbody.innerHTML = ""; // kosongkan isi tabel
+
+                    if (belumDinilai.length > 0) {
+                        belumDinilai.forEach(function(emp) {
+                            var tr = document.createElement("tr");
+                            tr.innerHTML = 
+                            // nomor urut
+                            "<td>" + (tbody.rows.length + 1) + "</td>" +
+                                "<td>" + emp.kode_kartu + "</td>" +
+                                "<td>" + emp.nama_karyawan + "</td>" +
+                                "<td>" + emp.shift + "</td>" +
+                                "<td>" + emp.nama_bagian + "</td>" +
+                                "<td>" + emp.area + "</td>" +
+                                "<td><span class='badge bg-danger'>Belum Dinilai</span></td>";
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = "<tr><td colspan='7' class='text-center'>Karyawan Sudah Dinilai Semua.</td></tr>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                });
+        });
     });
 </script>
 <?php $this->endSection(); ?>

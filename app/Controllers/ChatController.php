@@ -134,7 +134,8 @@ class ChatController extends BaseController
     }
     public function getAllContacts()
     {
-        $contacts = $this->userModel->select('id_user, username')->findAll();
+        // sort by role monitoring, mandor, trainingschool
+        $contacts = $this->userModel->select('id_user, username, role')->findAll();
         return $this->response->setJSON($contacts);
     }
 
