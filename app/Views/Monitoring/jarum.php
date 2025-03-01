@@ -20,27 +20,41 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Area</label>
-                                    <select class="form-select" name="area" id="area" required>
-                                        <option value="">Pilih Area</option>
-                                        <?php foreach ($getArea as $key => $ar) : ?>
-                                            <option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>
-                                        <?php endforeach ?>
+
+                        <div class="div" id="inputRows">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Area</label>
+                                        <select class="form-select" name="area[]" id="area" required>
+                                            <option value="">Pilih Area</option>
+                                            <?php foreach ($getArea as $key => $ar) : ?>
+                                                <option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>
+                                            <?php endforeach ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Montir</label>
+                                    <select class="form-control" id="id_karyawan" name="id_karyawan[]" required>
+                                        <option value="">Pilih Montir</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="">Montir</label>
-                                <select class="form-control" id="id_karyawan" name="id_karyawan" required>
-                                    <option value="">Pilih Montir</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="">Pemakaian Jarum</label>
-                                <input type="number" class="form-control" name="used_needle" id="used_needle" required>
+                                <div class="col-md-3">
+                                    <label for="">Pemakaian Jarum</label>
+                                    <input type="number" class="form-control" name="used_needle[]" id="used_needle" required>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <label for="">Aksi</label>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-info" id="addRow">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <!-- <button class="btn btn-outline-danger remove-tab" type="button">
+                                        <i class="fas fa-trash"></i>
+                                    </button> -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -163,5 +177,95 @@
         });
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addRowBtn = document.getElementById("addRow");
+        const inputRowsContainer = document.getElementById("inputRows");
+        const form = document.querySelector("form");
 
+        addRowBtn.addEventListener("click", function() {
+            const row = document.createElement("div");
+            row.classList.add("row", "mt-2");
+
+            row.innerHTML = `
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="">Area</label>
+                    <select class="form-select area-dropdown" name="area[]" required>
+                        <option value="">Pilih Area</option>
+                        ${getAreaOptions()}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="">Montir</label>
+                <select class="form-control montir-dropdown" name="id_karyawan[]" required>
+                    <option value="">Pilih Montir</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="">Pemakaian Jarum</label>
+                <input type="number" class="form-control" name="used_needle[]" required>
+            </div>
+            <div class="col-md-3 text-center">
+                <label for="">Aksi</label>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-outline-danger remove-row" type="button">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+            inputRowsContainer.appendChild(row);
+
+            // Tambahkan event listener untuk hapus row
+            row.querySelector(".remove-row").addEventListener("click", function() {
+                row.remove();
+            });
+        });
+
+        // Delegasi event untuk menangani perubahan area di semua dropdown area
+        document.addEventListener("change", function(event) {
+            if (event.target.classList.contains("area-dropdown")) {
+                let area = event.target.value;
+                let montirDropdown = event.target.closest(".row").querySelector(".montir-dropdown");
+
+                montirDropdown.innerHTML = '<option value="">Loading...</option>';
+
+                if (area !== "") {
+                    $.ajax({
+                        url: "<?= base_url($role . '/getMontirByArea') ?>",
+                        type: "POST",
+                        data: {
+                            area: area
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            let options = '<option value="">Pilih Montir</option>';
+                            response.forEach(montir => {
+                                options += `<option value="${montir.id_karyawan}">${montir.nama_karyawan} | ${montir.kode_kartu}</option>`;
+                            });
+                            montirDropdown.innerHTML = options;
+                        },
+                        error: function() {
+                            montirDropdown.innerHTML = '<option value="">Error</option>';
+                        }
+                    });
+                } else {
+                    montirDropdown.innerHTML = '<option value="">Pilih Montir</option>';
+                }
+            }
+        });
+
+        // Fungsi untuk mendapatkan daftar opsi area yang tersedia
+        function getAreaOptions() {
+            let options = "";
+            <?php foreach ($getArea as $ar) : ?>
+                options += `<option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>`;
+            <?php endforeach ?>
+            return options;
+        }
+    });
+</script>
 <?php $this->endSection(); ?>

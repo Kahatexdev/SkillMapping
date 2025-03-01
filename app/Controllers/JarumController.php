@@ -219,18 +219,24 @@ class JarumController extends BaseController
             return redirect()->to(base_url('Monitoring/dataJarum'))->with('error', 'Tanggal Input tidak boleh melebihi tanggal sekarang');
         }
 
-        $data = [
-            'tgl_input' => $getTglInput,
-            'area' => $getArea,
-            'id_karyawan' => $getKaryawan,
-            'used_needle' => $getNeedle,
-            'created_at' => date('Y-m-d H:i:s')
-        ];
+        $data = [];
+        for ($i = 0; $i < count($getArea); $i++) {
+            $data[] = [
+                'tgl_input'    => $getTglInput,
+                'area'         => $getArea[$i],
+                'id_karyawan'  => $getKaryawan[$i],
+                'used_needle'  => $getNeedle[$i],
+                'created_at'   => date('Y-m-d H:i:s')
+            ];
+        }
 
-        $this->summaryJarum->insert($data);
+        if (!empty($data)) {
+            $this->summaryJarum->insertBatch($data);
+        }
 
         return redirect()->to(base_url('Monitoring/dataJarum'))->with('success', 'Data Berhasil Disimpan');
     }
+
 
     // public function excelSummaryJarum($area_utama, $id_batch)
     // {
