@@ -119,10 +119,12 @@ class BagianModel extends Model
     public function getAreaByNamaBagian()
     {
         return $this->select('area')
-            ->where('nama_bagian', 'Montir')
-            ->where('area IS NOT NULL', null, false)
+            ->like('nama_bagian', '%MONTIR%')
+            ->where('area !=', null)
+            ->groupBy('area')
             ->findAll();
     }
+
 
     public function getAreaGroupByArea()
     {
@@ -130,6 +132,13 @@ class BagianModel extends Model
         return $this->select('area')
             ->where('area IS NOT NULL', null, false)
             ->groupBy('area')
+            ->findAll();
+    }
+    public function getMontirByArea($area)
+    {
+        return $this->select('id_bagian')
+            ->where('area', $area)
+            ->like('nama_bagian', '%MONTIR%')
             ->findAll();
     }
 }

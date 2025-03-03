@@ -510,12 +510,10 @@ class MonitoringController extends BaseController
     }
     public function jarum()
     {
-        $tampilperarea = $this->bagianmodel->getAreaGroupByArea();
         $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
-        $getArea = $this->bagianmodel->getAreaByNamaBagian('Montir');
-        $getKaryawan = $this->karyawanmodel->getKaryawanByBagian('Montir');
-
+        $getArea = $this->bagianmodel->getAreaByNamaBagian();
+        // dd($getArea);
         $sort = [
             'KK1A',
             'KK1B',
@@ -534,7 +532,7 @@ class MonitoringController extends BaseController
         ];
 
         // Urutkan data menggunakan usort
-        usort($tampilperarea, function ($a, $b) use ($sort) {
+        usort($getArea, function ($a, $b) use ($sort) {
             $pos_a = array_search($a['area'], $sort);
             $pos_b = array_search($b['area'], $sort);
 
@@ -558,10 +556,8 @@ class MonitoringController extends BaseController
             'active8' => '',
             'active9' => 'active',
             'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea,
             'periode' => $periode,
             'getArea' => $getArea,
-            'getKaryawan' => $getKaryawan
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/jarum', $data);
@@ -788,12 +784,18 @@ class MonitoringController extends BaseController
 
     public function getMontirByArea()
     {
+        $montir = []; // Pastikan variabel terdefinisi sebelum digunakan
+
         if ($this->request->isAJAX()) {
             $area = $this->request->getPost('area');
+            $bagian = $this->bagianmodel->getMontirByArea($area);
 
-            $montir = $this->karyawanmodel->getMontirByArea($area);
-
-            return $this->response->setJSON($montir);
+            foreach ($bagian as $row) { // Gunakan variabel yang lebih deskriptif
+                $kary = $this->karyawanmodel->getMontirByArea($row['id_bagian']);
+                $montir = array_merge($montir, $kary); // Gabungkan hasil ke array utama
+            }
         }
+
+        return $this->response->setJSON($montir);
     }
 }

@@ -95,7 +95,7 @@
         </div>
     </div>
     <div class="row mt-2">
-        <?php foreach ($tampilperarea as $key => $ar) : ?>
+        <?php foreach ($getArea as $key => $ar) : ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
                 <a href="<?= base_url($role . '/dataJarum/' . $ar['area']) ?>">
                     <div class="card">
@@ -150,6 +150,7 @@
     $(document).ready(function() {
         $('#area').change(function() {
             var area = $(this).val();
+
             $('#id_karyawan').html('<option value="">Loading...</option>');
 
             if (area !== "") {

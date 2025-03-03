@@ -171,16 +171,14 @@ class KaryawanModel extends Model
     {
         return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.id_bagian')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->where('bagian.nama_bagian', 'Montir')
+            ->whereIn('bagian.nama_bagian', ['MONTIR', 'MONTIR (DAKONG)', 'MONTIR (LONATI DOUBLE)', 'MONTIR (MEKANIK DOUBLE)'])
             ->findAll();
     }
 
-    public function getMontirByArea($area)
+    public function getMontirByArea($idbagian)
     {
         return $this->select('id_karyawan, nama_karyawan, kode_kartu')
-            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->where('bagian.nama_bagian', 'Montir')
-            ->where('bagian.area', $area)
+            ->where('id_bagian', $idbagian)
             ->findAll();
     }
 }
