@@ -53,7 +53,11 @@ class MonitoringController extends BaseController
         $TtlKaryawan = $this->karyawanmodel->where('status', 'Aktif')->countAll();
         $PerpindahanBulanIni = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))->countAllResults();
         $dataKaryawan = $this->karyawanmodel->getActiveKaryawanByBagian();
-        $cekPenilaian = $this->penilaianmodel->getMandorEvaluationStatus();
+        $id_periode = $this->periodeModel->getActivePeriode()['id_periode'];
+        $current_periode = $this->periodeModel->getActivePeriode()['nama_periode'];
+        $start_date = $this->periodeModel->getActivePeriode()['start_date'];
+        $end_date = $this->periodeModel->getActivePeriode()['end_date'];
+        $cekPenilaian = $this->penilaianmodel->getMandorEvaluationStatus($id_periode);
         $RatarataGrade = 0;
         $SkillGap = 0;
 
@@ -75,7 +79,7 @@ class MonitoringController extends BaseController
             $valuesKar[] = (int)$row['jumlah'];
         }
 
-        return view(session()->get('role') . '/index', [
+        return view('Monitoring/index', [
             'role' => session()->get('role'),
             'title' => 'Dashboard',
             'active1' => 'active',
@@ -88,7 +92,11 @@ class MonitoringController extends BaseController
             'karyawanByBagian' => $dataKaryawan,
             'labelsKar' => $labelsKar,
             'valuesKar' => $valuesKar,
-            'cekPenilaian' => $cekPenilaian
+            'cekPenilaian' => $cekPenilaian,
+            'id_periode' => $id_periode,
+            'current_periode' => $current_periode,
+            'start_date' => $start_date,
+            'end_date' => $end_date
         ]);
     }
 

@@ -1,4 +1,8 @@
-<?php $this->extend('Layout/index'); ?>
+<?php
+
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
+
+ $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <!-- Statistik Cards -->
@@ -117,11 +121,11 @@
         </div>
     </div>
 </div>
-<div class="container py-4">
+<div class="container-fluid py-4">
     <!-- Header Monitoring -->
     <div class="card mb-4">
         <div class="card-body">
-            <h2 class="card-title h4 mb-0">Monitoring Penilaian Karyawan</h2>
+            <h2 class="card-title h4 mb-0">Monitoring Penilaian Karyawan Periode <?= $current_periode ?> ( <?= date_format(date_create($start_date), 'd M Y') ?> - <?= date_format(date_create($end_date), 'd M Y') ?> )</h2>
         </div>
     </div>
 
@@ -130,10 +134,15 @@
         <?php if (!empty($cekPenilaian)) : ?>
             <?php foreach ($cekPenilaian as $mandor) : ?>
                 <?php
+                // Lewati jika tidak ada karyawan
                 if ($mandor['total_karyawan'] == 0) {
                     continue;
                 }
-                // Hitung persentase penilaian
+                // Hanya tampilkan data untuk periode saat ini
+                // if ($mandor['id_periode'] != $id_periode) {
+                //     continue;
+                // }
+                // Hitung persentase penilaian dengan benar
                 $progress = round(($mandor['total_penilaian'] / $mandor['total_karyawan']) * 100);
                 $isComplete = $progress >= 100;
                 ?>
@@ -166,38 +175,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Modal untuk menampilkan data karyawan yang belum dinilai -->
-                <div class="modal fade" id="modalEmployeeEvaluation" tabindex="-1" aria-labelledby="modalEmployeeEvaluationLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalEmployeeEvaluationLabel">Karyawan Belum Dinilai</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered w-100">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Kode Kartu</th>
-                                                <th>Nama Karyawan</th>
-                                                <th>Shift</th>
-                                                <th>Bagian</th>
-                                                <th>Area</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="employeeEvaluationBody">
-                                            <!-- Data akan dimuat secara dinamis -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             <?php endforeach; ?>
         <?php else : ?>
             <div class="col-12">
@@ -207,13 +184,40 @@
             </div>
         <?php endif; ?>
     </div>
-
 </div>
-<!-- 
 
-</div> -->
+<!-- Modal untuk menampilkan data karyawan yang belum dinilai -->
+<div class="modal fade" id="modalEmployeeEvaluation" tabindex="-1" aria-labelledby="modalEmployeeEvaluationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEmployeeEvaluationLabel">Karyawan Belum Dinilai</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered w-100">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kode Kartu</th>
+                                <th>Nama Karyawan</th>
+                                <th>Shift</th>
+                                <th>Bagian</th>
+                                <th>Area</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeEvaluationBody">
+                            <!-- Data akan dimuat secara dinamis -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- Library Chart.js -->
 <!-- Library Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -231,8 +235,6 @@
     }
     ?>
 
-    // Chart Batang untuk Total Karyawan Berdasarkan Bagian
-    // Chart Batang untuk Total Karyawan Berdasarkan Bagian
     var ctxBar = document.getElementById('karyawanBarChart').getContext('2d');
     var karyawanBarChart = new Chart(ctxBar, {
         type: 'bar',
@@ -288,7 +290,6 @@
 </script>
 
 <script>
-    // Chart Batang untuk Grafik Pindahan Karyawan
     var ctxBar2 = document.getElementById('pindahanBarChart').getContext('2d');
     var pindahanBarChart = new Chart(ctxBar2, {
         type: 'bar',
@@ -297,10 +298,9 @@
             datasets: [{
                 label: 'Jumlah Pindahan',
                 data: <?= json_encode($valuesKar) ?>,
-                backgroundColor: 'rgba(255, 159, 64, 0.6)', // Sesuaikan warna
+                backgroundColor: 'rgba(255, 159, 64, 0.6)',
                 borderColor: 'rgba(255, 159, 64, 1)',
                 borderWidth: 1,
-                // Pengaturan lebar batang
                 barPercentage: 0.6,
                 categoryPercentage: 0.6
             }]
@@ -308,18 +308,12 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            // indexAxis: 'y', // Jika ingin horizontal bar, aktifkan ini
             scales: {
                 x: {
                     title: {
                         display: true,
                         text: 'Tanggal'
-                    },
-                    // Jika label tanggal terlalu panjang, silakan atur rotasi:
-                    // ticks: {
-                    //     maxRotation: 45,
-                    //     minRotation: 0
-                    // }
+                    }
                 },
                 y: {
                     beginAtZero: true,
@@ -351,30 +345,25 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Ambil referensi modal
         var modalElement = document.getElementById('modalEmployeeEvaluation');
 
-        // Saat modal mulai ditampilkan
         modalElement.addEventListener('show.bs.modal', function(event) {
-            // Tentukan id_periode dan area; sesuaikan nilainya dengan konteks Anda
-            var id_periode = '1'; // misal
+            // Gunakan current_periode dari PHP
+            var id_periode = '<?= $current_periode ?>';
             var area = event.relatedTarget.getAttribute('data-area');
 
-            // Panggil endpoint untuk mendapatkan data evaluasi karyawan
             fetch("<?= base_url('Monitoring/evaluasiKaryawan') ?>/" + id_periode + "/" + area)
                 .then(response => response.json())
                 .then(data => {
-                    // Filter hanya data dengan status "Belum Dinilai"
                     var belumDinilai = data.filter(emp => emp.status === "Belum Dinilai");
                     var tbody = document.getElementById("employeeEvaluationBody");
-                    tbody.innerHTML = ""; // kosongkan isi tabel
+                    tbody.innerHTML = "";
 
                     if (belumDinilai.length > 0) {
                         belumDinilai.forEach(function(emp) {
                             var tr = document.createElement("tr");
-                            tr.innerHTML = 
-                            // nomor urut
-                            "<td>" + (tbody.rows.length + 1) + "</td>" +
+                            tr.innerHTML =
+                                "<td>" + (tbody.rows.length + 1) + "</td>" +
                                 "<td>" + emp.kode_kartu + "</td>" +
                                 "<td>" + emp.nama_karyawan + "</td>" +
                                 "<td>" + emp.shift + "</td>" +
@@ -393,4 +382,5 @@
         });
     });
 </script>
+
 <?php $this->endSection(); ?>
