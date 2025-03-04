@@ -510,7 +510,7 @@ class JarumController extends BaseController
                 $jumlah_hari_kerja = ((strtotime($periode['end_date']) - strtotime($periode['start_date'])) / (60 * 60 * 24)) + 1 - $periode['jml_libur'];
                 if ($jumlah_hari_kerja > 0) {
                     $bulanData = date('F', strtotime($row['end_date']));
-                    $groupedData[$kode_kartu]['used_needle'][$bulanData] += floor($row['total_jarum'] / $jumlah_hari_kerja);
+                    $groupedData[$kode_kartu]['used_needle'][$bulanData] += round($row['total_jarum'] / $jumlah_hari_kerja);
                 }
             }
         }
@@ -543,7 +543,7 @@ class JarumController extends BaseController
             }
 
             // Hitung rata-rata penggunaan jarum berdasarkan 3 bulan
-            $rataJarumPerBatch = $jumlahBulan > 0 ? floor($totalProduksi / $jumlahBulan) : 0;
+            $rataJarumPerBatch = $jumlahBulan > 0 ? round($totalProduksi / $jumlahBulan) : 0;
 
             // Masukkan rata-rata ke kolom yang sesuai
             $sheet->setCellValue('J' . $startRow, $rataJarumPerBatch);
@@ -616,7 +616,7 @@ class JarumController extends BaseController
             $sheet->setCellValue('P' . $startRow, $row['jenis_kelamin']);
             $sheet->setCellValue('Q' . $startRow, $row['tgl_masuk']);
             $sheet->setCellValue('R' . $startRow, $row['nama_bagian']);
-            $sheet->setCellValue('S' . $startRow, floor($avgNeedle));
+            $sheet->setCellValue('S' . $startRow, round($avgNeedle));
 
             $sheet->getStyle('M' . $startRow . ':S' . $startRow)->getFont()->setName('Times New Roman');
             $sheet->getStyle('M' . $startRow . ':S' . $startRow)->getFont()->setSize(10);

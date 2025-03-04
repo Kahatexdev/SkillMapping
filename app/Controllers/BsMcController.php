@@ -840,8 +840,8 @@ class BsMcController extends BaseController
                 $jumlah_hari_kerja = ((strtotime($periode['end_date']) - strtotime($periode['start_date'])) / (60 * 60 * 24)) + 1 - $periode['jml_libur'];
                 if ($jumlah_hari_kerja > 0) {
                     $bulanData = date('F', strtotime($row['end_date']));
-                    $groupedData[$kode_kartu]['produksi'][$bulanData] += floor($row['total_produksi'] / $jumlah_hari_kerja);
-                    $groupedData[$kode_kartu]['bs'][$bulanData] += floor($row['total_bs'] / $jumlah_hari_kerja);
+                    $groupedData[$kode_kartu]['produksi'][$bulanData] += round($row['total_produksi'] / $jumlah_hari_kerja);
+                    $groupedData[$kode_kartu]['bs'][$bulanData] += round($row['total_bs'] / $jumlah_hari_kerja);
                 }
             }
         }
@@ -880,8 +880,8 @@ class BsMcController extends BaseController
             }
 
             // Hitung rata-rata produksi dan BS berdasarkan 3 bulan
-            $rataProduksiPerBatch = $jumlahBulan > 0 ? floor($totalProduksi / $jumlahBulan) : 0;
-            $rataBSPerBatch = $jumlahBulan > 0 ? floor($totalBS / $jumlahBulan) : 0;
+            $rataProduksiPerBatch = $jumlahBulan > 0 ? round($totalProduksi / $jumlahBulan) : 0;
+            $rataBSPerBatch = $jumlahBulan > 0 ? round($totalBS / $jumlahBulan) : 0;
 
             // Masukkan rata-rata ke kolom yang sesuai
             $sheet->setCellValue('J' . $startRow, $rataProduksiPerBatch);
@@ -985,8 +985,8 @@ class BsMcController extends BaseController
             $sheet->setCellValue('T' . $startRow, $row['jenis_kelamin']);
             $sheet->setCellValue('U' . $startRow, $row['tgl_masuk']);
             $sheet->setCellValue('V' . $startRow, $row['nama_bagian']);
-            $sheet->setCellValue('W' . $startRow, floor($avgProduksi));
-            $sheet->setCellValue('X' . $startRow, floor($avgBS));
+            $sheet->setCellValue('W' . $startRow, round($avgProduksi));
+            $sheet->setCellValue('X' . $startRow, round($avgBS));
 
             $sheet->getStyle('Q' . $startRow . ':X' . $startRow)->getFont()->setName('Times New Roman');
             $sheet->getStyle('Q' . $startRow . ':X' . $startRow)->getFont()->setSize(10);
@@ -1029,8 +1029,8 @@ class BsMcController extends BaseController
             $sheet->setCellValue('AC' . $startRow, $row['jenis_kelamin']);
             $sheet->setCellValue('AD' . $startRow, $row['tgl_masuk']);
             $sheet->setCellValue('AE' . $startRow, $row['nama_bagian']);
-            $sheet->setCellValue('AF' . $startRow, floor($avgProduksi));
-            $sheet->setCellValue('AG' . $startRow, floor($avgBS));
+            $sheet->setCellValue('AF' . $startRow, round($avgProduksi));
+            $sheet->setCellValue('AG' . $startRow, round($avgBS));
 
             $sheet->getStyle('Z' . $startRow . ':AG' . $startRow)->getFont()->setName('Times New Roman');
             $sheet->getStyle('Z' . $startRow . ':AG' . $startRow)->getFont()->setSize(10);
