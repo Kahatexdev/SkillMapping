@@ -294,16 +294,15 @@
                                 data.unread_messages > 0 ? data.unread_messages : '';
                         }
                     } else {
-                        console.error('Error fetching unread messages:', data.message);
+                        // console.error('Error fetching unread messages:', data.message);
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching unread count:', error);
+                    // console.error('Error fetching unread count:', error);
                 });
         }
 
-        // Panggil fungsi setiap 5 detik
-        setInterval(fetchUnreadCount, 5000);
+        setInterval(fetchUnreadCount, 60000);
 
         // Panggilan awal saat halaman dimuat
         fetchUnreadCount();
