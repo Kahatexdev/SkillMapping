@@ -58,6 +58,7 @@ class MonitoringController extends BaseController
         $start_date = $this->periodeModel->getActivePeriode()['start_date'];
         $end_date = $this->periodeModel->getActivePeriode()['end_date'];
         $cekPenilaian = $this->penilaianmodel->getMandorEvaluationStatus($id_periode);
+        // dd($dataKaryawan, $TtlKaryawan, $PerpindahanBulanIni, $cekPenilaian, $id_periode, $current_periode, $start_date, $end_date);
         $RatarataGrade = 0;
         $SkillGap = 0;
 

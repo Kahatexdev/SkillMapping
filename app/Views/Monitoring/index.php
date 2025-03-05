@@ -349,7 +349,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
 
         modalElement.addEventListener('show.bs.modal', function(event) {
             // Gunakan current_periode dari PHP
-            var id_periode = '<?= $current_periode ?>';
+            var id_periode = '<?= $id_periode ?>';
             var area = event.relatedTarget.getAttribute('data-area');
 
             fetch("<?= base_url('Monitoring/evaluasiKaryawan') ?>/" + id_periode + "/" + area)
