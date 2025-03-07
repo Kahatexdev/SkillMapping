@@ -425,6 +425,7 @@ class KaryawanController extends BaseController
 
         $karyawanModel->update($id, $data);
 
+        
         $oldBagian = $this->request->getPost('id_bagian_asal');
         $tgl_pindah = $this->request->getPost('tgl_pindah');
         $keterangan = $this->request->getPost('keterangan');
@@ -438,16 +439,20 @@ class KaryawanController extends BaseController
             'updated_by' => session()->get('id_user')
         ];
         // dd ($oldBagian, $tgl_pindah, $keterangan, $item);
-        $this->historyPindahKaryawanModel->insert($item);
-
+        if (!empty($oldBagian) && !empty($tgl_pindah) && !empty($keterangan)) {
+            $this->historyPindahKaryawanModel->insert($item);
+        } else {
+            return redirect()->to(base_url('TrainingSchool/datakaryawan'))->with('error', 'Data karyawan gagal diubah.');
+        }
 
         $role = session()->get('role');
+
         if ($role === 'Monitoring') {
             return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', 'Data karyawan berhasil diubah.');
         } elseif ($role === "TrainingSchool") {
             return redirect()->to(base_url('TrainingSchool/dataKaryawan'))->with('success', 'Data karyawan berhasil diubah.');
         } else {
-            return redirect()->to(base_url($role . '/dataKaryawan'))->with('error', 'Data karyawan gagal dihapus.');
+            return redirect()->to(base_url($role . '/dataKaryawan'))->with('error', 'Data karyawan gagal diubah.');
         }
     }
 
