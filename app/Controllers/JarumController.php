@@ -223,10 +223,10 @@ class JarumController extends BaseController
         for ($i = 0; $i < count($getArea); $i++) {
             $data[] = [
                 'tgl_input'    => $getTglInput,
-                'area'         => $getArea[$i],
                 'id_karyawan'  => $getKaryawan[$i],
                 'used_needle'  => $getNeedle[$i],
-                'created_at'   => date('Y-m-d H:i:s')
+                'created_at'   => date('Y-m-d H:i:s'),
+                'area'         => $getArea[$i]
             ];
         }
 
@@ -403,7 +403,6 @@ class JarumController extends BaseController
         $summaryJarum = $this->summaryJarum->getSummaryJarum($area, $id_batch);
         $namaBatch = $this->batchModel->where('id_batch', $id_batch)->first();
         $start_dates = array_column($summaryJarum, 'end_date');
-
         // Konversi setiap start_date menjadi nama bulan
         $bulan = array_unique(array_map(fn($date) => date('F', strtotime($date)), $start_dates));
 
@@ -482,7 +481,6 @@ class JarumController extends BaseController
 
         foreach ($summaryJarum as $row) {
             $kode_kartu = $row['kode_kartu'];
-
             if (!isset($groupedData[$kode_kartu])) {
                 // Jika kode kartu belum ada, simpan data awal
                 $groupedData[$kode_kartu] = [
@@ -544,7 +542,7 @@ class JarumController extends BaseController
 
             // Hitung rata-rata penggunaan jarum berdasarkan 3 bulan
             $rataJarumPerBatch = $jumlahBulan > 0 ? round($totalProduksi / $jumlahBulan) : 0;
-
+            // dd($rataJarumPerBatch);
             // Masukkan rata-rata ke kolom yang sesuai
             $sheet->setCellValue('J' . $startRow, $rataJarumPerBatch);
 

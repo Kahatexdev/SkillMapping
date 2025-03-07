@@ -41,7 +41,7 @@ class BsMcController extends BaseController
         $spreadsheet = new Spreadsheet();
 
         // Menambahkan 13 sheet dengan judul KK1A, KK1B, KK2A, KK2B, dst.
-        $titles = ['KK1A', 'KK1B', 'KK2A', 'KK2B', 'KK2C', 'KK5', 'KK7K', 'KK7L', 'KK8D', 'KK8J', 'KK9', 'KK10', 'KK11M'];
+        $titles = ['KK1A', 'KK1B', 'KK2A', 'KK2B', 'KK2C', 'KK5', 'KK7K', 'KK7L', 'KK8D', 'KK8J', 'KK9', 'KK10', 'KK11'];
         foreach ($titles as $index => $title) {
             $sheet = $index === 0 ? $spreadsheet->getActiveSheet() : $spreadsheet->createSheet();
             $sheet->setTitle($title);
@@ -678,6 +678,7 @@ class BsMcController extends BaseController
                         'id_karyawan' => $id_karyawan,
                         'bs_mc' => is_numeric($bs_mc) ? $bs_mc : 0,
                         'produksi' => is_numeric($produksi) ? $produksi : 0,
+                        'area' => $area,
                         'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s')
                     ];
@@ -810,7 +811,6 @@ class BsMcController extends BaseController
         // Proses data untuk mengelompokkan berdasarkan kode_kartu
         foreach ($sumBs as $row) {
             $kode_kartu = $row['kode_kartu'];
-
             if (!isset($groupedData[$kode_kartu])) {
                 // Jika kode kartu belum ada, simpan data awal
                 $groupedData[$kode_kartu] = [
@@ -824,7 +824,6 @@ class BsMcController extends BaseController
                     'hari_kerja'    => array_fill_keys($bulan, 0), // Inisialisasi hari kerja per bulan
                 ];
             }
-
             // Menghitung jumlah hari kerja dalam bulan tersebut
             $startDate = new DateTime($row['start_date']);
             $endDate   = new DateTime($row['end_date']);

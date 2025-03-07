@@ -20,6 +20,7 @@ class BsmcModel extends Model
         'bs_mc',
         'created_at',
         'updated_at',
+        'area'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -153,12 +154,12 @@ class BsmcModel extends Model
 
     public function getSummaryBSMesin($id_batch, $area)
     {
-        return $this->select('bs_mc.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, SUM(bs_mc.produksi) AS total_produksi, SUM(bs_mc.bs_mc) AS total_bs, periode.nama_periode, periode.id_batch, bagian.area, periode.start_date, periode.end_date, periode.jml_libur')
+        return $this->select('bs_mc.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk,  SUM(bs_mc.produksi) AS total_produksi, SUM(bs_mc.bs_mc) AS total_bs, periode.nama_periode, periode.id_batch, bs_mc.area, periode.start_date, periode.end_date, periode.jml_libur, bagian.nama_bagian')
             ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date', 'inner')
             ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan', 'inner')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'inner')
             ->where('periode.id_batch', $id_batch)
-            ->where('bagian.area', $area)
+            ->where('bs_mc.area', $area)
             ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date') // Grouping berdasarkan kode_kartu dan periode
             ->findAll();
     }
