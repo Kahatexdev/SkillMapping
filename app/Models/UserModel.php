@@ -67,4 +67,11 @@ class UserModel extends Model
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             ->findAll();
     }
+
+    public function findIdByRole($role)
+    {
+        return $this->select('id_user, username, area')
+            ->where('role', $role)
+            ->findAll();
+    }
 }

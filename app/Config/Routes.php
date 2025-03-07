@@ -157,6 +157,7 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('', 'MandorController::dashboard');
+    // $routes->get('', 'MonitoringController::index');
     $routes->get('dataKaryawan', 'MandorController::listArea');
     $routes->get('dataKaryawan/(:any)', 'MandorController::detailKaryawanPerArea/$1');
 

@@ -50,7 +50,7 @@ class KaryawanController extends ResourceController
 
     public function getKaryawanByArea($area)
     {
-        $data = $this->karyawanModel->getKaryawanByArea($area);
+        $data = $this->karyawanModel->getKaryawanByAreaApi($area);
 
         return $this->respond($data, 200);
     }
@@ -135,7 +135,6 @@ class KaryawanController extends ResourceController
         ];
 
         return $this->respond($response);
-
     }
 
     public function delete($id = null)

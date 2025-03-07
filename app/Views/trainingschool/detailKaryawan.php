@@ -475,8 +475,8 @@
         var status_baju = $(this).data('status_baju');
         var tgl_lahir = $(this).data('tgl_lahir');
         var tgl_masuk = $(this).data('tgl_masuk');
-        var nama_bagian = $(this).data('nama_bagian');
-        // console.log(nama_bagian);
+        var id_bagian = $(this).data('nama_bagian'); // Menggunakan id_bagian yang benar
+        console.log("ID Bagian Asal:", id_bagian);
         var status_aktif = $(this).data('status_aktif');
 
         $('#ModalEdit').find('form').attr('action', '<?= base_url('TrainingSchool/karyawanUpdate/') ?>' + id);
@@ -484,22 +484,19 @@
         $('#ModalEdit').find('#nama_karyawan').val(nama);
         $('#ModalEdit').find('#shift').val(shift);
         $('#ModalEdit').find('#jenis_kelamin').val(jenis_kelamin);
-        $('#ModalEdit').find('#areaUtama').val(areaUtama);
-        $('#ModalEdit').find('#area').val(area);
         $('#ModalEdit').find('#libur').val(libur);
         $('#ModalEdit').find('#libur_tambahan').val(libur_tambahan);
         $('#ModalEdit').find('#warna_baju').val(warna_baju);
         $('#ModalEdit').find('#status_baju').val(status_baju);
         $('#ModalEdit').find('#tgl_lahir').val(tgl_lahir);
         $('#ModalEdit').find('#tgl_masuk').val(tgl_masuk);
-        $('#ModalEdit').find('#bagian').val(nama_bagian);
+        $('#ModalEdit').find('#bagian').val(id_bagian);
         $('#ModalEdit').find('#status_aktif').val(status_aktif);
-        $('#ModalEdit').modal('show'); // Show the modal
+        $('#ModalEdit').find('#id_bagian_asal').val($(this).data('nama_bagian')); // Menyimpan id bagian asal
+        $('#ModalEdit').modal('show');
     });
-</script>
-<script>
+
     $(document).on('change', '#bagian', function() {
-        // Jika modal yang aktif adalah modal tambah, jangan tampilkan input tambahan
         if ($(this).closest('.modal').attr('id') === 'addKaryawan') {
             return;
         }
@@ -509,47 +506,39 @@
         var tgl_pindah_id = 'tgl_pindah';
         var keterangan_id = 'keterangan';
 
-        // Ambil nilai lama dari data atribut yang sudah diset saat klik tombol edit
-        var oldValue = $('#bagian').data('nama_bagian');
-        // Ambil nilai baru (nama bagian dari option yang dipilih)
+        var oldValue = $('#id_bagian_asal').val(); // Mengambil dari input hidden
+        console.log("Old ID Bagian:", oldValue);
+
         var newValue = $(this).find(':selected').text().trim();
 
-        // Hapus elemen tambahan sebelumnya (jika ada)
         $('#' + readonlyInputIdOld).remove();
         $('#' + readonlyInputIdNew).remove();
         $('#' + tgl_pindah_id).remove();
         $('#' + keterangan_id).remove();
 
-        // Buat markup untuk menampilkan nilai lama dan baru, serta input tanggal dan keterangan
         var readonlyInputOld = `
-    <div class="form-group mb-2" id="${readonlyInputIdOld}">
-        <input type="hidden" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
-    </div>`;
+            <div class="form-group mb-2" id="${readonlyInputIdOld}">
+                <input type="hidden" class="form-control" name="readonly_bagian_old" id="readonly_bagian_old" value="${oldValue}" readonly>
+            </div>`;
 
         var readonlyInputNew = `
-    <div class="form-group mb-2" id="${readonlyInputIdNew}">
-        <input type="hidden" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
-    </div>`;
+            <div class="form-group mb-2" id="${readonlyInputIdNew}">
+                <input type="hidden" class="form-control" id="readonly_bagian_new" value="${newValue}" readonly>
+            </div>`;
 
         var tgl_pindah_input = `
-    <div class="form-group mb-2" id="${tgl_pindah_id}">
-        <label for="tgl_pindah">Tanggal Pindah</label>
-        <input type="date" class="form-control" name="tgl_pindah" id="tgl_pindah" required>
-    </div>`;
+            <div class="form-group mb-2" id="${tgl_pindah_id}">
+                <label for="tgl_pindah">Tanggal Pindah</label>
+                <input type="date" class="form-control" name="tgl_pindah" id="tgl_pindah" required>
+            </div>`;
 
         var keterangan_input = `
-    <div class="form-group mb-2" id="${keterangan_id}">
-        <label for="keterangan">Keterangan</label>
-        <textarea class="form-control" name="keterangan" id="keterangan" required></textarea>
-    </div>`;
+            <div class="form-group mb-2" id="${keterangan_id}">
+                <label for="keterangan">Keterangan</label>
+                <textarea class="form-control" name="keterangan" id="keterangan" required></textarea>
+            </div>`;
 
-        // Sisipkan elemen-elemen baru sebelum form-group yang berisi select #bagian
         $(this).closest('.form-group').before(readonlyInputOld + readonlyInputNew + tgl_pindah_input + keterangan_input);
     });
 </script>
-
-
-
-
-
 <?php $this->endSection(); ?>

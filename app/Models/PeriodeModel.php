@@ -89,4 +89,13 @@ class PeriodeModel extends Model
             ->where('id_batch', $id_batch)
             ->findAll();
     }
+
+    public function getActivePeriode()
+    {
+        return $this->select('periode.id_periode, periode.nama_periode, batch.id_batch, batch.nama_batch, periode.start_date, periode.end_date, periode.jml_libur')
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->where('start_date <=', date('Y-m-d'))
+            ->where('end_date >=', date('Y-m-d'))
+            ->first();
+    }
 }

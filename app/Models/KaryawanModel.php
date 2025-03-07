@@ -108,6 +108,14 @@ class KaryawanModel extends Model
             ->where('bagian.area_utama', $area)
             ->findAll();
     }
+    public function getKaryawanByAreaApi($area)
+    {
+        return $this->select('karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.shift, karyawan.jenis_kelamin, karyawan.libur, karyawan.libur_tambahan, karyawan.warna_baju, karyawan.status_baju, karyawan.tgl_lahir, karyawan.tgl_masuk, karyawan.id_bagian, bagian.nama_bagian, bagian.area_utama, bagian.area, bagian.keterangan, karyawan.status_aktif, karyawan.created_at, karyawan.updated_at')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            // ->where('bagian.area_utama', substr($area, 0, -1))
+            ->where('bagian.area', $area)
+            ->findAll();
+    }
 
     public function exportKaryawanAll()
     {
@@ -160,7 +168,7 @@ class KaryawanModel extends Model
     public function getActiveKaryawanByBagian()
     {
         $builder = $this->db->table($this->table);
-        $builder->select('COUNT(karyawan.nama_karyawan) AS jumlah_karyawan, bagian.nama_bagian');
+        $builder->select('COUNT(karyawan.nama_karyawan) AS jumlah_karyawan, bagian.nama_bagian, bagian.area_utama, bagian.area');
         $builder->join('bagian', 'karyawan.id_bagian = bagian.id_bagian');
         $builder->where('karyawan.status_aktif', 'Aktif');
         $builder->groupBy('bagian.nama_bagian');
@@ -180,5 +188,16 @@ class KaryawanModel extends Model
         return $this->select('id_karyawan, nama_karyawan, kode_kartu')
             ->where('id_bagian', $idbagian)
             ->findAll();
+    }
+
+    public function getTotalKaryawanByArea($area)
+    {
+        $builder = $this->db->table($this->table);
+        $builder->select('COUNT(karyawan.nama_karyawan) AS jumlah_karyawan, bagian.nama_bagian, bagian.area_utama, bagian.area');
+        $builder->join('bagian', 'karyawan.id_bagian = bagian.id_bagian');
+        $builder->where('karyawan.status_aktif', 'Aktif');
+        $builder->where('bagian.area', $area);
+        $builder->groupBy('bagian.nama_bagian');
+        return $builder->get()->getResultArray();
     }
 }
