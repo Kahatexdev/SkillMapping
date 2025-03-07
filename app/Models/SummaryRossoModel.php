@@ -12,7 +12,7 @@ class SummaryRossoModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_sr', 'id_batch', 'id_karyawan', 'average_produksi', 'average_bs', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_sr', 'id_batch', 'id_karyawan', 'average_produksi', 'average_bs', 'created_at', 'updated_at', 'area'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

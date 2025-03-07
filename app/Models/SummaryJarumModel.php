@@ -12,7 +12,7 @@ class SummaryJarumModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_sj', 'id_karyawan', 'tgl_input', 'used_needle', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_sj', 'id_karyawan', 'tgl_input', 'used_needle', 'created_at', 'updated_at', 'area'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
