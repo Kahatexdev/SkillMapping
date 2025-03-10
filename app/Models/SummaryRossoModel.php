@@ -6,13 +6,13 @@ use CodeIgniter\Model;
 
 class SummaryRossoModel extends Model
 {
-    protected $table            = 'summary_rosso';
+    protected $table            = 'sum_rosso';
     protected $primaryKey       = 'id_sr';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_sr', 'id_batch', 'id_karyawan', 'average_produksi', 'average_bs', 'created_at', 'updated_at', 'area'];
+    protected $allowedFields    = ['id_sr', 'id_karyawan', 'tgl_input', 'produksi', 'perbaikan', 'created_at', 'updated_at', 'area'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -170,4 +170,37 @@ class SummaryRossoModel extends Model
         // Step 3: Return the first 3 with the lowest average_bs
         return array_slice($top7Data, 0, 3); // Return the top 3 with the lowest defects
     }
+
+    public function validasiKaryawan($tgl_input, $id_karyawan)
+    {
+        return $this->select('sum_rosso.id_sr, sum_rosso.tgl_input, sum_rosso.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.tgl_lahir, bagian.area')
+            ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->where('sum_rosso.tgl_input', $tgl_input)
+            ->where('sum_rosso.id_karyawan', $id_karyawan)
+            ->first();
+    }
+
+    public function getSummaryRosso($area, $id_batch)
+    {
+        return $this->select('sum_rosso.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk,  SUM(sum_rosso.produksi) AS total_produksi, SUM(sum_rosso.perbaikan) AS total_perbaikan, periode.nama_periode, periode.id_batch, sum_rosso.area, periode.start_date, periode.end_date, periode.jml_libur, bagian.nama_bagian')
+            ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date', 'inner')
+            ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan', 'inner')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'inner')
+            ->where('sum_rosso.area', $area)
+            ->where('periode.id_batch', $id_batch)
+            ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date') // Grouping berdasarkan kode_kartu dan periode
+            ->findAll();
+    }
+    // public function getSummaryRosso($id_batch, $area)
+    // {
+    //     return $this->select('sum_rosso.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk,  SUM(sum_rosso.produksi) AS total_produksi, SUM(sum_rosso.perbaikan) AS total_perbaikan, periode.nama_periode, periode.id_batch, sum_rosso.area, periode.start_date, periode.end_date, periode.jml_libur, bagian.nama_bagian')
+    //         ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date', 'inner')
+    //         ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan', 'inner')
+    //         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'inner')
+    //         ->where('periode.id_batch', $id_batch)
+    //         ->where('sum_rosso.area', $area)
+    //         ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date') // Grouping berdasarkan kode_kartu dan periode
+    //         ->findAll();
+    // }
 }

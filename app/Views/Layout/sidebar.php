@@ -363,10 +363,9 @@
                     </a>
                 </li> -->
                 <!-- penilaian -->
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link <?= $title == 'Penilaian Mandor' ? 'active' : '' ?>"
                         href="<?= base_url('Monitoring/dataPenilaian') ?>">
-                        <!-- icon Penilaian -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
@@ -391,12 +390,11 @@
                         </div>
                         <span class="nav-link-text ms-1">Penilaian Mandor</span>
                     </a>
-                </li>
+                </li> -->
                 <!-- report penilaian -->
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Report Penilaian' ? 'active' : '' ?>"
                         href="<?= base_url('Monitoring/reportPenilaian') ?>">
-                        <!-- icon Penilaian -->
                         <div
                             class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <svg class="text-dark" width="16px" height="16px" viewBox="0 0 40 44" version="1.1"
