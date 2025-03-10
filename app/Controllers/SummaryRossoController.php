@@ -55,8 +55,8 @@ class SummaryRossoController extends BaseController
             $sheet->setCellValue('A1', 'TANGGAL');
             $sheet->setCellValue('B1', 'NAMA LENGKAP');
             $sheet->setCellValue('C1', 'KODE KARTU');
-            $sheet->setCellValue('D1', 'PERBAIKAN');
-            $sheet->setCellValue('E1', 'PRODUKSI');
+            $sheet->setCellValue('D1', 'PRODUKSI');
+            $sheet->setCellValue('E1', 'PERBAIKAN');
 
             // Mengatur lebar kolom
             $sheet->getColumnDimension('A')->setWidth(20);
@@ -569,8 +569,8 @@ class SummaryRossoController extends BaseController
                     $tanggal = $worksheet->getCell('A' . $row)->getFormattedValue();
                     // $nama = $worksheet->getCell('B' . $row)->getValue();
                     $kode_kartu = strtolower(trim($worksheet->getCell('C' . $row)->getValue()));
-                    $perbaikan = $worksheet->getCell('D' . $row)->getValue();
-                    $produksi = $worksheet->getCell('E' . $row)->getValue();
+                    $produksi = $worksheet->getCell('D' . $row)->getValue();
+                    $perbaikan = $worksheet->getCell('E' . $row)->getValue();
                     $tgl_input = date('Y-m-d', strtotime(str_replace('/', '-', $tanggal)));
 
                     // **Cek apakah kode kartu sudah muncul sebelumnya dalam file Excel**
@@ -612,8 +612,8 @@ class SummaryRossoController extends BaseController
                     $dataToInsert[] = [
                         'tgl_input' => $tgl_input,
                         'id_karyawan' => $id_karyawan,
-                        'perbaikan' => is_numeric($perbaikan) ? $perbaikan : 0,
                         'produksi' => is_numeric($produksi) ? $produksi : 0,
+                        'perbaikan' => is_numeric($perbaikan) ? $perbaikan : 0,
                         'area' => $area,
                         'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s')
