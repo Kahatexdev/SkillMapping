@@ -131,6 +131,7 @@ class BagianModel extends Model
         // get area where nama_bagian = $nama_bagian and area_utama = $area_utama group by area
         return $this->select('area')
             ->where('area IS NOT NULL', null, false)
+            ->where('nama_bagian !=', 'ROSSO')
             ->groupBy('area')
             ->findAll();
     }
