@@ -172,4 +172,15 @@ class BsmcModel extends Model
             ->where('bagian.area', $area)
             ->get()->getResultArray();
     }
+
+    public function getFilteredData($area, $startDate, $endDate)
+    {
+        return $this->select('bs_mc.*, karyawan.kode_kartu, karyawan.nama_karyawan')
+        ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
+        ->where('area', $area)
+        ->where('tgl_input >=', $startDate)
+        ->where('tgl_input <=', $endDate)
+        ->orderBy('tgl_input', 'ASC')
+        ->findAll();
+    }
 }

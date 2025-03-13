@@ -97,4 +97,15 @@ class SummaryJarumModel extends Model
             ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date')
             ->findAll();
     }
+
+    public function getFilteredData($area, $startDate, $endDate)
+    {
+        return $this->select('sum_jarum.*, karyawan.kode_kartu, karyawan.nama_karyawan')
+            ->join('karyawan', 'karyawan.id_karyawan = sum_jarum.id_karyawan')
+            ->where('area', $area)
+            ->where('tgl_input >=', $startDate)
+            ->where('tgl_input <=', $endDate)
+            ->orderBy('tgl_input', 'ASC')
+            ->findAll();
+    }
 }

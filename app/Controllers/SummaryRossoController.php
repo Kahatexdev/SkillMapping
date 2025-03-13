@@ -23,7 +23,7 @@ class SummaryRossoController extends BaseController
     protected $karyawanmodel;
     protected $absenmodel;
     protected $usermodel;
-    protected $summaryRossoModel;
+    protected $summaryRosso;
     protected $periodeModel;
     protected $penilaianmodel;
     protected $batchModel;
@@ -990,5 +990,36 @@ class SummaryRossoController extends BaseController
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit;
+    }
+
+    public function filterRosso($area_utama)
+    {
+        $tgl_awal  = $this->request->getPost('tgl_awal');
+        $tgl_akhir = $this->request->getPost('tgl_akhir');
+
+        if (empty($tgl_awal) || empty($tgl_akhir)) {
+            $tgl_awal  = date('Y-m-d');
+            $tgl_akhir = date('Y-m-d');
+        }
+
+        $rosso = $this->summaryRosso->getFilteredData($area_utama, $tgl_awal, $tgl_akhir);
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Rosso',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'active9' => 'active',
+            'area_utama' => $area_utama,
+            'rosso' => $rosso
+        ];
+
+        return view('rosso/filter-rosso', $data);
     }
 }

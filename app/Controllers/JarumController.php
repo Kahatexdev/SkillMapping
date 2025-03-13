@@ -639,4 +639,35 @@ class JarumController extends BaseController
         $writer->save('php://output');
         exit;
     }
+
+    public function filterJarum($area)
+    {
+        $tgl_awal  = $this->request->getPost('tgl_awal');
+        $tgl_akhir = $this->request->getPost('tgl_akhir');
+
+        if (empty($tgl_awal) || empty($tgl_akhir)) {
+            $tgl_awal  = date('Y-m-d');
+            $tgl_akhir = date('Y-m-d');
+        }
+
+        $pJarum = $this->summaryJarum->getFilteredData($area, $tgl_awal, $tgl_akhir);
+
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Penggunaan Jarum',
+            'active1' => '',
+            'active2' => '',
+            'active3' => '',
+            'active4' => '',
+            'active5' => '',
+            'active6' => '',
+            'active7' => '',
+            'active8' => '',
+            'active9' => 'active',
+            'area' => $area,
+            'pJarum' => $pJarum
+        ];
+
+        return view('jarum/filter-jarum', $data);
+    }
 }

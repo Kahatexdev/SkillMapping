@@ -15,9 +15,10 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
+                            <a href="<?= base_url('Monitoring/filterRosso/' . $area_utama) ?>" class="btn bg-gradient-info">
+                                <i class="ni ni-calendar-grid-58 text-lg opacity-10 me-2" aria-hidden="true"></i>
+                                Filter Report
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -26,8 +27,8 @@
     </div>
     <div class="row">
         <?php foreach ($batch as $b) : ?>
-        <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url('Monitoring/reportSummaryRosso/' .$area_utama . '/'. $b['id_batch']) ?>">
+            <div class="col-xl-3 col-sm-3 mb-xl-0 mb-4 mt-2">
+                <a href="<?= base_url('Monitoring/reportSummaryRosso/' . $area_utama . '/' . $b['id_batch']) ?>">
                     <div class="card">
                         <div class="card-body p-3">
                             <div class="row">
@@ -46,9 +47,9 @@
                             </div>
                         </div>
                     </div>
-                </a>                    
+                </a>
             </div>
-            <?php endforeach ?>
+        <?php endforeach ?>
     </div>
 </div>
 

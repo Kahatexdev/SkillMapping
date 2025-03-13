@@ -192,15 +192,15 @@ class SummaryRossoModel extends Model
             ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date') // Grouping berdasarkan kode_kartu dan periode
             ->findAll();
     }
-    // public function getSummaryRosso($id_batch, $area)
-    // {
-    //     return $this->select('sum_rosso.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk,  SUM(sum_rosso.produksi) AS total_produksi, SUM(sum_rosso.perbaikan) AS total_perbaikan, periode.nama_periode, periode.id_batch, sum_rosso.area, periode.start_date, periode.end_date, periode.jml_libur, bagian.nama_bagian')
-    //         ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date', 'inner')
-    //         ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan', 'inner')
-    //         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'inner')
-    //         ->where('periode.id_batch', $id_batch)
-    //         ->where('sum_rosso.area', $area)
-    //         ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date') // Grouping berdasarkan kode_kartu dan periode
-    //         ->findAll();
-    // }
+
+    public function getFilteredData($area_utama, $startDate, $endDate)
+    {
+        return $this->select('sum_rosso.*, karyawan.kode_kartu, karyawan.nama_karyawan')
+            ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
+            ->where('area', $area_utama)
+            ->where('tgl_input >=', $startDate)
+            ->where('tgl_input <=', $endDate)
+            ->orderBy('tgl_input', 'ASC')
+            ->findAll();
+    }
 }

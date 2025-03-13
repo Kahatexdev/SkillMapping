@@ -81,6 +81,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     // bsmc
     $routes->get('dataBsmc', 'MonitoringController::bsmc');
     $routes->get('dataBsmc/(:segment)', 'BsMcController::tampilPerBatch/$1');
+    $routes->get('filterBsmc/(:segment)', 'BsMcController::filterBsmc/$1');
+    $routes->post('filterBsmc/(:segment)', 'BsMcController::filterBsmc/$1');
     // $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::summaryBsmc/$1/$2');
     $routes->get('reportSummaryBsmc/(:segment)/(:num)', 'BsMcController::sumBsMesin/$1/$2');
     $routes->get('downloadTemplateBsmc', 'BsMcController::downloadTemplate');
@@ -104,11 +106,15 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('rossoDelete/(:num)', 'SummaryRossoController::delete/$1');
     $routes->get('reportSummaryRosso/(:segment)/(:num)', 'SummaryRossoController::excelSummaryRosso/$1/$2');
     $routes->get('rossoDetail/(:num)', 'SummaryRossoController::show/$1');
+    $routes->get('filterRosso/(:segment)', 'SummaryRossoController::filterRosso/$1');
+    $routes->post('filterRosso/(:segment)', 'SummaryRossoController::filterRosso/$1');
     // summary jarum
     $routes->get('dataJarum', 'MonitoringController::jarum');
     $routes->get('dataJarum/(:segment)', 'JarumController::tampilPerBatch/$1');
     $routes->get('summaryJarum', 'JarumController::summaryJarum');
     $routes->get('downloadTemplateJarum', 'JarumController::downloadTemplate');
+    $routes->get('filterJarum/(:segment)', 'JarumController::filterJarum/$1');
+    $routes->post('filterJarum/(:segment)', 'JarumController::filterJarum/$1');
     // $routes->post('jarumStoreImport', 'JarumController::upload');
     $routes->post('jarumStoreInput', 'JarumController::upload');
     $routes->post('getMontirByArea', 'MonitoringController::getMontirByArea');
