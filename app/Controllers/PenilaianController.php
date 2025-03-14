@@ -1012,7 +1012,7 @@ class PenilaianController extends BaseController
                 $bsmc = $this->bsmcModel->getBsmcByIdKaryawan($p['id_karyawan']);
                 $getTop3 = $this->bsmcModel->getTop3Produksi($area_utama, $id_batch);
                 $getMinAvgBS = $this->bsmcModel->getTop3LowestBS($area_utama, $id_batch);
-                dd ($bsmc, $getTop3, $getMinAvgBS);
+                // dd ($bsmc, $getTop3, $getMinAvgBS);
                 $getTop3Rosso = $this->rossoModel->getTop3Produksi($area_utama, $id_batch);
                 // dd ($getTop3Rosso);
                 $getMinAvgBSRosso = $this->rossoModel->getTop3LowestBS($area_utama, $id_batch);
