@@ -507,4 +507,48 @@ class PenilaianModel extends Model
 
         return $builder->get()->getResultArray();
     }
+
+    // public function raportPenilaian($area, $batch = null)
+    // {
+    //     return $this->db->table('penilaian p') // Pastikan alias digunakan dengan benar
+    //         ->select('k.kode_kartu, k.nama_karyawan, k.jenis_kelamin, k.tgl_masuk, k.shift, b.nama_bagian, p.index_nilai, p.grade_akhir, p.id_periode, bc.id_batch')
+    //         ->join('karyawan k', 'k.id_karyawan = p.karyawan_id', 'left')
+    //         ->join('bagian b', 'b.id_bagian = k.id_bagian', 'left')
+    //         ->join('periode per', 'per.id_periode = p.id_periode', 'left')
+    //         ->join('batch bc', 'bc.id_batch = per.id_batch', 'left')
+    //         ->where('b.area', $area)
+    //         ->where('bc.id_batch', $batch)
+    //         ->groupBy('p.id_penilaian')
+    //         ->get()
+    //         ->getResultArray();
+    // }
+
+    public function raportPenilaian($area)
+    {
+        return $this->db->table('penilaian p')
+            ->select("
+            k.kode_kartu, k.nama_karyawan, k.jenis_kelamin, k.tgl_masuk, k.shift, b.nama_bagian,
+            MAX(CASE WHEN MONTH(per.end_date) = 1 THEN CONCAT(COALESCE(p.index_nilai, '0'),  COALESCE(p.grade_akhir, '-')) END) AS nilai_jan,
+            MAX(CASE WHEN MONTH(per.end_date) = 2 THEN CONCAT(COALESCE(p.index_nilai, '0'),  COALESCE(p.grade_akhir, '-')) END) AS nilai_feb,
+            MAX(CASE WHEN MONTH(per.end_date) = 3 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_mar,
+            MAX(CASE WHEN MONTH(per.end_date) = 4 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_apr,
+            MAX(CASE WHEN MONTH(per.end_date) = 5 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_mei,
+            MAX(CASE WHEN MONTH(per.end_date) = 6 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_jun,
+            MAX(CASE WHEN MONTH(per.end_date) = 7 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_jul,
+            MAX(CASE WHEN MONTH(per.end_date) = 8 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_agu,
+            MAX(CASE WHEN MONTH(per.end_date) = 9 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_sep,
+            MAX(CASE WHEN MONTH(per.end_date) = 10 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_okt,
+            MAX(CASE WHEN MONTH(per.end_date) = 11 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_nov,
+            MAX(CASE WHEN MONTH(per.end_date) = 12 THEN CONCAT(COALESCE(p.index_nilai, '0'), COALESCE(p.grade_akhir, '-')) END) AS nilai_des
+        ")
+            ->join('karyawan k', 'k.id_karyawan = p.karyawan_id', 'left')
+            ->join('bagian b', 'b.id_bagian = k.id_bagian', 'left')
+            ->join('periode per', 'per.id_periode = p.id_periode', 'left')
+            ->join('batch bc', 'bc.id_batch = per.id_batch', 'left')
+            ->where('b.area', $area)
+            ->groupBy('k.kode_kartu, k.nama_karyawan, k.jenis_kelamin, k.tgl_masuk, k.shift, b.nama_bagian')
+            ->orderBy('k.shift')
+            ->get()
+            ->getResultArray();
+    }
 }
