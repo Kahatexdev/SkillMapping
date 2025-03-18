@@ -220,16 +220,15 @@ class JarumController extends BaseController
         }
 
         $data = [];
-        for ($i = 0; $i < count($getArea); $i++) {
+        for ($i = 0; $i < count($getKaryawan); $i++) {
             $data[] = [
                 'tgl_input'    => $getTglInput,
                 'id_karyawan'  => $getKaryawan[$i],
                 'used_needle'  => $getNeedle[$i],
                 'created_at'   => date('Y-m-d H:i:s'),
-                'area'         => $getArea[$i]
+                'area'         => $getArea
             ];
         }
-
         if (!empty($data)) {
             $this->summaryJarum->insertBatch($data);
         }
