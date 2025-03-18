@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
     <!-- Statistik Cards -->
     <div class="row">
         <!-- Card Total Karyawan -->
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4 mt-2">
             <a href="#">
                 <div class="card">
                     <div class="card-body p-3">
@@ -31,7 +31,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
         </div>
 
         <!-- Card Perpindahan Bulan Ini -->
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4 mt-2">
             <a href="<?= base_url($role . '/historyPindahKaryawan'); ?>">
                 <div class="card">
                     <div class="card-body p-3">
@@ -54,7 +54,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
         </div>
 
         <!-- Card Rata-rata Grade -->
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4 mt-2">
             <a href="#">
                 <div class="card">
                     <div class="card-body p-3">
@@ -76,7 +76,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
             </a>
         </div>
 
-        <!-- Card Skill Gap -->
+        <!-- Card Skill Gap
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
             <a href="#">
                 <div class="card">
@@ -97,7 +97,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
                     </div>
                 </div>
             </a>
-        </div>
+        </div> -->
     </div>
 
     <!-- Grafik Data -->

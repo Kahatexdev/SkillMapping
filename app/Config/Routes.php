@@ -208,6 +208,8 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     // http://localhost:8080/Monitoring/exelReportBatch/3/KK1
     $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 
+    $routes->get('raportPenilaian/(:any)', 'MandorController::raportPenilaian/$1');
+
     $routes->get('chat', 'TrainingSchoolController::chat');
     // routes/web.php atau routes.php (tergantung pada versi CodeIgniter)
     $routes->get('contacts', 'ChatController::getContactsWithLastMessage');

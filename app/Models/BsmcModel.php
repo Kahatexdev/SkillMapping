@@ -55,67 +55,84 @@ class BsmcModel extends Model
 
     public function getKaryawan()
     {
-        return $this->select('bs_mesin.id_bsmc, bs_mesin.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mesin.tanggal, bs_mesin.no_model, bs_mesin.inisial, bs_mesin.qty_bs, bs_mesin.qty_prod_mc, bs_mesin.created_at, bs_mesin.updated_at')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
+        return $this->select('bs_mc.id_bsmc, bs_mc.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mc.tanggal, bs_mc.no_model, bs_mc.inisial, bs_mc.qty_bs, bs_mc.qty_prod_mc, bs_mc.created_at, bs_mc.updated_at')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
             ->findAll();
     }
 
     public function getDatabyAreaUtama($area_utama)
     {
-        return $this->db->table('bs_mesin')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
+        return $this->db->table('bs_mc')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
             ->where('bagian.area_utama', $area_utama)
             ->get()->getResultArray();
     }
 
-    public function getDatabyAreaUtamaAndPeriodeInBatch($area_utama, $id_batch)
-    {
-        return $this->db->table('bs_mesin')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
-            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
-            ->where('batch.id_batch', $id_batch)
-            ->where('bagian.area_utama', $area_utama)
-            ->get()->getResultArray();
-    }
-
-    // public function getTop3Produksi($area_utama, $id_batch)
+    // public function getDatabyAreaUtamaAndPeriodeInBatch($area_utama, $id_batch)
     // {
-    //     return $this->select('bs_mesin.average_produksi, bs_mesin.average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.id_batch')
-    //         ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
+    //     return $this->db->table('bs_mc')
+    //         ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
     //         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-    //         ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
-    //         ->where('bagian.area_utama', $area_utama)
+    //         ->join('batch', 'batch.id_batch = bs_mc.id_batch')
     //         ->where('batch.id_batch', $id_batch)
-    //         ->orderBy('bs_mesin.average_produksi', 'DESC') // Order by highest production
-    //         // ->orderBy('bs_mesin.average_bs', 'ASC') // Order by lowest defect
-    //         ->limit(3) // Limit to top 3
+    //         ->where('bagian.area_utama', $area_utama)
     //         ->get()->getResultArray();
     // }
 
-    public function getMinAvgBS($area_utama, $id_batch)
+    public function getDatabyAreaUtamaAndPeriodeInBatch($area_utama, $id_batch)
     {
-        return $this->select('bs_mesin.average_produksi, bs_mesin.average_bs, karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
+        return $this->db->table('bs_mc')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
+            ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
+            ->where('batch.id_batch', $id_batch)
+            ->where('bagian.area_utama', $area_utama)
+            ->get()->getResultArray();
+    }
+
+    public function getTop3Produksi($area_utama, $id_batch)
+    {
+        return $this->select('AVG(bs_mc.produksi) AS average_produksi, AVG(bs_mc.bs_mc) AS average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.id_batch')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
             ->where('bagian.area_utama', $area_utama)
             ->where('batch.id_batch', $id_batch)
-            ->orderBy('bs_mesin.average_produksi', 'DESC') // First, order by highest production
+            ->groupBy('bs_mc.id_karyawan')
+            ->orderBy('average_produksi', 'DESC') // Order by highest production
+            // ->orderBy('bs_mc.average_bs', 'ASC') // Order by lowest defect
+            ->limit(3) // Limit to top 3
+            ->get()->getResultArray();
+    }
+
+    public function getMinAvgBS($area_utama, $id_batch)
+    {
+        return $this->select('bs_mc.produksi, bs_mc.bs_mc, karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
+            ->where('bagian.area_utama', $area_utama)
+            ->where('batch.id_batch', $id_batch)
+            ->orderBy('bs_mc.produksi', 'DESC') // First, order by highest production
             ->limit(7) // Limit to top 7 results based on production
             ->get()->getResultArray();
     }
     public function getTop3LowestBS($area_utama, $id_batch)
     {
         // Step 1: Get the top 7 data based on highest production
-        $top7Data = $this->select('bs_mesin.average_produksi, bs_mesin.average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
+        $top7Data = $this->select('AVG(bs_mc.produksi) AS average_produksi, AVG(bs_mc.bs_mc) AS average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            ->join('batch', 'batch.id_batch = bs_mesin.id_batch')
+            ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
             ->where('bagian.area_utama', $area_utama)
             ->where('batch.id_batch', $id_batch)
-            ->orderBy('bs_mesin.average_produksi', 'DESC') // Order by highest production
+            ->groupBy('bs_mc.id_karyawan')
+            ->orderBy('average_produksi', 'DESC') // Order by highest production
             ->limit(7) // Limit to top 7 results based on production
             ->get()->getResultArray();
 
@@ -130,16 +147,20 @@ class BsmcModel extends Model
 
     public function getBsmcByIdBatch($id_batch)
     {
-        return $this->select('bs_mesin.id_bsmc, bs_mesin.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mesin.id_batch, bs_mesin.average_produksi, bs_mesin.average_bs, bs_mesin.created_at, bs_mesin.updated_at')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
-            ->where('bs_mesin.id_batch', $id_batch)
+        return $this->select('bs_mc.id_bsmc, bs_mc.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mc.tgl_input, bs_mc.produksi, bs_mc.bs_mc, bs_mc.created_at, bs_mc.updated_at')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
+            ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
+            ->where('batch.id_batch', $id_batch)
             ->findAll();
     }
     public function getBsmcByIdKaryawan($id_karyawan)
     {
-        return $this->select('bs_mesin.id_bsmc, bs_mesin.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, bs_mesin.id_batch, bs_mesin.average_produksi, bs_mesin.average_bs, bs_mesin.created_at, bs_mesin.updated_at')
-            ->join('karyawan', 'karyawan.id_karyawan = bs_mesin.id_karyawan')
-            ->where('bs_mesin.id_karyawan', $id_karyawan)
+        return $this->select('bs_mc.id_bsmc, bs_mc.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.shift, AVG(bs_mc.produksi) AS average_produksi, AVG(bs_mc.bs_mc) AS average_bs, bs_mc.created_at, bs_mc.updated_at')
+            ->join('karyawan', 'karyawan.id_karyawan = bs_mc.id_karyawan')
+            ->join('periode', 'bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
+            ->where('bs_mc.id_karyawan', $id_karyawan)
             ->findAll();
     }
     public function validasiKaryawan($tgl_input, $id_karyawan)
