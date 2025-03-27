@@ -2,7 +2,7 @@
 
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
 
- $this->extend('Layout/index'); ?>
+$this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 <div class="container-fluid py-4">
     <!-- Statistik Cards -->
@@ -150,10 +150,10 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat\DateFormatter;
                     <div class="card h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title"><?= esc($mandor['username']); ?></h5>
+                                <h5 class="card-title"><?= esc($mandor['area']); ?></h5>
                                 <!-- Tombol modal -->
                                 <button type="button" class="btn btn-sm <?= $isComplete ? 'btn-success' : 'btn-danger' ?>"
-                                    data-bs-toggle="modal" data-bs-target="#modalEmployeeEvaluation" data-area="<?= esc($mandor['username']); ?>">
+                                    data-bs-toggle="modal" data-bs-target="#modalEmployeeEvaluation" data-area="<?= esc($mandor['area']); ?>">
                                     <?= $isComplete ? 'Selesai' : 'Belum Selesai'; ?>
                                 </button>
                             </div>

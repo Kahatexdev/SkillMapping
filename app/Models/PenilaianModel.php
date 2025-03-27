@@ -468,6 +468,8 @@ class PenilaianModel extends Model
         $builder->select('
         user.id_user, 
         user.username, 
+        user.role,
+        user.area,
         COUNT(DISTINCT karyawan.id_karyawan) AS total_karyawan, 
         COUNT(DISTINCT penilaian.id_penilaian) AS total_penilaian,
         penilaian.id_periode
