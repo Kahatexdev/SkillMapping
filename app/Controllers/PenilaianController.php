@@ -975,7 +975,7 @@ class PenilaianController extends BaseController
                 // Get bulan untuk masing-masing karyawan
                 // Get bulan untuk masing-masing karyawan
                 $getBulanData = $this->penilaianmodel->getPenilaianGroupByBulan($p['id_karyawan'], $p['id_batch'], $p['id_jobrole']);
-
+                // dd ($getBulanData);
                 // Set nilai default untuk kolom G, H, dan I
                 $periodeAwal = $periodeTengah = $periodeAkhir = '';
 
@@ -1012,9 +1012,13 @@ class PenilaianController extends BaseController
                 $bsmc = $this->bsmcModel->getBsmcByIdKaryawan($p['id_karyawan']);
                 $getTop3 = $this->bsmcModel->getTop3Produksi($area_utama, $id_batch);
                 $getMinAvgBS = $this->bsmcModel->getTop3LowestBS($area_utama, $id_batch);
+                // dd ($bsmc, $getTop3, $getMinAvgBS);
                 $getTop3Rosso = $this->rossoModel->getTop3Produksi($area_utama, $id_batch);
+                // dd ($getTop3Rosso);
                 $getMinAvgBSRosso = $this->rossoModel->getTop3LowestBS($area_utama, $id_batch);
+                // dd ($getMinAvgBSRosso);
                 $getTop3UsedNeedle = $this->jarumModel->getTop3Produksi($area_utama, $id_batch);
+                // dd ($getTop3UsedNeedle);
 
 
                 // Tambahkan kolom rata-rata dan grade ke data
@@ -1039,7 +1043,7 @@ class PenilaianController extends BaseController
                     } else {
                         $data[] = NULL;
                     }
-                    $data[] = "";
+                    // $data[] = "";
                     // jika karayawan di $getMinAvgBS maka berikan angka 1/2/3 sesuai urutan
                     if ($getMinAvgBS) {
                         $noMinAvgBS = 1;
@@ -1065,7 +1069,7 @@ class PenilaianController extends BaseController
                     } else {
                         $data[] = NULL;
                     }
-                    $data[] = "";
+                    // $data[] = "";
                     // jika karyawan di $getMinAvgBSRosso maka berikan angka 1/2/3 sesuai urutan
                     if ($getMinAvgBSRosso) {
                         $noMinAvgBSRosso = 1;

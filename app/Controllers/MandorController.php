@@ -14,6 +14,7 @@ use App\Models\SummaryRossoModel;
 use App\Models\BatchModel;
 use App\Models\PeriodeModel;
 use App\Models\PenilaianModel;
+
 class MandorController extends BaseController
 {
     protected $karyawanmodel;
@@ -88,9 +89,7 @@ class MandorController extends BaseController
     }
 
 
-    public function index()
-    {
-    }
+    public function index() {}
 
     public function listArea()
     {
@@ -186,7 +185,7 @@ class MandorController extends BaseController
 
         // Default filter untuk karyawan
         $karyawanQuery = $this->karyawanmodel->select('karyawan.*')
-        ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join dengan tabel bagian
+            ->join('bagian', 'karyawan.id_bagian = bagian.id_bagian', 'left'); // Join dengan tabel bagian
 
         // Tambahkan filter berdasarkan nama_bagian
         if ($nama_bagian) {
@@ -268,7 +267,7 @@ class MandorController extends BaseController
             return redirect()->back()->with('error', 'Job description not available.');
         }
 
-        
+
         // $jobdesc = json_decode($id_jobrole['jobdesc'], true ) ?? [];
         $keterangan = json_decode($id_jobrole['keterangan'], true) ?? [];
         // Gabungkan jobdesc berdasarkan keterangannya
@@ -344,6 +343,21 @@ class MandorController extends BaseController
         return view('Penilaian/create', $data);
     }
 
+    public function raportPenilaian($area)
+    {
+        $raport = $this->penilaianmodel->raportPenilaian($area);
+        // dd($raport);
+        $data = [
+            'role' => session()->get('role'),
+            'title' => 'Raport Penilaian',
+            'active1' => 'active',
+            'area' => session()->get('area'),
+            'raport' => $raport
+        ];
+
+        return view('Mandor/raportpenilaian', $data);
+    }
+
     const bobot_nilai = [
         // 0 => 0,
         1 => 15,
@@ -353,7 +367,7 @@ class MandorController extends BaseController
         5 => 85,
         6 => 100
     ];
-    
+
     // Controller method to handle AJAX request
     public function updateIndexNilai()
     {
@@ -536,7 +550,7 @@ class MandorController extends BaseController
         // dd ($penilaian);
 
         // return view
-        
+
         return $this->response->setJSON($penilaian);
     }
 

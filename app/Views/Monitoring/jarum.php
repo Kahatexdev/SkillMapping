@@ -13,38 +13,38 @@
                     <form action="<?= base_url('Monitoring/jarumStoreInput') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-5">
                                 <div class="form-group">
                                     <label for="id_batch">Pilih Tanggal Input</label>
                                     <input type="date" class="form-control" id="tgl_input" name="tgl_input" required>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label for="">Area</label>
+                                    <select class="form-select area-dropdown" name="area" id="area" required>
+                                        <option value="">Pilih Area</option>
+                                        <?php foreach ($getArea as $key => $ar) : ?>
+                                            <option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
                         <div class="div" id="inputRows">
                             <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="">Area</label>
-                                        <select class="form-select" name="area[]" id="area" required>
-                                            <option value="">Pilih Area</option>
-                                            <?php foreach ($getArea as $key => $ar) : ?>
-                                                <option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>
-                                            <?php endforeach ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
+                                <div class="col-md-5">
                                     <label for="">Montir</label>
                                     <select class="form-control" id="id_karyawan" name="id_karyawan[]" required>
                                         <option value="">Pilih Montir</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-5">
                                     <label for="">Pemakaian Jarum</label>
                                     <input type="number" class="form-control" name="used_needle[]" id="used_needle" required>
                                 </div>
-                                <div class="col-md-3 text-center">
+                                <div class="col-md-2 text-center">
                                     <label for="">Aksi</label>
                                     <div class="d-flex justify-content-center gap-2">
                                         <button type="button" class="btn btn-info" id="addRow">
@@ -182,33 +182,67 @@
     document.addEventListener("DOMContentLoaded", function() {
         const addRowBtn = document.getElementById("addRow");
         const inputRowsContainer = document.getElementById("inputRows");
-        const form = document.querySelector("form");
+        const areaDropdown = document.getElementById("area");
+        let montirOptions = ""; // Cache untuk opsi Montir
 
+        // Saat area berubah, update semua dropdown Montir di setiap row
+        areaDropdown.addEventListener("change", function() {
+            let area = this.value;
+
+            // Kosongkan Montir dulu
+            document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
+                dropdown.innerHTML = '<option value="">Loading...</option>';
+            });
+
+            if (area !== "") {
+                $.ajax({
+                    url: "<?= base_url($role . '/getMontirByArea') ?>",
+                    type: "POST",
+                    data: {
+                        area: area
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        montirOptions = '<option value="">Pilih Montir</option>';
+                        response.forEach(montir => {
+                            montirOptions += `<option value="${montir.id_karyawan}">${montir.nama_karyawan} | ${montir.kode_kartu}</option>`;
+                        });
+
+                        // Perbarui semua dropdown Montir yang ada
+                        document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
+                            dropdown.innerHTML = montirOptions;
+                        });
+                    },
+                    error: function() {
+                        document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
+                            dropdown.innerHTML = '<option value="">Error</option>';
+                        });
+                    }
+                });
+            } else {
+                document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
+                    dropdown.innerHTML = '<option value="">Pilih Montir</option>';
+                });
+            }
+        });
+
+        // Tambahkan row baru
         addRowBtn.addEventListener("click", function() {
             const row = document.createElement("div");
             row.classList.add("row", "mt-2");
 
             row.innerHTML = `
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="">Area</label>
-                    <select class="form-select area-dropdown" name="area[]" required>
-                        <option value="">Pilih Area</option>
-                        ${getAreaOptions()}
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <label for="">Montir</label>
                 <select class="form-control montir-dropdown" name="id_karyawan[]" required>
-                    <option value="">Pilih Montir</option>
+                    ${montirOptions}
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <label for="">Pemakaian Jarum</label>
                 <input type="number" class="form-control" name="used_needle[]" required>
             </div>
-            <div class="col-md-3 text-center">
+            <div class="col-md-2 text-center">
                 <label for="">Aksi</label>
                 <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-outline-danger remove-row" type="button">
@@ -220,53 +254,14 @@
 
             inputRowsContainer.appendChild(row);
 
-            // Tambahkan event listener untuk hapus row
+            // Event listener untuk hapus row
             row.querySelector(".remove-row").addEventListener("click", function() {
                 row.remove();
             });
+
+            // Set Montir sesuai area yang sudah dipilih sebelumnya
+            row.querySelector(".montir-dropdown").innerHTML = montirOptions;
         });
-
-        // Delegasi event untuk menangani perubahan area di semua dropdown area
-        document.addEventListener("change", function(event) {
-            if (event.target.classList.contains("area-dropdown")) {
-                let area = event.target.value;
-                let montirDropdown = event.target.closest(".row").querySelector(".montir-dropdown");
-
-                montirDropdown.innerHTML = '<option value="">Loading...</option>';
-
-                if (area !== "") {
-                    $.ajax({
-                        url: "<?= base_url($role . '/getMontirByArea') ?>",
-                        type: "POST",
-                        data: {
-                            area: area
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            let options = '<option value="">Pilih Montir</option>';
-                            response.forEach(montir => {
-                                options += `<option value="${montir.id_karyawan}">${montir.nama_karyawan} | ${montir.kode_kartu}</option>`;
-                            });
-                            montirDropdown.innerHTML = options;
-                        },
-                        error: function() {
-                            montirDropdown.innerHTML = '<option value="">Error</option>';
-                        }
-                    });
-                } else {
-                    montirDropdown.innerHTML = '<option value="">Pilih Montir</option>';
-                }
-            }
-        });
-
-        // Fungsi untuk mendapatkan daftar opsi area yang tersedia
-        function getAreaOptions() {
-            let options = "";
-            <?php foreach ($getArea as $ar) : ?>
-                options += `<option value="<?= $ar['area'] ?>"><?= $ar['area'] ?></option>`;
-            <?php endforeach ?>
-            return options;
-        }
     });
 </script>
 <?php $this->endSection(); ?>

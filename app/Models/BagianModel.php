@@ -128,12 +128,13 @@ class BagianModel extends Model
 
     public function getAreaGroupByArea()
     {
-        // get area where nama_bagian = $nama_bagian and area_utama = $area_utama group by area
         return $this->select('area')
-            ->where('area IS NOT NULL', null, false)
+            ->where('area IS NOT NULL', null, false) // Pastikan area tidak null
+            ->whereNotIn('nama_bagian', ['ROSSO', 'SEWING']) // Menggunakan whereNotIn untuk pengecualian
             ->groupBy('area')
             ->findAll();
     }
+
     public function getMontirByArea($area)
     {
         return $this->select('id_bagian')

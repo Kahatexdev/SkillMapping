@@ -15,9 +15,10 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
+                            <a href="<?= base_url('Monitoring/filterJarum/' . $area) ?>" class="btn bg-gradient-info">
+                                <i class="ni ni-calendar-grid-58 text-lg opacity-10 me-2" aria-hidden="true"></i>
+                                Filter Report
+                            </a>
                         </div>
                     </div>
                 </div>
