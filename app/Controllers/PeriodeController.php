@@ -46,7 +46,46 @@ class PeriodeController extends BaseController
         $idBatch = $this->request->getPost('nama_batch');
         $startDate = $this->request->getPost('start_date');
         $endDate = $this->request->getPost('end_date');
-        $jml_libur = $this->request->getPost('jml_libur');
+        // dd($startDate, $endDate);
+        // api hari libur
+
+        $url = 'http://172.23.44.14/CapacityApps/public/api/getHariLibur';
+        $client = \Config\Services::curlrequest();
+
+        try {
+            $response = $client->get($url);
+            $rawBody = $response->getBody();
+
+            // Coba tampilkan respon mentah untuk debug
+            // dd($rawBody);
+
+            // Jika rawBody tidak langsung JSON, coba bersihkan karakter aneh
+            $cleanBody = trim($rawBody);
+            // dd ($cleanBody);
+            // Decode JSON
+            $data = json_decode($cleanBody, true);
+            // dd ($data);
+            // Validasi JSON
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('Invalid JSON response from API: ' . json_last_error_msg());
+            }
+
+            // Ambil data hari libur
+            $jml_libur = 0;
+            foreach ($data as $item) {
+                $tanggal = $item['tanggal'];
+                // dd($tanggal);
+                if ($tanggal >= $startDate && $tanggal <= $endDate) {
+                    $jml_libur++;
+                }
+            }
+            // dd($jml_libur);
+
+        } catch (\Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+
+        // $jml_libur = $this->request->getPost('jml_libur');
         // dd($namaPeriode, $idBatch, $startDate, $endDate);
         $errors = [];
 
@@ -107,7 +146,43 @@ class PeriodeController extends BaseController
         $idBatch = $this->request->getPost('nama_batch');
         $startDate = $this->request->getPost('start_date');
         $endDate = $this->request->getPost('end_date');
-        $jml_libur = $this->request->getPost('jml_libur');
+        // $jml_libur = $this->request->getPost('jml_libur');
+
+        $url = 'http://172.23.44.14/CapacityApps/public/api/getHariLibur';
+        $client = \Config\Services::curlrequest();
+
+        try {
+            $response = $client->get($url);
+            $rawBody = $response->getBody();
+
+            // Coba tampilkan respon mentah untuk debug
+            // dd($rawBody);
+
+            // Jika rawBody tidak langsung JSON, coba bersihkan karakter aneh
+            $cleanBody = trim($rawBody);
+            // dd ($cleanBody);
+            // Decode JSON
+            $data = json_decode($cleanBody, true);
+            // dd ($data);
+            // Validasi JSON
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('Invalid JSON response from API: ' . json_last_error_msg());
+            }
+
+            // Ambil data hari libur
+            $jml_libur = 0;
+            foreach ($data as $item) {
+                $tanggal = $item['tanggal'];
+                // dd($tanggal);
+                if ($tanggal >= $startDate && $tanggal <= $endDate) {
+                    $jml_libur++;
+                }
+            }
+            // dd($jml_libur);
+
+        } catch (\Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
 
         $errors = [];
 
@@ -126,10 +201,10 @@ class PeriodeController extends BaseController
         if ($tempDate) {
             $errors['end_date'] = 'Tanggal selesai tidak boleh beririsan dengan periode lain';
         }
-
+        
         if ($errors) {
             session()->setFlashdata('errors', $errors);
-            return redirect()->to(base_url('Monitoring/dataPeriode/'));
+            return redirect()->to(base_url('Monitoring/dataPeriode'));
         } else {
             $this->periodeModel->update($id, [
                 'nama_periode' => $namaPeriode,
