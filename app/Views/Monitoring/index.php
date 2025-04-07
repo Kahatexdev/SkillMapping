@@ -125,7 +125,16 @@ $this->extend('Layout/index'); ?>
     <!-- Header Monitoring -->
     <div class="card mb-4">
         <div class="card-body">
-            <h2 class="card-title h4 mb-0">Monitoring Penilaian Karyawan Periode <?= $current_periode ?> ( <?= date_format(date_create($start_date), 'd M Y') ?> - <?= date_format(date_create($end_date), 'd M Y') ?> )</h2>
+            <h2 class="card-title h4 mb-0">
+                Monitoring Penilaian Karyawan Periode
+                <?= esc($current_periode) ?>
+                (
+                <?= ($start_date && strtotime($start_date)) ? date_format(date_create($start_date), 'd M Y') : '-' ?>
+                -
+                <?= ($end_date && strtotime($end_date)) ? date_format(date_create($end_date), 'd M Y') : '-' ?>
+                )
+            </h2>
+
         </div>
     </div>
 
@@ -178,8 +187,8 @@ $this->extend('Layout/index'); ?>
             <?php endforeach; ?>
         <?php else : ?>
             <div class="col-12">
-                <div class="alert alert-warning" role="alert">
-                    Tidak ada data yang tersedia.
+                <div class="alert alert-warning text-center" role="alert">
+                    Silahkan tambahkan data periode terlebih dahulu.
                 </div>
             </div>
         <?php endif; ?>
