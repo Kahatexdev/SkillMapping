@@ -68,7 +68,7 @@
                                                     data-nama="<?= $periode['nama_periode'] ?>" data-idbatch="<?= $periode['id_batch'] ?>"
                                                     data-startdate="<?= $periode['start_date'] ?>" data-enddate="<?= $periode['end_date'] ?>"
                                                     data-jmllibur="<?= $periode['jml_libur'] ?>"
-                                                    data-bs-toggle="modal" data-bs-target="#editUser">
+                                                    data-bs-toggle="modal" data-bs-target="#ModalEdit">
                                                     <i class=" fas fa-edit text-lg opacity-10" aria-hidden="true"></i>
                                                 </a>
                                                 <button onclick="confirmDelete(<?= $periode['id_periode'] ?>)"
@@ -132,10 +132,10 @@
                                 <label for="end_date">End Date</label>
                                 <input type="date" class="form-control" name="end_date" id="end_date" required>
                             </div>
-                            <div class="form-group mb-2">
+                            <!-- <div class="form-group mb-2">
                                 <label for="jml_libur">Jumlah Libur(Hari)</label>
                                 <input type="number" class="form-control" name="jml_libur" id="jml_libur" required>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -188,10 +188,10 @@
                                 <label for="keterangan">End Date</label>
                                 <input type="date" class="form-control" name="end_date" id="end_date" required>
                             </div>
-                            <div class="form-group mb-2">
+                            <!-- <div class="form-group mb-2">
                                 <label for="jml_libur">Jumlah Libur(Hari)</label>
                                 <input type="number" class="form-control" name="jml_libur" id="jml_libur" required>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
@@ -205,6 +205,17 @@
         </div>
     </div>
 </div>
+
+<?php if (session()->getFlashdata('errors')) : ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach (session()->getFlashdata('errors') as $error) : ?>
+                <li><?= $error ?></li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+<?php endif ?>
+
 
 <script type="text/javascript">
     function confirmDelete(id) {
@@ -238,13 +249,6 @@
             });
         <?php endif; ?>
 
-        <?php if (session()->getFlashdata('error')) : ?>
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                html: '<?= session()->getFlashdata('error') ?>',
-            });
-        <?php endif; ?>
     });
 
     $('.edit-btn').click(function() {
@@ -253,14 +257,14 @@
         var idBatch = $(this).data('idbatch');
         var startDate = $(this).data('startdate');
         var endDate = $(this).data('enddate');
-        var jmlLibur = $(this).data('jmllibur');
+        // var jmlLibur = $(this).data('jmllibur');
 
         $('#ModalEdit').find('form').attr('action', '<?= base_url('Monitoring/periodeUpdate/') ?>' + id);
         $('#ModalEdit').find('#nama_periode').val(namaPeriode);
         $('#ModalEdit').find('#nama_batch').val(idBatch);
         $('#ModalEdit').find('#start_date').val(startDate);
         $('#ModalEdit').find('#end_date').val(endDate);
-        $('#ModalEdit').find('#jml_libur').val(jmlLibur);
+        // $('#ModalEdit').find('#jml_libur').val(jmlLibur);
         $('#ModalEdit').modal('show'); // Show the modal
     });
 </script>

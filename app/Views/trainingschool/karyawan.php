@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-body p-3">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-6">
                             <div class="numbers">
                                 <p class="text-sm mb-0 text-capitalize font-weight-bold">Skill Mapping</p>
                                 <h5 class="font-weight-bolder mb-0">
@@ -14,55 +14,64 @@
                                 </h5>
                             </div>
                         </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-building text-lg opacity-10" aria-hidden="true"></i>
+                        <div class="col-6 ">
+
+
+                            <div class="form-group">
+                                <select class="form-control" id="planSelect">
+                                    <option value="">List Plan Jalan Mesin</option>
+                                    <?php foreach ($listplan as $judul) : ?>
+                                        <option value="<?= $judul['judul'] ?>"><?= $judul['judul'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
+</div>
 
-    <div class="row">
-        <?php foreach ($tampildata as $key => $ar) : ?>
-            <?php
-            if ($ar['area_utama'] == "-" || $ar['area_utama'] == NULL) {
-                $judul = "Area belum di input";
-                $area = "EMPTY";
-            } else {
-                $judul = $ar['area_utama'];
-                $area = $ar['area_utama'];
-            } ?>
-            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url($role . '/dataKaryawan/' . $area) ?>">
-                    <div class="card">
-                        <div class="card-body p-3">
-                            <div class="row">
+<div class="row">
+    <?php foreach ($tampildata as $key => $ar) : ?>
+        <?php
+        if ($ar['area_utama'] == "-" || $ar['area_utama'] == NULL) {
+            $judul = "Area belum di input";
+            $area = "EMPTY";
+        } else {
+            $judul = $ar['area_utama'];
+            $area = $ar['area_utama'];
+        } ?>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
+            <a href="<?= base_url($role . '/dataKaryawan/' . $area) ?>">
+                <div class="card">
+                    <div class="card-body p-3">
+                        <div class="row">
 
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-0 text-capitalize font-weight-bold"><?= $judul ?></p>
-                                        <h5 class="font-weight-bolder mb-0">
-                                        </h5>
-                                    </div>
+                            <div class="col-8">
+                                <div class="numbers">
+                                    <p class="text-sm mb-0 text-capitalize font-weight-bold"><?= $judul ?></p>
+                                    <h5 class="font-weight-bolder mb-0">
+                                    </h5>
                                 </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                        <i class="ni ni-building text-lg opacity-10" aria-hidden="true"></i>
-                                    </div>
-                                </div>
-
                             </div>
+                            <div class="col-4 text-end">
+                                <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
+                                    <i class="ni ni-building text-lg opacity-10" aria-hidden="true"></i>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </a>
-            </div>
-        <?php endforeach ?>
+                </div>
+            </a>
+        </div>
+    <?php endforeach ?>
 
-    </div>
+</div>
 
 </div>
 <script type="text/javascript">
@@ -104,4 +113,15 @@
         <?php endif; ?>
     });
 </script>
+<script>
+    document.getElementById('planSelect').addEventListener('change', function() {
+        var judul = this.value.trim(); // hapus spasi berlebih
+        var baseUrl = 'http://172.23.44.14/CapacityApps/public/api/exportPlanningJlMc/';
+        if (judul) {
+            var link = baseUrl + encodeURIComponent(judul); // encode biar aman
+            window.location.href = link;
+        }
+    });
+</script>
+
 <?php $this->endSection(); ?>
