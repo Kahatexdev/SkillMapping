@@ -73,6 +73,9 @@ class TrainingSchoolController extends BaseController
 
     public function listArea()
     {
+        $apiUrl = 'http://172.23.44.14/CapacityApps/public/api/getPlanMesin';
+        $response = file_get_contents($apiUrl);
+        $plan = json_decode($response, true);  // Decode JSON response dari API
         $tampilperarea = $this->bagianmodel->getAreaOnly();
         $sort = [
             'KK1',
@@ -108,6 +111,7 @@ class TrainingSchoolController extends BaseController
             'active6' => '',
             'active7' => '',
             'tampildata' => $tampilperarea,
+            'listplan' => $plan
         ];
         // dd($data);
         return view(session()->get('role') . '/karyawan', $data);
