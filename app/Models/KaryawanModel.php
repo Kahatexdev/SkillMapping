@@ -200,4 +200,15 @@ class KaryawanModel extends Model
         $builder->groupBy('bagian.nama_bagian');
         return $builder->get()->getResultArray();
     }
+
+    public function getActiveKaryawanByBagiaAndArea()
+    {
+        $builder = $this->db->table($this->table);
+        $builder->select('COUNT(karyawan.nama_karyawan) AS jumlah_karyawan, bagian.nama_bagian, bagian.area_utama, bagian.area');
+        $builder->join('bagian', 'karyawan.id_bagian = bagian.id_bagian');
+        $builder->where('karyawan.status_aktif', 'Aktif');
+        $builder->groupBy('bagian.area');
+        $builder->groupBy('bagian.nama_bagian');
+        return $builder->get()->getResultArray();
+    }
 }

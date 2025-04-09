@@ -180,6 +180,8 @@
     <!--   Core JS Files   -->
     <!-- SweetAlert2 CDN -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="<?= base_url('assets/js/sweetalert2@11.js') ?>"></script>
     <script src="<?= base_url('assets/js/select2.min.js') ?>"></script>
     <script src="<?= base_url('assets/js/core/popper.min.js') ?>"></script>

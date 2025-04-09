@@ -53,6 +53,7 @@ class MonitoringController extends BaseController
         $TtlKaryawan = $this->karyawanmodel->where('status', 'Aktif')->countAll();
         $PerpindahanBulanIni = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))->countAllResults();
         $dataKaryawan = $this->karyawanmodel->getActiveKaryawanByBagian();
+        // dd($dataKaryawan);
         $periodeAktif = $this->periodeModel->getActivePeriode();
         // dd($dataKaryawan, $TtlKaryawan, $PerpindahanBulanIni, $cekPenilaian, $id_periode, $current_periode, $start_date, $end_date);
 

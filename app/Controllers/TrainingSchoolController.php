@@ -56,19 +56,47 @@ class TrainingSchoolController extends BaseController
 
     public function index()
     {
-        $data = [
+        $TtlKaryawan = $this->karyawanmodel->where('status', 'Aktif')->countAll();
+        $PerpindahanBulanIni = $this->historyPindahKaryawanModel->where('MONTH(tgl_pindah)', date('m'))->countAllResults();
+        $dataKaryawan = $this->karyawanmodel->getActiveKaryawanByBagiaAndArea();
+
+        // Group data berdasarkan area_utama
+        $groupedData = [];
+        foreach ($dataKaryawan as $row) {
+            $groupedData[$row['area_utama']][] = $row;
+        }
+
+        // Sort berdasarkan angka setelah 'KK'
+        uksort($groupedData, function ($a, $b) {
+            return (int) filter_var($a, FILTER_SANITIZE_NUMBER_INT) <=> (int) filter_var($b, FILTER_SANITIZE_NUMBER_INT);
+        });
+
+        $totalKaryawan = 0;
+        foreach ($dataKaryawan as $row) {
+            $totalKaryawan += $row['jumlah_karyawan'];
+        }
+
+        $dataPindah = $this->historyPindahKaryawanModel->getPindahGroupedByDate();
+
+        $labelsKar = [];
+        $valuesKar = [];
+        foreach ($dataPindah as $row) {
+            $labelsKar[] = $row['tgl'];
+            $valuesKar[] = (int)$row['jumlah'];
+        }
+
+        return view('trainingschool/index', [
             'role' => session()->get('role'),
             'title' => 'Dashboard',
             'active1' => 'active',
             'active2' => '',
             'active3' => '',
-            'active4' => '',
-            'active5' => '',
-            'active6' => '',
-            'active7' => '',
-            'active8' => '',
-        ];
-        return view(session()->get('role') . '/index', $data);
+            'TtlKaryawan' => $TtlKaryawan,
+            'PerpindahanBulanIni' => $PerpindahanBulanIni,
+            'groupedData' => $groupedData,
+            'labelsKar' => $labelsKar,
+            'valuesKar' => $valuesKar
+        ]);
     }
 
     public function listArea()

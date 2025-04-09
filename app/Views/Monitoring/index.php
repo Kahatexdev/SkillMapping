@@ -39,7 +39,7 @@ $this->extend('Layout/index'); ?>
                             <div class="col-8">
                                 <div class="numbers">
                                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Perpindahan Bulan Ini</p>
-                                    <h5 class="font-weight-bolder mb-0"><?= $PerpindahanBulanIni ?> Orang</h5>
+                                    <h5 class="font-weight-bolder mb-0"> </h5>
                                 </div>
                             </div>
                             <div class="col-4 text-end">
