@@ -269,4 +269,5 @@ $routes->group('api', function ($routes) {
 
     $routes->get('area_utama/(:segment)', 'Api\KaryawanController::getKaryawanByAreaUtama/$1');
     $routes->get('area/(:segment)', 'Api\KaryawanController::getKaryawanByArea/$1');
+    $routes->get('getdataforbs/(:any)/(:any)', 'Api\KaryawanController::getDataForBsMc/$1/$2');
 });

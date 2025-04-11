@@ -147,4 +147,18 @@ class KaryawanController extends ResourceController
             return $this->respondDeleted(['id' => $id . ' Deleted']);
         }
     }
+
+    public function getDataForBsMc($area, $namaKar)
+    {
+        $data = $this->karyawanModel->getKaryawanByAreaApi($area);
+
+        $filteredArea = array_filter($data, function ($item) use ($namaKar) {
+            return $item['nama_karyawan'] === $namaKar;
+        });
+
+        // Re-index array supaya tidak acak
+        $filteredArea = array_values($filteredArea);
+
+        return $this->respond($filteredArea, 200);
+    }
 }
