@@ -26,7 +26,7 @@
     /* .bg-light {
         background-color: #f8f9fa !important;
         color: black;
-    } */  
+    } */
 
     /* Area chat dengan padding yang memadai */
     /* Area chat dengan padding yang memadai */
@@ -211,8 +211,9 @@
 
     // Fungsi untuk memuat percakapan
     function loadConversation(senderId, contactId) {
-        const fetchUrlConversation = `${baseUrl}/${role}/conversation/${senderId}/${contactId}`; // Gabungkan URL
-        const fetchUrlMarkAsRead = `${baseUrl}/${role}/mark-messages-as-read/${contactId}`; // URL untuk menandai pesan sebagai sudah dibaca
+        const fetchUrlConversation = `${baseUrl}/${role}/conversation/${senderId}/${contactId}`;
+        const fetchUrlMarkAsRead = `${baseUrl}/${role}/mark-messages-as-read/${contactId}`;
+
         fetch(fetchUrlConversation)
             .then(response => response.json())
             .then(data => {
@@ -224,7 +225,7 @@
                     return;
                 }
 
-                // Update pesan sebagai sudah dibaca
+                // Tandai pesan sebagai sudah dibaca
                 fetch(fetchUrlMarkAsRead, {
                         method: 'POST'
                     })
@@ -236,18 +237,42 @@
                     })
                     .catch(error => console.error('Error marking messages as read:', error));
 
-                data.messages.forEach(msg => {
-                    const isSender = parseInt(msg.sender_id) === senderId; // Pastikan `sender_id` adalah angka
-                    const messageDiv = document.createElement('div');
+                let lastDate = ''; // Variabel untuk menyimpan tanggal pesan sebelumnya
 
-                    // Tambahkan kelas berdasarkan pengirim atau penerima
+                data.messages.forEach(msg => {
+                    const timestamp = new Date(msg.created_at);
+                    // Format tanggal dalam format dd/mm/yyyy
+                    const formattedDate = timestamp.toLocaleDateString(['id-ID'], {
+                        // tambahkan hari bahasa indonesia
+                        weekday: 'long',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    // Format waktu hanya menampilkan HH:MM
+                    const formattedTime = timestamp.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Jika tanggal pesan berbeda dengan pesan sebelumnya, tampilkan header tanggal
+                    if (formattedDate !== lastDate) {
+                        const dateHeader = document.createElement('div');
+                        dateHeader.className = 'text-center my-2';
+                        dateHeader.innerHTML = `<small class="text-dark badge bg-light">${formattedDate}</small>`;
+                        chatArea.appendChild(dateHeader);
+                        lastDate = formattedDate;
+                    }
+
+                    const isSender = parseInt(msg.sender_id) === senderId;
+                    const messageDiv = document.createElement('div');
                     messageDiv.className = `d-flex ${isSender ? 'justify-content-end' : 'justify-content-start'} mb-3`;
 
-                    // Tambahkan konten pesan
+                    // Tampilkan pesan dengan waktu (tanpa tanggal, karena header sudah ditampilkan)
                     messageDiv.innerHTML = `
                     <div class="p-3 ${isSender ? 'bg-primary text-white' : 'bg-light text-dark'} rounded w-50">
                         <p class="mb-0">${sanitizeHTML(msg.message)}</p>
-                        <small class="d-block text-end">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                        <small class="d-block text-end">${formattedTime}</small>
                     </div>
                 `;
                     chatArea.appendChild(messageDiv);
@@ -260,6 +285,7 @@
                 chatArea.innerHTML = '<p class="text-danger text-center">Failed to load conversation</p>';
             });
     }
+
 
 
 
