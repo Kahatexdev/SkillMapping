@@ -8,6 +8,7 @@
                 <div class="card-body">
                     <h4 class="card-title">
                         Import Summary BS Mesin
+                        <p>Tanggal Terakhir Input : <?= $getCurrentInput['tgl_input'] ?></p>
                     </h4>
                     <!-- form import  Summary BSMC -->
                     <form action="<?= base_url('Monitoring/bsmcStoreImport') ?>" method="post"

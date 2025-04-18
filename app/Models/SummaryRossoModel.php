@@ -65,7 +65,7 @@ class SummaryRossoModel extends Model
         return $this->db->table('sum_rosso')
             ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-            -> join('batch', 'batch.id_batch = sum_rosso.id_batch')
+            ->join('batch', 'batch.id_batch = sum_rosso.id_batch')
             ->where('batch.id_batch', $id_batch)
             ->where('bagian.area_utama', $area_utama)
             ->get()->getResultArray();
@@ -126,17 +126,17 @@ class SummaryRossoModel extends Model
     public function getTop3Produksi($area_utama, $id_batch)
     {
         return $this->select('AVG(sum_rosso.produksi) AS average_produksi, AVG(sum_rosso.perbaikan) AS average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
-        ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
-        ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
-        ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
-        ->where('bagian.area_utama', $area_utama)
-        ->where('batch.id_batch', $id_batch)
-        ->groupBy('sum_rosso.id_karyawan') // Group by id_karyawan
-        ->orderBy('average_produksi', 'DESC') // Order by highest production
-        ->orderBy('average_bs', 'ASC') // Order by lowest defect
-        ->limit(3) // Limit to top 3
-        ->get()->getResultArray();
+            ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
+            ->where('bagian.area_utama', $area_utama)
+            ->where('batch.id_batch', $id_batch)
+            ->groupBy('sum_rosso.id_karyawan') // Group by id_karyawan
+            ->orderBy('average_produksi', 'DESC') // Order by highest production
+            ->orderBy('average_bs', 'ASC') // Order by lowest defect
+            ->limit(3) // Limit to top 3
+            ->get()->getResultArray();
     }
 
 
@@ -155,16 +155,16 @@ class SummaryRossoModel extends Model
     {
         // Step 1: Get the top 7 data based on highest production
         $top7Data = $this->select('AVG(sum_rosso.produksi) AS average_produksi, AVG(sum_rosso.perbaikan) AS average_bs,karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu, karyawan.jenis_kelamin, karyawan.tgl_masuk, bagian.nama_bagian, batch.nama_batch')
-        ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
-        ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
-        ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
-        ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
-        ->where('bagian.area_utama', $area_utama)
-        ->where('batch.id_batch', $id_batch)
-        ->groupBy('sum_rosso.id_karyawan') // Group by id_karyawan
-        ->orderBy('average_produksi', 'DESC') // Order by highest production
-        ->limit(7) // Limit to top 7 results based on production
-        ->get()->getResultArray();
+            ->join('karyawan', 'karyawan.id_karyawan = sum_rosso.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('periode', 'sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date') // Hubungkan berdasarkan tgl_input
+            ->join('batch', 'batch.id_batch = periode.id_batch') // Hubungkan batch dengan periode
+            ->where('bagian.area_utama', $area_utama)
+            ->where('batch.id_batch', $id_batch)
+            ->groupBy('sum_rosso.id_karyawan') // Group by id_karyawan
+            ->orderBy('average_produksi', 'DESC') // Order by highest production
+            ->limit(7) // Limit to top 7 results based on production
+            ->get()->getResultArray();
 
         // Step 2: Sort these 7 results by average_bs in ascending order
         usort($top7Data, function ($a, $b) {
@@ -206,5 +206,89 @@ class SummaryRossoModel extends Model
             ->where('tgl_input <=', $endDate)
             ->orderBy('tgl_input', 'ASC')
             ->findAll();
+    }
+
+    public function getCurrentInput()
+    {
+        return $this->select('sum_rosso.tgl_input')
+            ->orderBy('sum_rosso.tgl_input', 'DESC')
+            ->limit(1)
+            ->first();
+    }
+
+    public function getTopProduksiRosso($area, $id_batch, $limit = 7)
+    {
+        $db = \Config\Database::connect();
+
+        $sql = "
+    SELECT 
+        produksi_per_periode.id_karyawan,
+        karyawan.nama_karyawan,
+        karyawan.kode_kartu,
+        karyawan.jenis_kelamin,
+        karyawan.tgl_masuk,
+        bagian.nama_bagian,
+        batch.id_batch,
+        -- Jumlah periode aktual dipakai untuk pembagian
+        (SUM(produksi_per_periode.avg_produksi) / COUNT(produksi_per_periode.nama_periode)) AS rata_rata_produksi
+    FROM (
+        SELECT 
+            sum_rosso.id_karyawan,
+            periode.nama_periode,
+            SUM(sum_rosso.produksi) AS total_produksi,
+            (DATEDIFF(periode.end_date, periode.start_date) + 1 - periode.jml_libur) AS hari_kerja,
+            (SUM(sum_rosso.produksi) / (DATEDIFF(periode.end_date, periode.start_date) + 1 - periode.jml_libur)) AS avg_produksi
+        FROM sum_rosso
+        JOIN periode 
+            ON sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date
+        WHERE periode.id_batch = ?
+        GROUP BY sum_rosso.id_karyawan, periode.nama_periode
+    ) AS produksi_per_periode
+    JOIN karyawan 
+        ON karyawan.id_karyawan = produksi_per_periode.id_karyawan
+    JOIN bagian 
+        ON bagian.id_bagian = karyawan.id_bagian
+    JOIN batch 
+        ON batch.id_batch = ?
+    WHERE bagian.area = ?
+    GROUP BY produksi_per_periode.id_karyawan
+    ORDER BY rata_rata_produksi DESC
+    LIMIT ?
+    ";
+
+        return $db->query($sql, [$id_batch, $id_batch, $area, (int)$limit])
+            ->getResultArray();
+    }
+
+    public function getTop3BsRossoFromList(array $ids, $id_batch)
+    {
+        if (empty($ids)) return [];
+
+        $db = \Config\Database::connect();
+        $in = implode(',', array_map('intval', $ids));
+
+        $sql = "
+    SELECT 
+        bs_per_periode.id_karyawan,
+        (SUM(bs_per_periode.avg_bs_per_periode) / 3) AS avg_bs
+    FROM (
+        SELECT 
+            sum_rosso.id_karyawan,
+            p.nama_periode,
+            SUM(sum_rosso.perbaikan) AS total_perbaikan,
+            (DATEDIFF(p.end_date, p.start_date) + 1 - p.jml_libur) AS hari_kerja,
+            (SUM(sum_rosso.perbaikan) / (DATEDIFF(p.end_date, p.start_date) + 1 - p.jml_libur)) AS avg_bs_per_periode
+        FROM sum_rosso
+        JOIN periode p ON sum_rosso.tgl_input BETWEEN p.start_date AND p.end_date
+        WHERE p.id_batch = ?
+          AND sum_rosso.id_karyawan IN ($in)
+        GROUP BY sum_rosso.id_karyawan, p.nama_periode
+    ) AS bs_per_periode
+    GROUP BY bs_per_periode.id_karyawan
+    ORDER BY avg_bs ASC
+    LIMIT 3
+    ";
+
+        return $db->query($sql, [$id_batch])->getResultArray();
     }
 }

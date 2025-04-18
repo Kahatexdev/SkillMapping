@@ -48,6 +48,9 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="id_periode">Periode</label>
+                                    <!-- <a href="<?= base_url($role . '/downloadTemplateAbsen') ?>"
+                                        class="btn btn-success btn-sm mt-2" target="_blank">Download
+                                        Template</a> -->
                                     <select class="form-select" name="id_periode" id="id_periode" required>
                                         <option value="">Pilih Periode</option>
                                         <?php foreach ($periode as $p) : ?>

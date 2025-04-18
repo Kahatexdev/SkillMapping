@@ -824,6 +824,7 @@ class BsMcController extends BaseController
                     'hari_kerja'    => array_fill_keys($bulan, 0), // Inisialisasi hari kerja per bulan
                 ];
             }
+
             // Menghitung jumlah hari kerja dalam bulan tersebut
             $startDate = new DateTime($row['start_date']);
             $endDate   = new DateTime($row['end_date']);
@@ -844,6 +845,7 @@ class BsMcController extends BaseController
                 }
             }
         }
+
         // Loop untuk memasukkan data ke dalam Excel
         foreach ($groupedData as $data) {
             $sheet->setCellValue('A' . $startRow, $no);
@@ -1059,14 +1061,14 @@ class BsMcController extends BaseController
     {
         $tgl_awal  = $this->request->getPost('tgl_awal');
         $tgl_akhir = $this->request->getPost('tgl_akhir');
-  
+
         if (empty($tgl_awal) || empty($tgl_akhir)) {
-            $tgl_awal  = date('Y-m-d'); 
-            $tgl_akhir = date('Y-m-d'); 
+            $tgl_awal  = date('Y-m-d');
+            $tgl_akhir = date('Y-m-d');
         }
 
         $bs_mc = $this->bsmcModel->getFilteredData($area, $tgl_awal, $tgl_akhir);
-        
+
         $data = [
             'role' => session()->get('role'),
             'title' => 'Bs Mesin',

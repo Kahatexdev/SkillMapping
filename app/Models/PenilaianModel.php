@@ -12,7 +12,7 @@ class PenilaianModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id_penilaian', 'karyawan_id', 'id_periode', 'bobot_nilai', 'index_nilai', 'grade_akhir', 'id_user', 'id_jobrole', 'created_at', 'updated_at'];
+    protected $allowedFields    = ['id_penilaian', 'karyawan_id', 'id_periode', 'bobot_nilai', 'index_nilai', 'grade_akhir', 'id_user', 'id_jobrole', 'urutan_periode', 'created_at', 'updated_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -552,5 +552,83 @@ class PenilaianModel extends Model
             ->orderBy('k.shift')
             ->get()
             ->getResultArray();
+    }
+
+    public function filterReportBatch($area_utama = null, $nama_bagian = null, $batch = null)
+    {
+        $builder = $this->table('penilaian')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur')
+            ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
+            ->join('periode', 'periode.id_periode=penilaian.id_periode')
+            ->join('batch', 'batch.id_batch=periode.id_batch');
+
+        if ($area_utama !== null) {
+            $builder->where('bagian.area_utama', $area_utama);
+        }
+
+        if ($nama_bagian !== null) {
+            $builder->where('bagian.nama_bagian', $nama_bagian);
+        }
+
+        if ($batch !== null) {
+            $builder->where('batch.nama_batch', $batch);
+        }
+
+        return $builder->get()->getResultArray();
+    }
+
+    public function getPenilaianGroupByBatchAllArea()
+    {
+        return $this->table('penilaian')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur')
+            ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
+            ->join('periode', 'periode.id_periode=penilaian.id_periode')
+            ->join('batch', 'batch.id_batch=periode.id_batch')
+            ->groupBy('batch.id_batch')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getPenilaianByBatchAllArea($id_batch)
+    {
+        return $this->db->table('penilaian')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur')
+            ->join('karyawan', 'karyawan.id_karyawan=penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole=penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian=job_role.id_bagian')
+            ->join('periode', 'periode.id_periode=penilaian.id_periode')
+            ->join('batch', 'batch.id_batch=periode.id_batch')
+            ->where('batch.id_batch', $id_batch)
+            ->groupBy('penilaian.karyawan_id')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getBatchGroupByBulanPenilaianRev($id_batch)
+    {
+        return $this->db->table('penilaian')
+            ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.id_karyawan, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur, MONTH(periode.end_date) as bulan')
+            ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole = penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
+            ->join('periode', 'periode.id_periode = penilaian.id_periode')
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->where('batch.id_batch', $id_batch)
+            ->groupBy('periode.end_date')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getAreaByIdBatch($id_batch)
+    {
+        return $this->db->table('batch')
+            ->select('area')
+            ->where('id_batch', $id_batch)
+            ->get()
+            ->getRowArray();
     }
 }

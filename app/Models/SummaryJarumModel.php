@@ -110,4 +110,55 @@ class SummaryJarumModel extends Model
             ->orderBy('tgl_input', 'ASC')
             ->findAll();
     }
+
+    public function getCurrentInput()
+    {
+        return $this->select('sum_jarum.tgl_input')
+            ->orderBy('sum_jarum.tgl_input', 'DESC')
+            ->limit(1)
+            ->first();
+    }
+
+    public function getTopUsedNeedle($area, $id_batch, $limit = 3)
+    {
+        $db = \Config\Database::connect();
+
+        $sql = "
+    SELECT 
+        penggunaan_jarum.id_karyawan,
+        karyawan.nama_karyawan,
+        karyawan.kode_kartu,
+        karyawan.jenis_kelamin,
+        karyawan.tgl_masuk,
+        bagian.nama_bagian,
+        batch.id_batch,
+        -- Jumlah periode aktual dipakai untuk pembagian
+        (SUM(penggunaan_jarum.avg_needle) / 3) AS rata_rata_jarum
+    FROM (
+        SELECT 
+            sum_jarum.id_karyawan,
+            periode.nama_periode,
+            SUM(sum_jarum.used_needle) AS total_used_needle,
+            (DATEDIFF(periode.end_date, periode.start_date) + 1 - periode.jml_libur) AS hari_kerja,
+            (SUM(sum_jarum.used_needle) / (DATEDIFF(periode.end_date, periode.start_date) + 1 - periode.jml_libur)) AS avg_needle
+        FROM sum_jarum
+        JOIN periode 
+            ON sum_jarum.tgl_input BETWEEN periode.start_date AND periode.end_date
+        WHERE periode.id_batch = ?
+        GROUP BY sum_jarum.id_karyawan, periode.nama_periode
+    ) AS penggunaan_jarum
+    JOIN karyawan 
+        ON karyawan.id_karyawan = penggunaan_jarum.id_karyawan
+    JOIN bagian 
+        ON bagian.id_bagian = karyawan.id_bagian
+    JOIN batch 
+        ON batch.id_batch = ?
+    WHERE bagian.area = ?
+    GROUP BY penggunaan_jarum.id_karyawan
+    ORDER BY rata_rata_jarum ASC
+    LIMIT ?
+    ";
+
+        return $db->query($sql, [$id_batch, $id_batch, $area, (int)$limit])->getResultArray();
+    }
 }

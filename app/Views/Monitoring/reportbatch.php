@@ -29,8 +29,8 @@
 
         <?php foreach ($tampilperarea as $key => $ar) : ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url($role . '/reportBatch/' . $ar['area_utama']) ?>">
-                    <div class="card">
+                <a href="<?= base_url($role . '/reportBatch/' . ($ar['area_utama'] === 'all' ? 'all' : $ar['area_utama'])) ?>">
+                    <div class="card <?= ($ar['area_utama'] === 'all') ? '' : '' ?>">
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-8">

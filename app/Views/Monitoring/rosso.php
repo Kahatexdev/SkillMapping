@@ -8,6 +8,7 @@
                 <div class="card-body">
                     <h4 class="card-title">
                         Import Summary Rosso
+                        <p>Tanggal Terakhir Input : <?= $getCurrentInput['tgl_input'] ?></p>
                     </h4>
                     <!-- Form Import Summary BSMC -->
                     <form action="<?= base_url('Monitoring/rossoStoreImport') ?>" method="post"

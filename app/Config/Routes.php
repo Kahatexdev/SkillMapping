@@ -201,6 +201,7 @@ $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
     $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
     $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
     $routes->get('reportBatch', 'MonitoringController::reportBatch');
+    $routes->get('reportBatch/filterReport', 'MonitoringController::filterReportBatch');
     $routes->get('reportPenilaian/(:segment)', 'MandorController::penilaianPerArea/$1');
     $routes->get('reportPenilaian/(:segment)/(:num)', 'PenilaianController::penilaianPerPeriode/$1/$2');
     $routes->get('reportPenilaian/(:segment)/(:segment)/(:segment)', 'PenilaianController::excelReportPerPeriode/$1/$2/$3');

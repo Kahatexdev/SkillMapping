@@ -426,7 +426,7 @@ class MonitoringController extends BaseController
         $tampilperarea = $this->bagianmodel->getAreaGroupByArea();
         $periode = $this->periodeModel->getPeriode();
         $getBatch = $this->batchmodel->getBatch();
-
+        $getCurrentInput = $this->bsmcmodel->getCurrentInput();
         $sort = [
             'KK1A',
             'KK1B',
@@ -470,7 +470,8 @@ class MonitoringController extends BaseController
             'active9' => 'active',
             'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
-            'periode' => $periode
+            'periode' => $periode,
+            'getCurrentInput' => $getCurrentInput
         ];
         return view(session()->get('role') . '/bsmc', $data);
     }
@@ -479,6 +480,7 @@ class MonitoringController extends BaseController
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
         $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
+        $getCurrentInput = $this->summaryRosso->getCurrentInput();
 
         $sort = [
             'KK1',
@@ -524,7 +526,8 @@ class MonitoringController extends BaseController
             // 'getArea' => $getArea,
             'getBatch' => $getBatch,
             'tampilperarea' => $tampilperarea,
-            'periode' => $periode
+            'periode' => $periode,
+            'getCurrentInput' => $getCurrentInput
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/rosso', $data);
@@ -534,6 +537,8 @@ class MonitoringController extends BaseController
         $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
         $getArea = $this->bagianmodel->getAreaByNamaBagian();
+        $getCurrentInput = $this->summaryRosso->getCurrentInput();
+
         // dd($getArea);
         $sort = [
             'KK1A',
@@ -579,6 +584,7 @@ class MonitoringController extends BaseController
             'getBatch' => $getBatch,
             'periode' => $periode,
             'getArea' => $getArea,
+            'getCurrentInput' => $getCurrentInput
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/jarum', $data);
@@ -693,6 +699,7 @@ class MonitoringController extends BaseController
     public function reportbatch()
     {
         $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        array_unshift($tampilperarea, ['area_utama' => 'all']); //Menambahkan data All Area
         $sort = [
             'KK1',
             'KK2',
@@ -701,10 +708,10 @@ class MonitoringController extends BaseController
             'KK8',
             'KK9',
             'KK10',
-            'KK11'
+            'KK11',
+            'all'
         ];
-        // dd($tampilperarea);
-        // Fungsi untuk mengurutkan berdasarkan array urutan yang ditentukan
+
         // Urutkan data menggunakan usort
         usort($tampilperarea, function ($a, $b) use ($sort) {
             $pos_a = array_search($a['area_utama'], $sort);
@@ -716,11 +723,11 @@ class MonitoringController extends BaseController
 
             return $pos_a - $pos_b;
         });
-
-        $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
-        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        // dd($tampilperarea);
+        $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
+        $getBagian = $this->bagianmodel->getBagian();
         $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
-        // dd($reportbatch);
+
         $data = [
             'role' => session()->get('role'),
             'title' => 'Report Batch',
@@ -733,11 +740,11 @@ class MonitoringController extends BaseController
             'active7' => '',
             'active8' => '',
             'active9' => 'active',
-            'reportbatch' => $reportbatch,
-            'getArea' => $getArea,
+            'getBulan' => $getBulan,
+            'getBagian' => $getBagian,
+            'getArea' => $tampilperarea,
             'getBatch' => $getBatch,
-            'tampilperarea' => $tampilperarea
-            // 'area' => $area
+            'tampilperarea' => $tampilperarea,
         ];
         // dd ($getBatch);
         return view(session()->get('role') . '/reportbatch', $data);
@@ -818,5 +825,32 @@ class MonitoringController extends BaseController
         }
 
         return $this->response->setJSON($montir);
+    }
+
+    public function filterReportBatch()
+    {
+        $role = session()->get('role');
+
+        $nama_bagian = $this->request->getGet('nama_bagian');
+        $area_utama = $this->request->getGet('area_utama');
+        $batch = $this->request->getGet('batch');
+        $tes = $this->penilaianmodel->filterReportBatch($nama_bagian, $area_utama, $batch);
+        // $batch = $this->penilaianmodel->getPenilaianWhereAreautamaGroupByBatch($area_utama);
+        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
+        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
+        $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
+        // dd($getArea);
+
+        // $dataFiltered = $reportModel->getFilteredData($nama_bagian, $area);
+
+        // return view($role . '/reportbatch', [
+        //     'role' => $role,
+        //     // 'data' => $dataFiltered,
+        //     // 'list_bagian' => $reportModel->getListBagian(),
+        //     // 'list_area' => $reportModel->getListArea(),
+        //     'selected_bagian' => $nama_bagian,
+        //     'selected_area' => $area
+        // ]);
     }
 }

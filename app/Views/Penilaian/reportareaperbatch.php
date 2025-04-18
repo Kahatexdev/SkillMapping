@@ -28,7 +28,7 @@
     <div class="row">
         <?php foreach ($reportbatch as $ar) : ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url($role . '/exelReportBatch/' .$ar['id_batch'].'/'. $ar['area_utama']) ?>">
+                <a href="<?= base_url($role . '/exelReportBatch/' . $ar['id_batch'] . '/' . ($ar['area_utama'] === 'all' ? 'all' : $ar['area_utama'])) ?>">
                     <div class="card">
                         <div class="card-body p-3">
                             <div class="row">

@@ -8,6 +8,7 @@
                 <div class="card-body">
                     <h4 class="card-title">
                         Input Pemakaian Jarum
+                        <p>Tanggal Terakhir Input : <?= $getCurrentInput['tgl_input'] ?></p>
                     </h4>
                     <!-- Form Input Summary Jarum -->
                     <form action="<?= base_url('Monitoring/jarumStoreInput') ?>" method="post"

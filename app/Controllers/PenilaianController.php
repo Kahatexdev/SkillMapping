@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Cell\Hyperlink;
 use PhpOffice\PhpSpreadsheet\Cell\ValueBinder;
@@ -228,12 +229,12 @@ class PenilaianController extends BaseController
         if ($area == 'null') {
             $area = null;
         }
-        
+
         if ($area != session()->get('area')) {
-            return redirect()->back()->with('error', 'Pilih Sesuai'. session()->get('area') . 'Anda!');
+            return redirect()->back()->with('error', 'Pilih Sesuai' . session()->get('area') . 'Anda!');
         } elseif ($role == 'Monitoring') {
         }
-        
+
         $id_bagian = $this->bagianmodel->getIdBagian($nama_bagian, $area_utama, $area);
 
         if (!$id_bagian) {
@@ -843,8 +844,17 @@ class PenilaianController extends BaseController
 
     public function reportAreaperBatch($area_utama)
     {
-        $batch = $this->penilaianmodel->getPenilaianWhereAreautamaGroupByBatch($area_utama);
-        // dd ($batch);
+        if ($area_utama === 'all') {
+            $batch = $this->penilaianmodel->getPenilaianGroupByBatchAllArea();
+
+            // Tambahkan informasi bahwa ini dari all area
+            foreach ($batch as &$b) {
+                $b['area_utama'] = 'all';
+            }
+        } else {
+            $batch = $this->penilaianmodel->getPenilaianWhereAreautamaGroupByBatch($area_utama);
+        }
+
         $data = [
             'role' => session()->get('role'),
             'title' => 'Report Batch',
@@ -862,701 +872,435 @@ class PenilaianController extends BaseController
 
         return view('Penilaian/reportareaperbatch', $data);
     }
+
     public function exelReportBatch($id_batch, $area_utama)
     {
         $id_batch = (int)$id_batch;
 
-        // Ambil data penilaian
-        $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndAreaByIdBatch($id_batch, $area_utama);
-        // getPenilaianGroupByBatchAndAreaByIdBatch
-        $getBulan = $this->penilaianmodel->getBatchGroupByBulanPenilaian();
-        $getAreaUtama = $this->bagianmodel->getAreaGroupByAreaUtama();
+        // Ambil data karyawan sesuai area
+        if ($area_utama === 'all') {
+            $reportbatch = $this->penilaianmodel->getPenilaianByBatchAllArea($id_batch);
+        } else {
+            $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndAreaByIdBatch($id_batch, $area_utama);
+        }
+        $resultTop7ProdOp = [];
+        $resultTop3BsOp = [];
+        $resultTop7ProdRos = [];
+        $resultTop3BsRos = [];
+        $resultTop3UsedNeedle = [];
 
-        // Ambil daftar bagian unik
-        $bagianList = array_unique(array_column($reportbatch, 'nama_bagian'));
+        foreach ($reportbatch as $areaData) {
+            $area = $areaData['area'];
+            // Panggil fungsi model getTop3ProduksiOperator berdasarkan area (bukan area_utama)
+            $top7Prod = $this->bsmcModel->getTopProduksiOperator($area, $id_batch, 7);
+            // Dari 7 karyawan tadi, cari Top-3 BS_MC
+            $ids = array_column($top7Prod, 'id_karyawan');
+            $top3Bs = $this->bsmcModel->getTop3BsMcFromList($ids, $id_batch);
+
+            // Top 7 Produksi Rosso
+            $areaRosso = 'ROSSO' . $area_utama;
+            $top7ProdRos = $this->rossoModel->getTopProduksiRosso($areaRosso, $id_batch, 7);
+            $id_bs_rosso = array_column($top7ProdRos, 'id_karyawan');
+            $top3BsRos = $this->rossoModel->getTop3BsRossoFromList($id_bs_rosso, $id_batch);
+            //Used Needle
+            $top3UsedNeedle = $this->jarumModel->getTopUsedNeedle($area, $id_batch, 3);
+
+            $resultTop7ProdOp[$area] = $top7Prod;
+            $resultTop3BsOp[$area] = $top3Bs;
+            $resultTop7ProdRos[$areaRosso] = $top7ProdRos;
+            $resultTop3BsRos[$areaRosso] = $top3BsRos;
+            $resultTop3UsedNeedle[$area] = $top3UsedNeedle;
+        }
+
+        if ($area_utama === 'all') {
+            // ambil list uniq area_utama dari reportbatch
+            $areaUtamaList = array_unique(array_column($reportbatch, 'area_utama'));
+        } else {
+            $areaUtamaList = [$area_utama];
+        }
+
+        foreach ($areaUtamaList as $au) {
+            $keyRosso = 'ROSSO' . $au;
+            // Top 7 Produksi Rosso per ROSSOKKx
+            $t7r = $this->rossoModel->getTopProduksiRosso($keyRosso, $id_batch, 7);
+            $idsR = array_column($t7r, 'id_karyawan');
+            $b3r = $this->rossoModel->getTop3BsRossoFromList($idsR, $id_batch);
+
+            $resultTop7ProdRos[$keyRosso] = $t7r;
+            $resultTop3BsRos[$keyRosso] = $b3r;
+        }
+        // dd($resultTop3BsRos);
+        // Anda bisa mengirimkan $result ke view atau melakukan dd($result) untuk debugging
+        $namaBulan = array_map(function ($angka) {
+            return date('M', mktime(0, 0, 0, $angka, 10));
+        }, array_map(function ($item) {
+            return (int)$item['bulan'];
+        }, $this->penilaianmodel->getBatchGroupByBulanPenilaianRev($id_batch)));
+
+        // Ambil data batch
         $nama_batch = $this->batchmodel->find($id_batch);
-        // dd ($nama_batch);
 
-        // Membuat file Excel
+        // Kumpulan data semua karyawan (tanpa pengelompokan dulu)
+        $allData = [];
+
+        foreach ($reportbatch as $data) {
+            // Ambil nilai per periode untuk tiap karyawan dari model
+            $nilaiBulanan = $this->penilaianmodel->getPenilaianGroupByBulan(
+                $data['id_karyawan'],
+                $id_batch,
+                $data['id_jobrole']
+            );
+
+            // Inisialisasi array dengan key berupa nama bulan (dari $namaBulan) dengan default '-'
+            $nilaiPerPeriode = array_fill_keys($namaBulan, '-');
+
+            // Proses tiap nilai yang ada di model
+            foreach ($nilaiBulanan as $nilai) {
+                // Konversi nilai field 'nama_periode' (diharapkan berupa int) ke nama bulan (misalnya 1 menjadi "Jan")
+                $periodeKey = date('M', mktime(0, 0, 0, (int)$nilai['bulan'], 10));
+                if (in_array($periodeKey, $namaBulan)) {
+                    // Konversi grade huruf ke angka
+                    $nilaiPerPeriode[$periodeKey] = $this->convertHurufToAngka($nilai['grade_akhir']);
+                }
+            }
+
+            // Simpan array nilai per periode (nama bulan) ke data karyawan
+            $data['nilai_bulanan'] = $nilaiPerPeriode;
+
+            // rata-rata = (nilai_Bulan1 + nilai_Bulan2 + nilai_Bulan3 + POINT OBSERVASI(default 1)) / 4
+            $total = 0;
+            foreach ($namaBulan as $periode) {
+                $nilai = is_numeric($nilaiPerPeriode[$periode]) ? $nilaiPerPeriode[$periode] : 0;
+                $total += $nilai;
+            }
+            // Tambahkan nilai POINT OBSERVASI default (1)
+            $total += 1;
+            $rataRataCell = $total / 4;
+
+            // Tentukan grade berdasarkan rata-rata yang dihitung
+            $gradeCell = $this->calculateGradeBatch($rataRataCell);
+
+            // b) Tentukan rankingFound untuk Prod
+            $prodOk = false;
+            if (strtolower($data['nama_bagian']) === 'operator') {
+                foreach ($resultTop7ProdOp[$data['area']] as $r => $rowP) {
+                    if ($r < 3 && $rowP['id_karyawan'] === $data['id_karyawan']) {
+                        $prodRank = $r + 1;
+                        $prodOk = true;
+                        break;
+                    }
+                }
+            } elseif (strpos($data['area'], 'ROSSO') === 0) {
+                $rossoArea = $data['area'];              // <-- langsung pakai data['area']
+                if (isset($resultTop7ProdRos[$rossoArea])) {
+                    foreach ($resultTop7ProdRos[$rossoArea] as $r => $rowR) {
+                        if ($r < 3 && $rowR['id_karyawan'] === $data['id_karyawan']) {
+                            $prodRank = $r + 1;
+                            $prodOk   = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!($prodOk ?? false)) $prodRank = null;
+
+            // c) Ranking BS
+            $bsOk = false;
+            if (strtolower($data['nama_bagian']) === 'operator') {
+                foreach ($resultTop3BsOp[$data['area']] as $r => $rowB) {
+                    if ($r < 3 && $rowB['id_karyawan'] === $data['id_karyawan']) {
+                        $bsRank = $r + 1;
+                        $bsOk = true;
+                        break;
+                    }
+                }
+            } elseif (strpos($data['area'], 'ROSSO') === 0) {
+                $rossoArea = $data['area'];
+                if (isset($resultTop3BsRos[$rossoArea])) {
+                    foreach ($resultTop3BsRos[$rossoArea] as $r => $rowBR) {
+                        if ($r < 3 && $rowBR['id_karyawan'] === $data['id_karyawan']) {
+                            $bsRank = $r + 1;
+                            $bsOk   = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!($bsOk ?? false)) $bsRank = null;
+
+            // d) Ranking Used Needle (Montir)
+            $needleOk = false;
+            if (strtolower($data['nama_bagian']) === 'montir') {
+                foreach ($resultTop3UsedNeedle[$data['area']] as $r => $rowN) {
+                    if ($r < 3 && $rowN['id_karyawan'] === $data['id_karyawan']) {
+                        $needleRank = $r + 1;
+                        $needleOk = true;
+                        break;
+                    }
+                }
+            }
+            if (!($needleOk ?? false)) $needleRank = null;
+
+            // e) Hitung bonus point: +1 tiap TRUE prodOk/bsOk/needleOk
+            $bonus = 0;
+            $bonus += $prodOk ? 1 : 0;
+            $bonus += $bsOk   ? 1 : 0;
+            $bonus += $needleOk ? 1 : 0;
+
+            $pointAkhir = $rataRataCell + $bonus;
+            $gradeAkhir = $this->calculateGradeBatch($pointAkhir);
+
+            // f) Tambahkan ke allData
+            $allData[] = [
+                'id_karyawan'   => $data['id_karyawan'],
+                'kode_kartu'    => $data['kode_kartu'],
+                'nama_karyawan' => $data['nama_karyawan'],
+                'jenis_kelamin' => $data['jenis_kelamin'],
+                'tgl_masuk'     => $data['tgl_masuk'],
+                'nilai_bulanan' => $nilaiPerPeriode,
+                'nama_bagian'   => $data['nama_bagian'],
+                'area'          => $data['area'],
+                'area_utama'    => $data['area_utama'],
+                'rata_rata'     => $rataRataCell,
+                'grade_awal'    => $gradeCell,
+                'rank_prod'     => $prodRank,
+                'rank_bs'       => $bsRank,
+                'rank_needle'   => $needleRank,
+                'point_akhir'   => $pointAkhir,
+                'grade_akhir'   => $gradeAkhir,
+            ];
+        }
+
+        // Kelompokkan data berdasarkan grade akhir
+        $grouped = ['A' => [], 'B' => [], 'C' => [], 'D' => []];
+        foreach ($allData as $item) {
+            $g = $item['grade_akhir'];
+            $grouped[$g][] = $item;
+        }
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheetIndex = 0;
 
-        foreach ($bagianList as $bagian) {
-            $dataBagian = array_filter($reportbatch, function ($item) use ($bagian) {
-                return $item['nama_bagian'] === $bagian;
-            });
+        foreach ($grouped as $grade => $dataGroup) {
 
-            $sheet = $spreadsheet->createSheet();
-            $sheet->setTitle($bagian);
+            $dataGroup = $grouped[$grade];
+            if (empty($dataGroup)) continue;
+            $sheet = $sheetIndex === 0 ? $spreadsheet->getActiveSheet() : $spreadsheet->createSheet($sheetIndex);
+            $sheet->setTitle("Grade $grade");
+            $sheetIndex++;
 
-            // Header utama
-            $sheet->mergeCells('A1:Q1');
-            $sheet->setCellValue('A1', 'REPORT PENILAIAN ' . $bagian . ' AREA ' . $area_utama . ' ' . $nama_batch['nama_batch']);
-            $sheet->getStyle('A1')->getFont()->setName('Times New Roman');
-            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
-            $sheet->getStyle('A1')->getAlignment()
-                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            // Judul Laporan (baris 1)
+            $judul = "REPORT PENILAIAN $area_utama - " . $nama_batch['nama_batch'];
+            $sheet->mergeCells('A1:L1');  // Kolom A sampai L (12 kolom)
+            $sheet->setCellValue('A1', $judul);
+            $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+            $sheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            // Header kolom tetap
-            $sheet->mergeCells('A3:A4'); // NO
-            $sheet->setCellValue('A3', 'NO');
-            $sheet->mergeCells('B3:B4');
-            $sheet->setCellValue('B3', 'KODE KARTU BARU');
-            $sheet->mergeCells('C3:C4');
-            $sheet->setCellValue('C3', 'NAMA LENGKAP');
-            $sheet->mergeCells('D3:D4');
-            $sheet->setCellValue('D3', 'L/P');
-            $sheet->mergeCells('E3:E4');
-            $sheet->setCellValue('E3', 'TGL. MASUK KERJA');
-            $sheet->mergeCells('F3:F4');
-            $sheet->setCellValue('F3', 'BAGIAN');
-
-            // Header kolom bulan
-            $headerStartCol = 'G';
-            $bulanHeaders = [];
-            foreach ($getBulan as $b) {
-                $bulanHeaders[] = date('M', strtotime($b['end_date']));
-            }
-            $endColBulan = chr(ord($headerStartCol) + count($bulanHeaders) - 1);
-
-            $sheet->mergeCells($headerStartCol . '3:' . $endColBulan . '3');
-            $sheet->setCellValue($headerStartCol . '3', 'BULAN');
-            foreach ($bulanHeaders as $index => $bulan) {
-                $sheet->setCellValue(chr(ord($headerStartCol) + $index) . '4', $bulan);
+            // Header tetap: NO, KODE KARTU, NAMA KARYAWAN, L/P, TGL. MASUK KERJA, BAGIAN (baris 3-4)
+            $headers = ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN'];
+            $startColAscii = ord('A');
+            foreach ($headers as $i => $header) {
+                $col = chr($startColAscii + $i);
+                $sheet->mergeCells("{$col}3:{$col}4");
+                $sheet->setCellValue("{$col}3", $header);
+                $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+                $sheet->getStyle("{$col}3")->getAlignment()->setVertical('center');
             }
 
-            // Tambahan kolom untuk "POINT OBSERVASI", "RATA-RATA POINT AREA", dan "GRADE"
-            $sheet->mergeCells(chr(ord($endColBulan) + 1) . '3:' . chr(ord($endColBulan) + 1) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 1) . '3', 'POINT OBSERVASI');
-            $sheet->mergeCells(chr(ord($endColBulan) + 2) . '3:' . chr(ord($endColBulan) + 2) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 2) . '3', 'RATA-RATA POINT AREA');
-            $sheet->mergeCells(chr(ord($endColBulan) + 3) . '3:' . chr(ord($endColBulan) + 3) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 3) . '3', 'GRADE');
-            $sheet->mergeCells(chr(ord($endColBulan) + 4) . '3:' . chr(ord($endColBulan) + 4) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 4) . '3', 'PROD');
-            $sheet->mergeCells(chr(ord($endColBulan) + 5) . '3:' . chr(ord($endColBulan) + 5) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 5) . '3', 'BS');
-            $sheet->mergeCells(chr(ord($endColBulan) + 6) . '3:' . chr(ord($endColBulan) + 6) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 6) . '3', 'USED NEEDLE');
-            $sheet->mergeCells(chr(ord($endColBulan) + 7) . '3:' . chr(ord($endColBulan) + 7) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 7) . '3', 'POINT');
-            $sheet->mergeCells(chr(ord($endColBulan) + 8) . '3:' . chr(ord($endColBulan) + 8) . '4');
-            $sheet->setCellValue(chr(ord($endColBulan) + 8) . '3', 'GRADE AKHIR');
+            $col = chr($startColAscii + count($headers));
+            $mergeEnd = chr(ord($col) + count($namaBulan) - 1);
+            $sheet->mergeCells("{$col}3:{$mergeEnd}3");
+            $sheet->setCellValue("{$col}3", 'Bulan');
+            $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+            $sheet->getStyle("{$col}3")->getAlignment()->setVertical('center');
+            // Isi sub-header di baris 4 dengan nama-nama bulan
+            foreach ($namaBulan as $bulan) {
+                $sheet->setCellValue("{$col}4", $bulan);
+                $sheet->getStyle("{$col}4")->getAlignment()->setHorizontal('center');
+                $col++;
+            }
 
-            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 8) . '4')
-                ->getBorders()
-                ->getAllBorders()
-                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            // POINT OBSERVASI (default 1)
+            $sheet->mergeCells("{$col}3:{$col}4");
+            $sheet->setCellValue("{$col}3", "POINT OBSERVASI");
+            $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+            $col++;
+            // RATA-RATA POINT AREA (hasil perhitungan manual dari nilai periode + observasi)
+            $sheet->mergeCells("{$col}3:{$col}4");
+            $sheet->setCellValue("{$col}3", "RATA-RATA POINT AREA");
+            $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+            $col++;
+            // GRADE (hasil perhitungan manual dari rata-rata)
+            $sheet->mergeCells("{$col}3:{$col}4");
+            $sheet->setCellValue("{$col}3", "GRADE");
+            $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+            $col++;
 
-            // Set style untuk header kolom
-            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 8) . '4')
-                ->getFont()
-                ->setName('Times New Roman');
-            $sheet->getStyle('A3:' . chr(ord($endColBulan) + 8) . '4')
-                ->getFont()
-                ->setBold(true)
-                ->setSize(12);
-            // Tulis data
+            // RANKING: PROD, BS, USED NEEDLE
+            $colRankingStart = $col;
+            $sheet->mergeCells("{$colRankingStart}3:" . chr(ord($colRankingStart) + 2) . "3");
+            $sheet->setCellValue("{$colRankingStart}3", "RANKING");
+            $sheet->getStyle("{$colRankingStart}3")->getAlignment()->setHorizontal('center');
+            $sheet->getStyle("{$colRankingStart}3")->getAlignment()->setVertical('center');
+
+            // Sub-header untuk RANKING
+            $subRanking = ['PROD', 'BS', 'USED NEEDLE'];
+            foreach ($subRanking as $sub) {
+                $sheet->setCellValue("{$col}4", $sub);
+                $sheet->getStyle("{$col}4")->getAlignment()->setHorizontal('center');
+                $sheet->getStyle("{$col}4")->getAlignment()->setVertical('center');
+                $col++;
+            }
+
+            //POINT 
+            $sheet->mergeCells("{$col}3:{$col}4");
+            $sheet->setCellValue("{$col}3", "POINT");
+            $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+            $col++;
+
+            //GRADE AKHIR 
+            $sheet->mergeCells("{$col}3:{$col}4");
+            $sheet->setCellValue("{$col}3", "GRADE AKHIR");
+            $sheet->getStyle("{$col}3")->getAlignment()->setHorizontal('center');
+            $col++;
+
+            // Isi data mulai baris 5
             $row = 5;
             $no = 1;
 
-            foreach ($dataBagian as $p) {
-                $data = [
-                    $no,
-                    $p['kode_kartu'],
-                    $p['nama_karyawan'],
-                    $p['jenis_kelamin'],
-                    $p['tgl_masuk'],
-                    $p['nama_bagian']
-                ];
-
-                $total = 0;
-                $count = 0;
-
-                // Get bulan untuk masing-masing karyawan
-                // Get bulan untuk masing-masing karyawan
-                $getBulanData = $this->penilaianmodel->getPenilaianGroupByBulan($p['id_karyawan'], $p['id_batch'], $p['id_jobrole']);
-                // dd ($getBulanData);
-                // Set nilai default untuk kolom G, H, dan I
-                $periodeAwal = $periodeTengah = $periodeAkhir = '';
-
-                // Proses data untuk setiap periode
-                foreach ($getBulanData as $b) {
-                    $hurufNilai = $b['grade_akhir'] ?? ''; // Pastikan nilai default jika tidak ada
-                    $angkaNilai = $this->convertHurufToAngka($hurufNilai);
-
-                    // Tentukan kolom sesuai dengan periode
-                    if ($b['nama_periode'] == 'Awal') {
-                        $periodeAwal = ($angkaNilai !== null && $angkaNilai != 0) ? $angkaNilai : '';
-                    } elseif ($b['nama_periode'] == 'Tengah') {
-                        $periodeTengah = ($angkaNilai !== null && $angkaNilai != 0) ? $angkaNilai : '';
-                    } elseif ($b['nama_periode'] == 'Akhir') {
-                        $periodeAkhir = ($angkaNilai !== null && $angkaNilai != 0) ? $angkaNilai : '';
-                    }
-
-                    // Hitung total dan jumlah untuk rata-rata
-                    if ($angkaNilai > 0) {
-                        $total += $angkaNilai;
-                        $count++;
-                    }
+            foreach ($dataGroup as $d) {
+                $col = 'A';
+                $sheet->setCellValue($col++ . $row, $no++);
+                $sheet->setCellValue($col++ . $row, $d['kode_kartu']);
+                $sheet->setCellValue($col++ . $row, $d['nama_karyawan']);
+                $sheet->setCellValue($col++ . $row, $d['jenis_kelamin']);
+                $sheet->setCellValue($col++ . $row, date('d-m-Y', strtotime($d['tgl_masuk'])));
+                $sheet->setCellValue($col++ . $row, $d['nama_bagian']);
+                $bulanKeys = array_keys($d['nilai_bulanan']); // Contoh: ['Jan', 'Feb', 'Mar']
+                foreach ($bulanKeys as $bulan) {
+                    $sheet->setCellValue($col++ . $row, $d['nilai_bulanan'][$bulan]);
                 }
-
-                // Tambahkan nilai periode ke data dalam urutan tetap
-                $data[] = $periodeAwal;  // Kolom G
-                $data[] = $periodeTengah; // Kolom H
-                $data[] = $periodeAkhir; // Kolom I
-
-                // dd ($data);
-                // Hitung rata-rata dan grade
-                $average = round(($total + 1) / ($count + 1), 2);
-                $grade = $this->calculateGradeBatch($average);
-                $bsmc = $this->bsmcModel->getBsmcByIdKaryawan($p['id_karyawan']);
-                $getTop3 = $this->bsmcModel->getTop3Produksi($area_utama, $id_batch);
-                $getMinAvgBS = $this->bsmcModel->getTop3LowestBS($area_utama, $id_batch);
-                // dd ($bsmc, $getTop3, $getMinAvgBS);
-                $getTop3Rosso = $this->rossoModel->getTop3Produksi($area_utama, $id_batch);
-                // dd ($getTop3Rosso);
-                $getMinAvgBSRosso = $this->rossoModel->getTop3LowestBS($area_utama, $id_batch);
-                // dd ($getMinAvgBSRosso);
-                $getTop3UsedNeedle = $this->jarumModel->getTop3Produksi($area_utama, $id_batch);
-                // dd ($getTop3UsedNeedle);
-
-
-                // Tambahkan kolom rata-rata dan grade ke data
-                $data[] = 1; // Kolom tambahan (bisa untuk catatan)
-                $data[] = $average;
-                $data[] = $grade;
-
-
-                // jika karayawan di $getTop3 maka berikan angka 1/2/3 sesuai urutan
-
-                $activesheet = $spreadsheet->getActiveSheet();
-
-                if ("OPERATOR" == $activesheet->getTitle()) {
-                    if ($getTop3) {
-                        $noTop3 = 1;
-                        foreach ($getTop3 as $top3) {
-                            if ($top3['id_karyawan'] == $p['id_karyawan']) {
-                                $data[] = $noTop3;
-                            }
-                            $noTop3++;
-                        }
-                    } else {
-                        $data[] = NULL;
-                    }
-                    // $data[] = "";
-                    // jika karayawan di $getMinAvgBS maka berikan angka 1/2/3 sesuai urutan
-                    if ($getMinAvgBS) {
-                        $noMinAvgBS = 1;
-                        foreach ($getMinAvgBS as $minAvgBS) {
-                            if ($minAvgBS['id_karyawan'] == $p['id_karyawan']) {
-                                $data[] = $noMinAvgBS;
-                            }
-                            $noMinAvgBS++;
-                        }
-                    } else {
-                        $data[] = NULL;
-                    }
-                    // $data[] = "";
-                } elseif ("ROSSO" == $activesheet->getTitle()) {
-                    if ($getTop3Rosso) {
-                        $noTop3Rosso = 1;
-                        foreach ($getTop3Rosso as $top3Rosso) {
-                            if ($top3Rosso['id_karyawan'] == $p['id_karyawan']) {
-                                $data[] = $noTop3Rosso;
-                            }
-                            $noTop3Rosso++;
-                        }
-                    } else {
-                        $data[] = NULL;
-                    }
-                    // $data[] = "";
-                    // jika karyawan di $getMinAvgBSRosso maka berikan angka 1/2/3 sesuai urutan
-                    if ($getMinAvgBSRosso) {
-                        $noMinAvgBSRosso = 1;
-                        foreach ($getMinAvgBSRosso as $minAvgBSRosso) {
-                            if ($minAvgBSRosso['id_karyawan'] == $p['id_karyawan']) {
-                                $data[] = $noMinAvgBSRosso;
-                            }
-                            $noMinAvgBSRosso++;
-                        }
-                    } else {
-                        $data[] = NULL;
-                    }
-                    // $data[] = "";
-                } else {
-                    $data[] = "";
-                    $data[] = "";
-                    if ($getTop3UsedNeedle) {
-                        $noTop3UsedNeedle = 1;
-                        foreach ($getTop3UsedNeedle as $top3UsedNeedle) {
-                            if ($top3UsedNeedle['id_karyawan'] == $p['id_karyawan']) {
-                                $data[] = $noTop3UsedNeedle;
-                            }
-                            $noTop3UsedNeedle++;
-                        }
-                    } else {
-                        $data[] = NULL;
-                    }
-                }
-
-
-
-                // set rumus excel untuk point =K5+IF(M5<>"";1;0)+IF(N5<>"";1;0)+IF(O5<>"";1;0)
-                $sum = "=SUM(K" . $row . ",(IF(M" . $row . "<>\"\",1,0)),(IF(N" . $row . "<>\"\",1,0)),(IF(O" . $row . "<>\"\",1,0)))";
-                $sheet->setCellValue("P" . $row, $sum);
-
-
-                // set rumus excel untuk gradeakhir =IF(P5>3,5;"A";IF(P5>2,5;"B";IF(P5>1,75;"C";IF(P5<1,75;"D";""))))
-                $konversigradeakhir = "=IF(P" . $row . ">3.5,\"A\",IF(P" . $row . ">2.5,\"B\",IF(P" . $row . ">1.75,\"C\",IF(P" . $row . "<1.75,\"D\",\"D\"))))";
-                // $konvesigradeakhir = "=IF(P" . $row . ">3,5;\"A\";IF(P" . $row . ">2,5;\"B\";IF(P" . $row . ">1,75;\"C\";IF(P" . $row . "<1,75;\"D\";\"\"))))";
-                $sheet->setCellValue("Q" . $row, $konversigradeakhir);
-                // dd ($data, $total, $count);
-                $sheet->fromArray($data, null, 'A' . $row);
-                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-                // set font data
-                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)->getFont()->setName('Times New Roman');
-                // Set font size data
-                $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)->getFont()->setSize(10);
+                $sheet->setCellValue($col++ . $row, 1); // Isi POINT OBSERVASI (default 1)
+                $sheet->setCellValue($col++ . $row, $d['rata_rata']);
+                $sheet->setCellValue($col++ . $row, $d['grade_awal']);
+                $sheet->setCellValue($col++ . $row, $d['rank_prod']   ?? '-');
+                $sheet->setCellValue($col++ . $row, $d['rank_bs']     ?? '-');
+                $sheet->setCellValue($col++ . $row, $d['rank_needle'] ?? '-');
+                $sheet->setCellValue($col++ . $row, $d['point_akhir']);
+                $sheet->setCellValue($col++ . $row, $d['grade_akhir']);
                 $row++;
-                $no++;
             }
+            // Tambahkan border untuk seluruh area dari A3 sampai Q baris terakhir
+            $lastRow = $row - 1;
+            $sheet->getStyle("A3:Q{$lastRow}")->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ]);
 
-            // Tambahkan total karyawan
-            $sheet->mergeCells('A' . $row . ':B' . $row);
-            $sheet->setCellValue('A' . $row, 'TOTAL KARYAWAN');
-            $sheet->setCellValue('C' . $row, $no - 1);
-            $sheet->setCellValue('D' . $row, 'org');
-            $sheet->getStyle('A' . $row . ':D' . $row)
-                ->getFont()
-                ->setName('Times New Roman')
-                ->setBold(true)
-                ->setSize(10);
-            $sheet->getStyle('A' . $row . ':' . chr(ord($endColBulan) + 8) . $row)
-                ->getBorders()
-                ->getAllBorders()
-                ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-            // Atur kolom yang harus di tengah
-            $columnsCenter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-            foreach ($columnsCenter as $col) {
-                $sheet->getStyle($col . '1:' . $col . $row)
-                    ->getAlignment()
-                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-            }
-
-            // Atur ukuran kolom
-            $sheet->getColumnDimension('A')->setWidth(7);
-            $sheet->getColumnDimension('B')->setWidth(10);
-            $sheet->getColumnDimension('C')->setWidth(30);
-            $sheet->getColumnDimension('D')->setWidth(5);
-            $sheet->getColumnDimension('E')->setWidth(15);
-            $sheet->getColumnDimension('J')->setWidth(10);
-            $sheet->getColumnDimension('K')->setWidth(10);
-            $sheet->getColumnDimension('L')->setWidth(10);
-            $sheet->getColumnDimension('M')->setWidth(10);
-            $sheet->getColumnDimension('N')->setWidth(10);
-            $sheet->getColumnDimension('O')->setWidth(10);
-            $sheet->getColumnDimension('P')->setWidth(10);
-            $sheet->getColumnDimension('Q')->setWidth(10);
-
-            // Wrap text
-            $sheet->getStyle('B3:B4')->getAlignment()->setWrapText(true);
-            $sheet->getStyle('C3:C4')->getAlignment()->setWrapText(true);
-            $sheet->getStyle('E3:E4')->getAlignment()->setWrapText(true);
-            $sheet->getStyle('J3:J4')->getAlignment()->setWrapText(true);
-            $sheet->getStyle('K3:K4')->getAlignment()->setWrapText(true);
-            $sheet->getStyle('O3:O4')->getAlignment()->setWrapText(true);
-            $sheet->getStyle('Q3:Q4')->getAlignment()->setWrapText(true);
-        }
-
-        // Hapus sheet default
-        $spreadsheet->removeSheetByIndex(0);
-
-        $grades = ['A', 'B', 'C', 'D']; // Grades
-        $dataByGrade = []; // Data berdasarkan grade
-        $sortedData = []; // Temporary array to hold sorted data
-
-        // Iterasi sheet asli
-        foreach ($spreadsheet->getAllSheets() as $sheet) {
-            $sheetName = $sheet->getTitle();
-            $data = $sheet->toArray(); // Data sheet
-
-            // Iterasi setiap baris untuk filter grade
-            foreach ($data as $row) {
-                // Ambil grade dari kolom ke-16 (misal Q)
-                $grade = $row[16] ?? '';
-
-                if (in_array($grade, $grades)) {
-                    // Ambil kolom 0-5 dan 15-16
-                    $filteredRow = array_merge(
-                        array_slice($row, 1, 5),    // Kolom 0 sampai 5
-                        array_slice($row, 15, 2)   // Kolom 15 sampai 16
-                    );
-
-                    // Simpan ke data berdasarkan grade
-                    $dataByGrade[$grade][] = $filteredRow;
-                }
-            }
-        }
-        // dd ($dataByGrade);
-        // Sort Order
-        $sortOrders = [
-            'KKMA',
-            'KKMB',
-            'KKMC',
-            'KKMNS',
-            'KKSA',
-            'KKSB',
-            'KKSC',
-            'KKJHA',
-            'KKJHB',
-            'KKJHC',
-            'KK2MA',
-            'KK2MB',
-            'KK2MC',
-            'KK2MNS',
-            'KK2SA',
-            'KK2SB',
-            'KK2SC',
-            'KK5A',
-            'KK5B',
-            'KK5C',
-            'KK5NS',
-            'KK7A',
-            'KK7B',
-            'KK7C',
-            'KK7NS',
-            'KK8MA',
-            'KK8MB',
-            'KK8MC',
-            'KK8MNS',
-            'KK8SA',
-            'KK8SB',
-            'KK8SC',
-            'KK9A',
-            'KK9B',
-            'KK9C',
-            'KK9NS',
-            'KK10A',
-            'KK10B',
-            'KK10C',
-            'KK10NS',
-            'KK11A',
-            'KK11B',
-            'KK11C',
-            'KK11NS'
-        ];
-
-        // Flatten data by grade for sorting
-        foreach ($dataByGrade as $grade => $employees) {
-            foreach ($employees as $index => $employee) {
-                $sortedData[] = [
-                    'grade' => $grade,
-                    'employee_data' => $employee,
-                    'kode_kartu' => $employee[0] // assuming kode_kartu is in column 1
-                ];
-            }
-        }
-        // dd ($dataByGrade);
-        // Sort the flattened array by kode_kartu
-        usort($sortedData, function ($a, $b) use ($sortOrders) {
-            // Ekstrak prefix kode kartu
-            preg_match('/^[A-Z]+/', $a['kode_kartu'], $matchA);
-            preg_match('/^[A-Z]+/', $b['kode_kartu'], $matchB);
-
-            $prefixA = $matchA[0] ?? '';
-            $prefixB = $matchB[0] ?? '';
-
-            // Cari posisi prefix di array $sortOrders
-            $posA = array_search($prefixA, $sortOrders);
-            $posB = array_search($prefixB, $sortOrders);
-
-            // Jika tidak ditemukan, posisikan di akhir
-            $posA = ($posA === false) ? PHP_INT_MAX : $posA;
-            $posB = ($posB === false) ? PHP_INT_MAX : $posB;
-
-            // Bandingkan berdasarkan posisi prefix
-            if ($posA !== $posB) {
-                return $posA <=> $posB;
-            }
-
-            // Jika prefix sama, bandingkan berdasarkan angka di kode kartu
-            preg_match('/\d+/', $a['kode_kartu'], $numberA);
-            preg_match('/\d+/', $b['kode_kartu'], $numberB);
-
-            $numA = (int)($numberA[0] ?? PHP_INT_MAX); // Default jika tidak ada angka
-            $numB = (int)($numberB[0] ?? PHP_INT_MAX);
-
-            return $numA <=> $numB;
-        });
-        // dd ($sortedData);
-        // Reorganize sorted data back by grade
-        $dataByGrade = [];
-        foreach ($sortedData as $sortedEmployee) {
-            $dataByGrade[$sortedEmployee['grade']][] = $sortedEmployee['employee_data'];
-        }
-
-        // dd ($dataByGrade);
-
-        foreach ($grades as $grade) {
-            if (!empty($dataByGrade[$grade])) {
-                // Buat sheet baru untuk grade
-                $newSheet = $spreadsheet->createSheet();
-                $newSheet->setTitle("GRADE " . $grade);
-
-                // Tambahkan header ke sheet
-                $header = [
-                    ['NO', 'KODE KARTU', 'NAMA KARYAWAN', 'L/P', 'TGL. MASUK KERJA', 'BAGIAN', 'POINT', 'GRADE AKHIR']
-                ];
-                $newSheet->fromArray($header, null, 'A1');
-
-                // Style untuk header
-                $newSheet->getStyle('A1:H1')->getFont()->setBold(true); // Bold font for header
-                $newSheet->getStyle('A1:H1')->getFont()->setName('Times New Roman'); // Set font name
-                $newSheet->getStyle('A1:H1')->getFont()->setSize(12); // Set font size
-                // width kolom
-                $newSheet->getColumnDimension('A')->setWidth(5);  // NO
-                $newSheet->getColumnDimension('B')->setWidth(10); // KODE KARTU
-                $newSheet->getColumnDimension('C')->setWidth(25); // NAMA KARYAWAN
-                $newSheet->getColumnDimension('D')->setWidth(5);  // L/P
-                $newSheet->getColumnDimension('E')->setWidth(15); // TGL. MASUK KERJA
-                $newSheet->getColumnDimension('F')->setWidth(15); // BAGIAN
-                $newSheet->getColumnDimension('G')->setWidth(10); // POINT
-                $newSheet->getColumnDimension('H')->setWidth(10); // GRADE AKHIR
-
-                // wrap text
-                $newSheet->getStyle('A1:H1')->getAlignment()->setWrapText(true);
-                $newSheet->getStyle('A1:H1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Center align header
-                $newSheet->getStyle('A1:H1')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN); // Add borders to header
-                $newSheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('B0C4DE'); // Light Blue background for header
-
-                // Tambahkan nomor urut di kolom "NO" untuk setiap data
-                $rowIndex = 2;  // Baris dimulai dari 2 karena header di baris 1
-                $dataWithNo = [];  // Array baru untuk menampung data dengan nomor urut
-
-                foreach ($dataByGrade[$grade] as $index => $data) {
-                    // Menambahkan nomor urut (NO) pada setiap baris
-                    $dataWithNo[] = array_merge([$index + 1], $data);  // Menambahkan nomor urut di depan data
-                }
-
-                // Tambahkan data yang sudah ada nomor urutnya
-                $newSheet->fromArray($dataWithNo, null, 'A2');
-
-                // Style untuk data rows
-                $newSheet->getStyle('A2:H' . (count($dataWithNo) + 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN); // Add borders to data rows
-                $newSheet->getStyle('A2:H' . (count($dataWithNo) + 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Center align data
-                $newSheet->getStyle('A2:H' . (count($dataWithNo) + 1))->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Vertical center for data
-
-                // Alternating row color for better readability
-                $rowCount = count($dataWithNo);
-                for ($i = 2; $i <= $rowCount + 1; $i++) {
-                    if ($i % 2 == 0) {
-                        // Apply light grey background for even rows
-                        $newSheet->getStyle('A' . $i . ':H' . $i)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('F2F2F2');
-                    }
-                }
-
-                // Set font for data rows
-                $newSheet->getStyle('A2:H' . (count($dataWithNo) + 1))->getFont()->setName('Times New Roman');
-                $newSheet->getStyle('A2:H' . (count($dataWithNo) + 1))->getFont()->setSize(10);
-
-                // total karyawan
-                $newSheet->mergeCells('A' . ($rowCount + 2) . ':C' . ($rowCount + 2));
-                $newSheet->setCellValue('A' . ($rowCount + 2), 'TOTAL KARYAWAN');
-                $newSheet->setCellValue('D' . ($rowCount + 2), $rowCount);
-                $newSheet->getStyle('A' . ($rowCount + 2) . ':H' . ($rowCount + 2))
-                    ->getFont()
-                    ->setName('Times New Roman')
-                    ->setBold(true)
-                    ->setSize(10);
-                $newSheet->getStyle('A' . ($rowCount + 2) . ':H' . ($rowCount + 2))
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-                // center
-                $newSheet->getStyle('A' . ($rowCount + 2) . ':H' . ($rowCount + 2))
-                    ->getAlignment()
-                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
-                    ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-                // Set wrap text
-                $newSheet->getStyle('A' . ($rowCount + 2) . ':H' . ($rowCount + 2))->getAlignment()->setWrapText(true);
+            // Auto-size kolom A sampai Q
+            foreach (range('A', 'Q') as $columnID) {
+                $sheet->getColumnDimension($columnID)->setAutoSize(true);
             }
         }
 
-        // Ambil data periode dan format tanggalnya
-        $periodeData = $this->periodeModel->getPeriodeByBatch($id_batch);
-        $end_dates   = array_column($periodeData, 'end_date');
+        // Buat sheet “REPORT GRADE”
+        $sheetGrade = $spreadsheet->createSheet();
+        $sheetGrade->setTitle('REPORT GRADE');
 
-        $bulan_list = [];
-        foreach ($end_dates as $date) {
-            $bulan_list[] = strtoupper((new DateTime($date))->format('F'));
+        $title = "LAPORAN PREMI SKILL MATRIX";
+        $sheetGrade->mergeCells('A1:D1');
+        $sheetGrade->setCellValue('A1', $title);
+
+        //Header kolom di baris 2
+        $sheetGrade->mergeCells('A2:D2');
+        $sheetGrade->setCellValue('A2', $nama_batch['nama_batch']);
+        $sheetGrade->getStyle('A1:D2')->getFont()->setBold(true)->setSize(14);
+        $sheetGrade->getStyle('A1:D2')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        // b) Header kolom di baris 3
+        $sheetGrade->setCellValue('A3', 'Grade');
+        $sheetGrade->setCellValue('B3', 'Premi');
+        $sheetGrade->setCellValue('C3', 'Jumlah Orang');
+        $sheetGrade->setCellValue('D3', 'Total');
+        $sheetGrade->getStyle('A3:D3')->getFont()->setBold(true);
+        $sheetGrade->getStyle('A3:D3')->getAlignment()
+            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        // Data premi
+        $totalSeluruhOrang = 0;
+        $totalSeluruhRupiah = 0;
+
+        // c) Isi data premi
+        $premiMap = ['A' => 25000, 'B' => 20000, 'C' => 15000, 'D' => 0];
+        $row = 4;
+        foreach ($premiMap as $gr => $pr) {
+            $jumlahOrang = isset($grouped[$gr]) ? count($grouped[$gr]) : 0;
+            $total       = $pr * $jumlahOrang;
+
+            $sheetGrade->setCellValue("A{$row}", $gr);
+            $sheetGrade->setCellValue("B{$row}", $pr);
+            $sheetGrade->setCellValue("C{$row}", $jumlahOrang);
+            $sheetGrade->setCellValue("D{$row}", $total);
+            $totalSeluruhOrang += $jumlahOrang;
+            $totalSeluruhRupiah += $total;
+            $row++;
         }
 
-        $periode = implode(' - ', $bulan_list) . ' ' . (new DateTime(end($end_dates)))->format('Y');
+        // Total baris
+        $sheetGrade->mergeCells("A{$row}:B{$row}");
+        $sheetGrade->setCellValue("A{$row}", 'TOTAL');
+        $sheetGrade->setCellValue("C{$row}", $totalSeluruhOrang);
+        $sheetGrade->setCellValue("D{$row}", $totalSeluruhRupiah);
 
-        // Buat sheet dan atur judul
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('REPORT GRADE');
-
-        // Header utama (merge cell dan isi teks)
-        $sheet->mergeCells('A5:F6');
-        $sheet->setCellValue('A5', 'LAPORAN PREMI SKILL MATRIX');
-
-        $sheet->mergeCells('A7:F7');
-        $sheet->setCellValue('A7', $nama_batch['nama_batch']);
-
-        $sheet->mergeCells('A8:F8');
-        $sheet->setCellValue('A8', $periode);
-
-        // Header kolom
-        $sheet->setCellValue('B10', 'GRADE');
-        $sheet->setCellValue('C10', 'PREMI');
-        $sheet->setCellValue('D10', 'JML ORANG');
-        $sheet->setCellValue('E10', 'TOTAL');
-
-
-
-        // Definisikan style arrays
-        $headerStyle = [
-            'font'      => [
-                'bold'  => true,
-                'name'  => 'Times New Roman',
-                'size'  => 16,
-            ],
-            'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'wrapText'   => true,
-            ],
-            'borders'   => [
+        // Bold untuk baris total
+        $sheetGrade->getStyle("B{$row}:D{$row}")->getFont()->setBold(true);
+        // Tambahkan border ke baris total
+        $sheetGrade->getStyle("B{$row}:D{$row}")->applyFromArray([
+            'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                 ],
             ],
-        ];
+        ]);
 
-        $headerColumnStyle = [
-            'font'      => [
-                'bold'  => true,
-                'name'  => 'Times New Roman',
-                'size'  => 12,
-            ],
-            'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
-            ],
-            'fill'      => [
-                'fillType'   => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => ['rgb' => 'B0C4DE'],
-            ],
-            'borders'   => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+        // 6c) Style header (baris 3)
+        $sheetGrade->getStyle('A3:D3')->getFont()->setBold(true);
+        $sheetGrade->getStyle('A3:D3')
+            ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        // 6d) Format kolom Premi dan Total sebagai currency
+        $sheetGrade->getStyle('B4:B' . ($row - 1))
+            ->getNumberFormat()
+            ->setFormatCode('"Rp"#,##0');
+
+        $sheetGrade->getStyle('D4:D' . ($row - 1))
+            ->getNumberFormat()
+            ->setFormatCode('"Rp"#,##0');
+
+        $lastRow = $row - 1;
+        $sheetGrade->getStyle("A3:D{$lastRow}") // border header + data premi
+            ->applyFromArray([
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    ],
                 ],
-            ],
-        ];
+            ]);
 
-        $dataStyle = [
-            'font'      => [
-                'name' => 'Times New Roman',
-                'size' => 10,
-            ],
-            'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                'wrapText'   => true,
-            ],
-            'borders'   => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                ],
-            ],
-        ];
-
-        // Terapkan style ke header utama dan header kolom
-        $sheet->getStyle('A5:F8')->applyFromArray($headerStyle);
-        $sheet->getStyle('B10:E10')->applyFromArray($headerColumnStyle);
-
-        // Set lebar kolom untuk data (kolom B sampai E)
-        $sheet->getColumnDimension('B')->setWidth(10); // GRADE
-        $sheet->getColumnDimension('C')->setWidth(10); // PREMI
-        $sheet->getColumnDimension('D')->setWidth(10); // JML ORANG
-        $sheet->getColumnDimension('E')->setWidth(10); // TOTAL
-
-        // Hitung jumlah karyawan berdasarkan grade
-        $totalA = count($dataByGrade['A'] ?? []);
-        $totalB = count($dataByGrade['B'] ?? []);
-        $totalC = count($dataByGrade['C'] ?? []);
-        $totalD = count($dataByGrade['D'] ?? []);
-
-        // Siapkan data untuk di-export
-        $data = [
-            ['A',
-                'Rp25,000',
-                $totalA,
-                $totalA * 25000
-            ],
-            ['B',
-                'Rp20,000',
-                $totalB,
-                $totalB * 20000
-            ],
-            ['C',
-                'Rp15,000',
-                $totalC,
-                $totalC * 15000
-            ],
-            ['D',
-                'Rp0',
-                $totalD,
-                $totalD * 0
-            ],
-        ];
-
-        $sheet->fromArray($data, null, 'B11');
-
-        // Terapkan format mata uang ke kolom total (D11:D14)
-        $sheet->getStyle("E11:E15")->getNumberFormat()->setFormatCode('"Rp" #,##0');
-
-        $sheet->mergeCells('B15:C15');
-        $sheet->setCellValue('B15', 'TOTAL');
-        // style b15:e15
-        $sheet->getStyle('B15:E15')->applyFromArray($headerColumnStyle);
-
-        // Tentukan range data berdasarkan jumlah baris data
-        $dataStartRow = 11;
-        $dataEndRow   = $dataStartRow + count($data) - 1;
-        $dataRange    = "B{$dataStartRow}:E{$dataEndRow}";
-
-        // Terapkan style untuk data
-        $sheet->getStyle($dataRange)->applyFromArray($dataStyle);
-
-        // Terapkan alternating row color (baris genap diberi background light grey)
-        for ($i = $dataStartRow; $i <= $dataEndRow; $i++) {
-            if ($i % 2 == 0) {
-                $sheet->getStyle("B{$i}:E{$i}")
-                ->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                    ->getStartColor()
-                    ->setRGB('F2F2F2');
-            }
+        // 6e) Autosize kolom
+        foreach (['A', 'B', 'C', 'D'] as $col) {
+            $sheetGrade->getColumnDimension($col)->setAutoSize(true);
         }
 
-        // Set rumus untuk total jumlah karyawan dan total premi pada baris setelah data
-        $totalRow = $dataEndRow + 1;
-        $sheet->setCellValue("D{$totalRow}", "=SUM(D{$dataStartRow}:D{$dataEndRow})");
-        $sheet->setCellValue("E{$totalRow}", "=SUM(E{$dataStartRow}:E{$dataEndRow})");
-
-
-        // Simpan file Excel
-        $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
+        // Output file Excel
+        $areaLabel = ($area_utama === 'all') ? 'ALL_AREA' : strtoupper($area_utama);
+        $filename = 'Report Penilaian-' . $areaLabel . '-' . $nama_batch['nama_batch'] . '.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
@@ -1565,6 +1309,7 @@ class PenilaianController extends BaseController
         $writer->save('php://output');
         exit();
     }
+
     // Fungsi untuk konversi huruf ke angka
     private function convertHurufToAngka($huruf)
     {
