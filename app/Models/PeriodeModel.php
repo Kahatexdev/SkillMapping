@@ -98,4 +98,11 @@ class PeriodeModel extends Model
             ->where('end_date >=', date('Y-m-d'))
             ->first();
     }
+
+    public function getPeriodeByTanggal($tgl_input)
+    {
+        return $this->where('start_date <=', $tgl_input)
+            ->where('end_date >=', $tgl_input)
+            ->first();
+    }
 }

@@ -148,35 +148,35 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
-        $('#area').change(function() {
-            var area = $(this).val();
+    $('#area, #tgl_input').on('change', function() {
+        var area = $('#area').val();
+        var tgl_input = $('#tgl_input').val();
 
-            $('#id_karyawan').html('<option value="">Loading...</option>');
+        $('#id_karyawan').html('<option value="">Loading...</option>');
 
-            if (area !== "") {
-                $.ajax({
-                    url: "<?= base_url($role . '/getMontirByArea') ?>",
-                    type: "POST",
-                    data: {
-                        area: area
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        var options = '<option value="">Pilih Montir</option>';
-                        $.each(response, function(index, montir) {
-                            options += '<option value="' + montir.id_karyawan + '">' + montir.nama_karyawan + ' | ' + montir.kode_kartu + '</option>';
-                        });
-                        $('#id_karyawan').html(options);
-                    },
-                    error: function() {
-                        $('#id_karyawan').html('<option value="">Error</option>');
-                    }
-                });
-            } else {
-                $('#id_karyawan').html('<option value="">Pilih Montir</option>');
-            }
-        });
+        if (area !== "" && tgl_input !== "") {
+            $.ajax({
+                url: "<?= base_url($role . '/getMontirByArea') ?>",
+                type: "POST",
+                data: {
+                    area: area,
+                    tgl_input: tgl_input
+                },
+                dataType: "json",
+                success: function(response) {
+                    var options = '<option value="">Pilih Montir</option>';
+                    $.each(response, function(index, montir) {
+                        options += '<option value="' + montir.id_karyawan + '">' + montir.nama_karyawan + ' | ' + montir.kode_kartu + '</option>';
+                    });
+                    $('#id_karyawan').html(options);
+                },
+                error: function() {
+                    $('#id_karyawan').html('<option value="">Error</option>');
+                }
+            });
+        } else {
+            $('#id_karyawan').html('<option value="">Pilih Montir</option>');
+        }
     });
 </script>
 <script>
@@ -184,23 +184,17 @@
         const addRowBtn = document.getElementById("addRow");
         const inputRowsContainer = document.getElementById("inputRows");
         const areaDropdown = document.getElementById("area");
-        let montirOptions = ""; // Cache untuk opsi Montir
+        const tglInput = document.getElementById("tgl_input");
+        let montirOptions = ""; // Cache opsi montir
 
-        // Saat area berubah, update semua dropdown Montir di setiap row
-        areaDropdown.addEventListener("change", function() {
-            let area = this.value;
-
-            // Kosongkan Montir dulu
-            document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
-                dropdown.innerHTML = '<option value="">Loading...</option>';
-            });
-
-            if (area !== "") {
+        function fetchMontirOptions(area, tgl_input) {
+            if (area !== "" && tgl_input !== "") {
                 $.ajax({
                     url: "<?= base_url($role . '/getMontirByArea') ?>",
                     type: "POST",
                     data: {
-                        area: area
+                        area: area,
+                        tgl_input: tgl_input
                     },
                     dataType: "json",
                     success: function(response) {
@@ -209,7 +203,6 @@
                             montirOptions += `<option value="${montir.id_karyawan}">${montir.nama_karyawan} | ${montir.kode_kartu}</option>`;
                         });
 
-                        // Perbarui semua dropdown Montir yang ada
                         document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
                             dropdown.innerHTML = montirOptions;
                         });
@@ -221,48 +214,60 @@
                     }
                 });
             } else {
+                montirOptions = '<option value="">Pilih Montir</option>';
                 document.querySelectorAll(".montir-dropdown").forEach(dropdown => {
-                    dropdown.innerHTML = '<option value="">Pilih Montir</option>';
+                    dropdown.innerHTML = montirOptions;
                 });
             }
+        }
+
+        // Ambil data saat area atau tgl_input berubah
+        areaDropdown.addEventListener("change", function() {
+            const area = this.value;
+            const tanggal = tglInput.value;
+            fetchMontirOptions(area, tanggal);
         });
 
-        // Tambahkan row baru
+        tglInput.addEventListener("change", function() {
+            const area = areaDropdown.value;
+            const tanggal = this.value;
+            fetchMontirOptions(area, tanggal);
+        });
+
+        // Tambah row baru
         addRowBtn.addEventListener("click", function() {
             const row = document.createElement("div");
             row.classList.add("row", "mt-2");
 
             row.innerHTML = `
-            <div class="col-md-5">
-                <label for="">Montir</label>
-                <select class="form-control montir-dropdown" name="id_karyawan[]" required>
-                    ${montirOptions}
-                </select>
-            </div>
-            <div class="col-md-5">
-                <label for="">Pemakaian Jarum</label>
-                <input type="number" class="form-control" name="used_needle[]" required>
-            </div>
-            <div class="col-md-2 text-center">
-                <label for="">Aksi</label>
-                <div class="d-flex justify-content-center gap-2">
-                    <button class="btn btn-outline-danger remove-row" type="button">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                <div class="col-md-5">
+                    <label for="">Montir</label>
+                    <select class="form-control montir-dropdown" name="id_karyawan[]" required>
+                        ${montirOptions}
+                    </select>
                 </div>
-            </div>
-        `;
+                <div class="col-md-5">
+                    <label for="">Pemakaian Jarum</label>
+                    <input type="number" class="form-control" name="used_needle[]" required>
+                </div>
+                <div class="col-md-2 text-center">
+                    <label for="">Aksi</label>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-outline-danger remove-row" type="button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
 
             inputRowsContainer.appendChild(row);
 
-            // Event listener untuk hapus row
+            // Event hapus
             row.querySelector(".remove-row").addEventListener("click", function() {
                 row.remove();
             });
-
-            // Set Montir sesuai area yang sudah dipilih sebelumnya
-            row.querySelector(".montir-dropdown").innerHTML = montirOptions;
         });
     });
 </script>
+
 <?php $this->endSection(); ?>

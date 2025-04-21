@@ -812,45 +812,26 @@ class MonitoringController extends BaseController
 
     public function getMontirByArea()
     {
-        $montir = []; // Pastikan variabel terdefinisi sebelum digunakan
+        $montir = [];
 
         if ($this->request->isAJAX()) {
             $area = $this->request->getPost('area');
+            $tgl_input = $this->request->getPost('tgl_input');
+
+            // Ambil id_bagian berdasarkan area
             $bagian = $this->bagianmodel->getMontirByArea($area);
 
-            foreach ($bagian as $row) { // Gunakan variabel yang lebih deskriptif
-                $kary = $this->karyawanmodel->getMontirByArea($row['id_bagian']);
-                $montir = array_merge($montir, $kary); // Gabungkan hasil ke array utama
+            // Ambil periode berdasarkan tanggal
+            $periode = $this->periodeModel->getPeriodeByTanggal($tgl_input); // pastikan fungsi ini sudah ada
+
+            if ($periode) {
+                foreach ($bagian as $row) {
+                    $kary = $this->karyawanmodel->getMontirByArea($row['id_bagian'], $periode['id_periode']);
+                    $montir = array_merge($montir, $kary);
+                }
             }
         }
 
         return $this->response->setJSON($montir);
-    }
-
-    public function filterReportBatch()
-    {
-        $role = session()->get('role');
-
-        $nama_bagian = $this->request->getGet('nama_bagian');
-        $area_utama = $this->request->getGet('area_utama');
-        $batch = $this->request->getGet('batch');
-        $tes = $this->penilaianmodel->filterReportBatch($nama_bagian, $area_utama, $batch);
-        // $batch = $this->penilaianmodel->getPenilaianWhereAreautamaGroupByBatch($area_utama);
-        $tampilperarea = $this->bagianmodel->getAreaGroupByAreaUtama();
-        $reportbatch = $this->penilaianmodel->getPenilaianGroupByBatchAndArea();
-        $getArea = $this->bagianmodel->getAreaGroupByAreaUtama();
-        $getBatch = $this->penilaianmodel->getPenilaianGroupByBatch();
-        // dd($getArea);
-
-        // $dataFiltered = $reportModel->getFilteredData($nama_bagian, $area);
-
-        // return view($role . '/reportbatch', [
-        //     'role' => $role,
-        //     // 'data' => $dataFiltered,
-        //     // 'list_bagian' => $reportModel->getListBagian(),
-        //     // 'list_area' => $reportModel->getListArea(),
-        //     'selected_bagian' => $nama_bagian,
-        //     'selected_area' => $area
-        // ]);
     }
 }

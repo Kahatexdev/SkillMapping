@@ -1259,9 +1259,9 @@ class PenilaianController extends BaseController
         $sheetGrade->setCellValue("D{$row}", $totalSeluruhRupiah);
 
         // Bold untuk baris total
-        $sheetGrade->getStyle("B{$row}:D{$row}")->getFont()->setBold(true);
+        $sheetGrade->getStyle("A{$row}:D{$row}")->getFont()->setBold(true);
         // Tambahkan border ke baris total
-        $sheetGrade->getStyle("B{$row}:D{$row}")->applyFromArray([
+        $sheetGrade->getStyle("A{$row}:D{$row}")->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
@@ -1279,7 +1279,7 @@ class PenilaianController extends BaseController
             ->getNumberFormat()
             ->setFormatCode('"Rp"#,##0');
 
-        $sheetGrade->getStyle('D4:D' . ($row - 1))
+        $sheetGrade->getStyle('D4:D' . ($row))
             ->getNumberFormat()
             ->setFormatCode('"Rp"#,##0');
 
@@ -1345,7 +1345,7 @@ class PenilaianController extends BaseController
                 $uniqueSheets[] = $key;
             }
         }
-        // dd ($uniqueSheets);
+        // dd($uniqueSheets);
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->removeSheetByIndex(0); // Hapus sheet default
@@ -1361,7 +1361,7 @@ class PenilaianController extends BaseController
             $dataFiltered = array_filter($reportbatch, function ($item) use ($currentBagian) {
                 return $item['nama_bagian'] === $currentBagian;
             });
-
+            // dd($dataFiltered);
             // Ambil nama bulan dari end_date
             $namaBulan = isset($bulan['nama_bulan']) ? strtoupper($bulan['nama_bulan']) : '';
             // Kelompokkan berdasarkan shift
@@ -1797,10 +1797,7 @@ class PenilaianController extends BaseController
             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
         // Set wrap text
-
         $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setWrapText(true);
-
-
 
         // Simpan file Excel
         $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';
@@ -1811,5 +1808,38 @@ class PenilaianController extends BaseController
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
         exit();
+    }
+
+    public function updateGradeAkhirPerPeriode($area_utama, $nama_batch, $nama_periode)
+    {
+        $reportbatch = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
+        dd($reportbatch);
+        $bulan = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode);
+
+        foreach ($reportbatch as $p) {
+            $grade = $p['index_nilai'] ?? '-';
+            $skor = $this->calculateSkor($grade);
+
+            $izin = $p['izin'] ?? 0;
+            $sakit = $p['sakit'] ?? 0;
+            $mangkir = $p['mangkir'] ?? 0;
+            $cuti = $p['cuti'] ?? 0;
+            $totalAbsen = ($sakit * 1) + ($izin * 2) + ($mangkir * 3);
+
+            $start_date = new \DateTime($bulan['start_date']);
+            $end_date = new \DateTime($bulan['end_date']);
+            $selisih = $start_date->diff($end_date);
+            $totalHari = $selisih->days + 1;
+            $jmlLibur = $bulan['jml_libur'];
+            $persentaseKehadiran = (($totalHari - $jmlLibur - $totalAbsen) / ($totalHari - $jmlLibur)) * 100;
+
+            $accumulasi = $persentaseKehadiran < 94 ? -1 : 0;
+            $hasil_akhir = $skor + $accumulasi;
+            $grade_akhir = $this->calculateGradeBatch($hasil_akhir);
+
+            $this->penilaianmodel->updateGradeAkhir($p['karyawan_id'], $p['id_periode'], $grade_akhir);
+        }
+
+        return redirect()->back()->with('success', 'Grade akhir berhasil diperbarui tanpa download excel.');
     }
 }

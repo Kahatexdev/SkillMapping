@@ -183,10 +183,13 @@ class KaryawanModel extends Model
             ->findAll();
     }
 
-    public function getMontirByArea($idbagian)
+    public function getMontirByArea($idbagian, $id_periode)
     {
-        return $this->select('id_karyawan, nama_karyawan, kode_kartu')
-            ->where('id_bagian', $idbagian)
+        return $this->select('karyawan.id_karyawan, karyawan.nama_karyawan, karyawan.kode_kartu')
+            ->join('penilaian', 'penilaian.karyawan_id = karyawan.id_karyawan')
+            ->where('karyawan.id_bagian', $idbagian)
+            ->where('penilaian.id_periode', $id_periode)
+            ->groupBy('karyawan.id_karyawan')
             ->findAll();
     }
 
