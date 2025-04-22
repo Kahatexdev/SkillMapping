@@ -19,11 +19,7 @@ $this->extend('Layout/index'); ?>
                                 </h5>
                             </div>
                         </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

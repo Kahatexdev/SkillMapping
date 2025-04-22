@@ -631,4 +631,59 @@ class PenilaianModel extends Model
             ->get()
             ->getRowArray();
     }
+
+    public function getAllPenilaian()
+    {
+        return $this->table('penilaian')
+            ->select('
+            penilaian.id_penilaian,
+            penilaian.karyawan_id,
+            penilaian.id_periode,
+            penilaian.bobot_nilai,
+            penilaian.index_nilai,
+            penilaian.grade_akhir,
+            penilaian.id_user,
+            penilaian.id_jobrole,
+            penilaian.created_at,
+            penilaian.updated_at,
+            karyawan.kode_kartu,
+            karyawan.nama_karyawan,
+            karyawan.jenis_kelamin,
+            karyawan.tgl_masuk,
+            karyawan.shift,
+            job_role.jobdesc,
+            job_role.keterangan,
+            bagian.id_bagian,
+            bagian.nama_bagian,
+            bagian.area,
+            bagian.area_utama,
+            absen.id_absen,
+            absen.id_karyawan,
+            absen.id_periode,
+            absen.sakit,
+            absen.izin,
+            absen.mangkir,
+            batch.id_batch,
+            batch.nama_batch,
+            periode.nama_periode,
+            periode.start_date,
+            periode.end_date,
+            (SELECT grade_akhir 
+             FROM penilaian AS prev_penilaian
+             JOIN periode AS prev_periode ON prev_penilaian.id_periode = prev_periode.id_periode
+             WHERE prev_penilaian.karyawan_id = penilaian.karyawan_id
+             AND prev_periode.end_date < periode.start_date
+             ORDER BY prev_periode.end_date DESC LIMIT 1
+            ) AS previous_grade
+        ')
+            ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
+            ->join('job_role', 'job_role.id_jobrole = penilaian.id_jobrole')
+            ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
+            ->join('absen', 'absen.id_karyawan = penilaian.karyawan_id')
+            ->where('absen.id_periode = penilaian.id_periode')
+            ->join('periode', 'periode.id_periode = penilaian.id_periode')
+            ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->get()
+            ->getResultArray();
+    }
 }

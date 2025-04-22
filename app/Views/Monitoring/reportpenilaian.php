@@ -15,9 +15,7 @@
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
-                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
+                            <a href="<?= base_url($role . '/updateGradeAkhirPerPeriode') ?>" class="btn bg-gradient-info btn-sm mb-0 me-1">Fetch Data</a>
                         </div>
                     </div>
                 </div>
