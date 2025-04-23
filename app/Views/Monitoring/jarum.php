@@ -14,13 +14,19 @@
                     <form action="<?= base_url('Monitoring/jarumStoreInput') ?>" method="post"
                         enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="id_batch">Cek Tanggal Penilaian</label>
+                                    <input type="date" class="form-control" id="tgl_penilaian" name="tgl_penilaian" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="id_batch">Pilih Tanggal Input</label>
                                     <input type="date" class="form-control" id="tgl_input" name="tgl_input" required>
                                 </div>
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Area</label>
                                     <select class="form-select area-dropdown" name="area" id="area" required>
@@ -148,19 +154,19 @@
     });
 </script>
 <script>
-    $('#area, #tgl_input').on('change', function() {
+    $('#area, #tgl_penilaian').on('change', function() {
         var area = $('#area').val();
-        var tgl_input = $('#tgl_input').val();
+        var tgl_penilaian = $('#tgl_penilaian').val();
 
         $('#id_karyawan').html('<option value="">Loading...</option>');
 
-        if (area !== "" && tgl_input !== "") {
+        if (area !== "" && tgl_penilaian !== "") {
             $.ajax({
                 url: "<?= base_url($role . '/getMontirByArea') ?>",
                 type: "POST",
                 data: {
                     area: area,
-                    tgl_input: tgl_input
+                    tgl_penilaian: tgl_penilaian
                 },
                 dataType: "json",
                 success: function(response) {
@@ -184,17 +190,17 @@
         const addRowBtn = document.getElementById("addRow");
         const inputRowsContainer = document.getElementById("inputRows");
         const areaDropdown = document.getElementById("area");
-        const tglInput = document.getElementById("tgl_input");
+        const tglPenilaian = document.getElementById("tgl_penilaian");
         let montirOptions = ""; // Cache opsi montir
 
-        function fetchMontirOptions(area, tgl_input) {
-            if (area !== "" && tgl_input !== "") {
+        function fetchMontirOptions(area, tgl_penilaian) {
+            if (area !== "" && tgl_penilaian !== "") {
                 $.ajax({
                     url: "<?= base_url($role . '/getMontirByArea') ?>",
                     type: "POST",
                     data: {
                         area: area,
-                        tgl_input: tgl_input
+                        tgl_penilaian: tgl_penilaian
                     },
                     dataType: "json",
                     success: function(response) {
@@ -224,11 +230,11 @@
         // Ambil data saat area atau tgl_input berubah
         areaDropdown.addEventListener("change", function() {
             const area = this.value;
-            const tanggal = tglInput.value;
+            const tanggal = tglPenilaian.value;
             fetchMontirOptions(area, tanggal);
         });
 
-        tglInput.addEventListener("change", function() {
+        tglPenilaian.addEventListener("change", function() {
             const area = areaDropdown.value;
             const tanggal = this.value;
             fetchMontirOptions(area, tanggal);

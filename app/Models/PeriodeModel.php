@@ -99,10 +99,10 @@ class PeriodeModel extends Model
             ->first();
     }
 
-    public function getPeriodeByTanggal($tgl_input)
+    public function getPeriodeByTanggal($tgl_penilaian)
     {
-        return $this->where('start_date <=', $tgl_input)
-            ->where('end_date >=', $tgl_input)
+        return $this->where('start_date <=', $tgl_penilaian)
+            ->where('end_date >=', $tgl_penilaian)
             ->first();
     }
 }

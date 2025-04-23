@@ -1366,7 +1366,6 @@ class PenilaianController extends BaseController
             $namaBulan = isset($bulan['nama_bulan']) ? strtoupper($bulan['nama_bulan']) : '';
             // Kelompokkan berdasarkan shift
             $dataByShift = $this->groupByShift($dataFiltered);
-
             // Header Utama
             $sheet->mergeCells('A1:G1')->setCellValue('A1', 'REPORT PENILAIAN - ' . strtoupper($sheetName));
             $sheet->mergeCells('A2:G2')->setCellValue('A2', 'DEPARTEMEN KAOS KAKI');
@@ -1408,7 +1407,6 @@ class PenilaianController extends BaseController
                     }
                 }
             }
-
             // Hilangkan duplikasi dalam setiap keterangan
             foreach ($jobdescGrouped as $keterangan => &$jobs) {
                 $jobs = array_unique($jobs);

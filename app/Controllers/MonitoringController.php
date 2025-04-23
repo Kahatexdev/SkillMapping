@@ -816,13 +816,13 @@ class MonitoringController extends BaseController
 
         if ($this->request->isAJAX()) {
             $area = $this->request->getPost('area');
-            $tgl_input = $this->request->getPost('tgl_input');
+            $tgl_penilaian = $this->request->getPost('tgl_penilaian');
 
             // Ambil id_bagian berdasarkan area
             $bagian = $this->bagianmodel->getMontirByArea($area);
 
             // Ambil periode berdasarkan tanggal
-            $periode = $this->periodeModel->getPeriodeByTanggal($tgl_input); // pastikan fungsi ini sudah ada
+            $periode = $this->periodeModel->getPeriodeByTanggal($tgl_penilaian); // pastikan fungsi ini sudah ada
 
             if ($periode) {
                 foreach ($bagian as $row) {
