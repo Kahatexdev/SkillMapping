@@ -1808,13 +1808,17 @@ class PenilaianController extends BaseController
         exit();
     }
 
-    public function updateGradeAkhirPerPeriode($area_utama, $nama_batch, $nama_periode)
+    public function updateGradeAkhirPerPeriode()
     {
-        $reportbatch = $this->penilaianmodel->getPenilaianByAreaByNamaBatchByNamaPeriode($area_utama, $nama_batch, $nama_periode);
-        dd($reportbatch);
-        $bulan = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($nama_batch, $nama_periode);
-
+        $reportbatch = $this->penilaianmodel->getAllPenilaian();
+        // dd ($reportbatch[0]['sakit']);
+        // dd ($bulan);
         foreach ($reportbatch as $p) {
+            $bulan = $this->periodeModel->select('periode.*, batch.*')
+                ->join('batch', 'batch.id_batch = periode.id_batch')
+                ->findAll();
+            // dd ($bulan);
+            // $bulans = $this->periodeModel->getPeriodeByNamaBatchAndNamaPeriode($bulan['nama_batch'], $bulan['nama_periode']);
             $grade = $p['index_nilai'] ?? '-';
             $skor = $this->calculateSkor($grade);
 
@@ -1824,11 +1828,11 @@ class PenilaianController extends BaseController
             $cuti = $p['cuti'] ?? 0;
             $totalAbsen = ($sakit * 1) + ($izin * 2) + ($mangkir * 3);
 
-            $start_date = new \DateTime($bulan['start_date']);
-            $end_date = new \DateTime($bulan['end_date']);
+            $start_date = new \DateTime($bulan[0]['start_date']);
+            $end_date = new \DateTime($bulan[0]['end_date']);
             $selisih = $start_date->diff($end_date);
             $totalHari = $selisih->days + 1;
-            $jmlLibur = $bulan['jml_libur'];
+            $jmlLibur = $bulan[0]['jml_libur'];
             $persentaseKehadiran = (($totalHari - $jmlLibur - $totalAbsen) / ($totalHari - $jmlLibur)) * 100;
 
             $accumulasi = $persentaseKehadiran < 94 ? -1 : 0;
@@ -1837,7 +1841,7 @@ class PenilaianController extends BaseController
 
             $this->penilaianmodel->updateGradeAkhir($p['karyawan_id'], $p['id_periode'], $grade_akhir);
         }
-
+        // dd ($reportbatch);
         return redirect()->back()->with('success', 'Grade akhir berhasil diperbarui tanpa download excel.');
     }
 }

@@ -159,6 +159,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->get('reportHistoryPindahKaryawan', 'HistoryPindahKaryawanController::reportExcel');
 
     $routes->get('evaluasiKaryawan/(:any)/(:any)', 'MandorController::getEmployeeEvaluationStatus/$1/$2');
+
+    $routes->get('updateGradeAkhirPerPeriode', 'PenilaianController::updateGradeAkhirPerPeriode');
 });
 
 $routes->group('/Mandor', ['filter' => 'Mandor'], function ($routes) {
@@ -258,6 +260,14 @@ $routes->group('/TrainingSchool', ['filter' => 'TrainingSchool'], function ($rou
     $routes->get('check-new-messages', 'ChatController::checkNewMessages');
     $routes->get('long-poll-new-messages', 'ChatController::longPollNewMessages'); // Untuk long polling
 
+
+    // penilaian
+    $routes->get('reportPenilaian', 'MonitoringController::reportpenilaian');
+    $routes->get('reportPenilaian/(:segment)', 'PenilaianController::penilaianPerArea/$1');
+    $routes->get('reportPenilaian/(:segment)/(:segment)/(:segment)', 'PenilaianController::excelReportPerPeriode/$1/$2/$3');
+    $routes->get('reportBatch', 'MonitoringController::reportBatch');
+    $routes->get('reportBatch/(:segment)', 'PenilaianController::reportAreaperBatch/$1');
+    $routes->get('exelReportBatch/(:num)/(:segment)', 'PenilaianController::exelReportBatch/$1/$2');
 });
 
 

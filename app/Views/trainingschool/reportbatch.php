@@ -8,14 +8,16 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Human Resource System</p>
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Skill Mapping</p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    Report Penilaian Per Periode
+                                    Report Batch Penilaian
                                 </h5>
                             </div>
                         </div>
                         <div class="col-4 text-end">
-                            <a href="<?= base_url($role . '/updateGradeAkhirPerPeriode') ?>" class="btn bg-gradient-info btn-sm mb-0 me-1">Fetch Data</a>
+                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
+                                <i class="ni ni-chart-bar-32 text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -27,8 +29,8 @@
 
         <?php foreach ($tampilperarea as $key => $ar) : ?>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 mt-2">
-                <a href="<?= base_url($role . '/reportPenilaian/' . $ar['area_utama']) ?>">
-                    <div class="card">
+                <a href="<?= base_url($role . '/reportBatch/' . ($ar['area_utama'] === 'all' ? 'all' : $ar['area_utama'])) ?>">
+                    <div class="card <?= ($ar['area_utama'] === 'all') ? '' : '' ?>">
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-8">

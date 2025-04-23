@@ -19,7 +19,7 @@ $this->extend('Layout/index'); ?>
                                 </h5>
                             </div>
                         </div>
-
+                        
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@ $this->extend('Layout/index'); ?>
 
                 <!-- Tampilkan nama periode -->
                 <div class="col-xl-4 col-sm-6 mt-3">
-                    <a href="<?= base_url($role . '/reportPenilaian/' . $periode['area_utama'] . '/' . $periode['nama_batch'] . '/' . $periode['nama_periode']) ?>" class="text-decoration-none">
+                    <a href="<?= base_url($role.'/reportPenilaian/' . $periode['area_utama'] . '/' . $periode['nama_batch'] . '/' . $periode['nama_periode']) ?>" class="text-decoration-none">
                         <div class="card hover-shadow">
                             <div class="card-body">
                                 <h6 class="text-dark font-weight-bold">Periode <?= $periode['nama_periode'] ?> (<?= date('M', strtotime($periode['end_date'])) ?>)</h6>
