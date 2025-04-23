@@ -16,13 +16,18 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="id_batch">Cek Tanggal Penilaian</label>
-                                    <input type="date" class="form-control" id="tgl_penilaian" name="tgl_penilaian" required>
+                                    <label for="id_batch">Cek Periode Penilaian</label>
+                                    <select class="form-control" name="id_periode" id="id_periode" required>
+                                        <option value="">Pilih Periode Penilaian</option>
+                                        <?php foreach ($getPeriode as $per) : ?>
+                                            <option value="<?= $per['id_periode'] ?>"><?= $per['nama_batch'] . ' | ' . $per['nama_periode'] . ' | ' . $per['start_date'] . ' - ' . $per['end_date'] ?></option>
+                                        <?php endforeach ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="id_batch">Pilih Tanggal Input</label>
+                                    <label for="id_batch">Tanggal Input</label>
                                     <input type="date" class="form-control" id="tgl_input" name="tgl_input" required>
                                 </div>
                             </div>
@@ -154,19 +159,19 @@
     });
 </script>
 <script>
-    $('#area, #tgl_penilaian').on('change', function() {
+    $('#area, #id_periode').on('change', function() {
         var area = $('#area').val();
-        var tgl_penilaian = $('#tgl_penilaian').val();
+        var id_periode = $('#id_periode').val();
 
         $('#id_karyawan').html('<option value="">Loading...</option>');
 
-        if (area !== "" && tgl_penilaian !== "") {
+        if (area !== "" && id_periode !== "") {
             $.ajax({
                 url: "<?= base_url($role . '/getMontirByArea') ?>",
                 type: "POST",
                 data: {
                     area: area,
-                    tgl_penilaian: tgl_penilaian
+                    id_periode: id_periode
                 },
                 dataType: "json",
                 success: function(response) {
@@ -190,17 +195,17 @@
         const addRowBtn = document.getElementById("addRow");
         const inputRowsContainer = document.getElementById("inputRows");
         const areaDropdown = document.getElementById("area");
-        const tglPenilaian = document.getElementById("tgl_penilaian");
+        const tglPenilaian = document.getElementById("id_periode");
         let montirOptions = ""; // Cache opsi montir
 
-        function fetchMontirOptions(area, tgl_penilaian) {
-            if (area !== "" && tgl_penilaian !== "") {
+        function fetchMontirOptions(area, id_periode) {
+            if (area !== "" && id_periode !== "") {
                 $.ajax({
                     url: "<?= base_url($role . '/getMontirByArea') ?>",
                     type: "POST",
                     data: {
                         area: area,
-                        tgl_penilaian: tgl_penilaian
+                        id_periode: id_periode
                     },
                     dataType: "json",
                     success: function(response) {

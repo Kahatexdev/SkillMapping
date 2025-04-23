@@ -537,9 +537,10 @@ class MonitoringController extends BaseController
         $getBatch = $this->batchmodel->getBatch();
         $periode = $this->periodeModel->getPeriode();
         $getArea = $this->bagianmodel->getAreaByNamaBagian();
+        $getPeriode = $this->periodeModel->getPeriode();
         $getCurrentInput = $this->summaryRosso->getCurrentInput();
 
-        // dd($getArea);
+        // dd($getPeriode);
         $sort = [
             'KK1A',
             'KK1B',
@@ -584,6 +585,7 @@ class MonitoringController extends BaseController
             'getBatch' => $getBatch,
             'periode' => $periode,
             'getArea' => $getArea,
+            'getPeriode' => $getPeriode,
             'getCurrentInput' => $getCurrentInput
         ];
         // dd ($getBatch);
@@ -816,17 +818,17 @@ class MonitoringController extends BaseController
 
         if ($this->request->isAJAX()) {
             $area = $this->request->getPost('area');
-            $tgl_penilaian = $this->request->getPost('tgl_penilaian');
+            $id_periode = $this->request->getPost('id_periode');
 
             // Ambil id_bagian berdasarkan area
             $bagian = $this->bagianmodel->getMontirByArea($area);
 
             // Ambil periode berdasarkan tanggal
-            $periode = $this->periodeModel->getPeriodeByTanggal($tgl_penilaian); // pastikan fungsi ini sudah ada
+            // $periode = $this->periodeModel->getPeriodeByTanggal($id_periode); // pastikan fungsi ini sudah ada
 
-            if ($periode) {
+            if ($id_periode) {
                 foreach ($bagian as $row) {
-                    $kary = $this->karyawanmodel->getMontirByArea($row['id_bagian'], $periode['id_periode']);
+                    $kary = $this->karyawanmodel->getMontirByArea($row['id_bagian'], $id_periode);
                     $montir = array_merge($montir, $kary);
                 }
             }
