@@ -1,6 +1,34 @@
 <?php $this->extend('Layout/index'); ?>
 <?php $this->section('content'); ?>
 
+<style>
+    /* Styling tampilan Select2 */
+    .select2-container .select2-selection--single {
+        height: 38px;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    /* Styling opsi-opsi di dropdown */
+    .select2-container .select2-results__option {
+        font-size: 12px;
+        font-family: 'Segoe UI', sans-serif;
+        /* contoh font */
+    }
+
+    /* Styling teks yang ditampilkan di select setelah dipilih */
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        font-size: 12px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .select2-container .select2-results__option--highlighted {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4 mt-2">
@@ -15,15 +43,13 @@
                         enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="id_batch">Cek Periode Penilaian</label>
-                                    <select class="form-control" name="id_periode" id="id_periode" required>
-                                        <option value="">Pilih Periode Penilaian</option>
-                                        <?php foreach ($getPeriode as $per) : ?>
-                                            <option value="<?= $per['id_periode'] ?>"><?= $per['nama_batch'] . ' | ' . $per['nama_periode'] . ' | ' . $per['start_date'] . ' - ' . $per['end_date'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </div>
+                                <label for="id_batch">Cek Periode Penilaian</label>
+                                <select name="id_periode" id="id_periode" required>
+                                    <option value="">Pilih Periode Penilaian</option>
+                                    <?php foreach ($getPeriode as $per) : ?>
+                                        <option value="<?= $per['id_periode'] ?>"><?= $per['nama_batch'] . ' | ' . $per['nama_periode'] . ' | ' . $per['start_date'] . ' - ' . $per['end_date'] ?></option>
+                                    <?php endforeach ?>
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -159,6 +185,13 @@
     });
 </script>
 <script>
+    $(document).ready(function() {
+        $('#id_periode').select2({
+            placeholder: "Pilih Periode Penilaian",
+            allowClear: true,
+            width: '100%'
+        });
+    });
     $('#area, #id_periode').on('change', function() {
         var area = $('#area').val();
         var id_periode = $('#id_periode').val();
