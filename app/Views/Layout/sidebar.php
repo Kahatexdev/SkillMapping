@@ -654,6 +654,9 @@
                 </li>
 
                 <hr class="horizontal dark mt-3 mb-1">
+                <li class="nav-item mt-3  ">
+                    <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Data Karywan</h6>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link <?= $title == 'Karyawan' ? 'active' : '' ?>"
@@ -724,8 +727,6 @@
                 <li class="nav-item mt-3  ">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-10">Data Penilaian</h6>
                 </li>
-
-                <hr class="horizontal-dark mt-3 mb-1">
 
                 <!-- report penilaian -->
                 <li class="nav-item">

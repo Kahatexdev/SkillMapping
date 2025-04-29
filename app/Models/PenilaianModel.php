@@ -339,6 +339,11 @@ class PenilaianModel extends Model
             periode.nama_periode,
             periode.start_date,
             periode.end_date,
+            SUM(bs_mc.produksi) AS prod_op,
+            SUM(bs_mc.bs_mc) AS bs_mc,
+            SUM(sum_rosso.produksi) AS prod_rosso,
+            SUM(sum_rosso.perbaikan) AS perb_rosso,
+            SUM(sum_jarum.used_needle) AS used_needle,
             (SELECT grade_akhir 
              FROM penilaian AS prev_penilaian
              JOIN periode AS prev_periode ON prev_penilaian.id_periode = prev_periode.id_periode
@@ -350,13 +355,20 @@ class PenilaianModel extends Model
             ->join('karyawan', 'karyawan.id_karyawan = penilaian.karyawan_id')
             ->join('job_role', 'job_role.id_jobrole = penilaian.id_jobrole')
             ->join('bagian', 'bagian.id_bagian = job_role.id_bagian')
-            ->join('absen', 'absen.id_karyawan = penilaian.karyawan_id')
+            ->join('absen', 'absen.id_karyawan = penilaian.karyawan_id', 'left')
             ->where('absen.id_periode = penilaian.id_periode')
             ->join('periode', 'periode.id_periode = penilaian.id_periode')
             ->join('batch', 'batch.id_batch = periode.id_batch')
+            ->join('bs_mc', "bs_mc.id_karyawan = penilaian.karyawan_id
+                        AND bs_mc.tgl_input BETWEEN periode.start_date AND periode.end_date", 'left')
+            ->join('sum_rosso', "sum_rosso.id_karyawan = penilaian.karyawan_id
+                            AND sum_rosso.tgl_input BETWEEN periode.start_date AND periode.end_date", 'left')
+            ->join('sum_jarum', "sum_jarum.id_karyawan = penilaian.karyawan_id
+                            AND sum_jarum.tgl_input BETWEEN periode.start_date AND periode.end_date", 'left')
             ->where('bagian.area_utama', $area_utama)
             ->where('batch.nama_batch', $nama_batch)
             ->where('periode.nama_periode', $nama_periode)
+            ->groupBy('penilaian.id_penilaian')
             ->get()
             ->getResultArray();
     }

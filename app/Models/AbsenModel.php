@@ -54,7 +54,7 @@ class AbsenModel extends Model
 
     public function getdata()
     {
-        return $this->select('absen.*, karyawan.nama_karyawan, user.username, periode.nama_periode, batch.nama_batch,
+        return $this->select('absen.*, karyawan.kode_kartu, karyawan.nama_karyawan, user.username, periode.nama_periode, batch.nama_batch,
         (absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3) as jml_hari_tidak_masuk_kerja, 
         ((31 - ((absen.sakit * 1) + (absen.izin * 2) + (absen.mangkir * 3))) / 31) * 100 as persentase_kehadiran,
         CASE 

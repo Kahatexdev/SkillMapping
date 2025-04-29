@@ -1046,7 +1046,7 @@ class BsMcController extends BaseController
 
         $spreadsheet->getActiveSheet()->setTitle('REPORT SUMMARY BS MESIN');
 
-        $filename = 'REPORT SUMMARY BS MESIN ' . date('d-m-Y H:i:s') . '.xlsx';
+        $filename = 'REPORT SUMMARY BS MESIN ' . $area . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

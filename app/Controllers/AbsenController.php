@@ -119,7 +119,7 @@ class AbsenController extends BaseController
         $id_karyawan = $this->karyawanmodel->where('id_karyawan', $data['id_karyawan'])->first();
         // dd ($id_karyawan);
         // validasi id_karyawan masuk karyawan
-        
+
         if ($absen->update($id, $data)) {
             session()->setFlashdata('success', 'Data berhasil diubah');
         } else {
@@ -242,7 +242,7 @@ class AbsenController extends BaseController
                 $mangkir = $dataSheet->getCell('L' . $row)->getValue();
                 $idUser = session()->get('id_user');
 
-                
+
                 // dd ($kodeKartu, $namaKaryawan, $id_periode, $sakit, $izin, $cuti, $mangkir, $idUser);
                 // Validate data
                 // Validasi tangal 
@@ -298,7 +298,7 @@ class AbsenController extends BaseController
                 if (!$isValid) {
                     $errorCount++;
                     $errorMessages[] = $errorMessage;
-                } 
+                }
             }
 
             // Redirect with success and error messages
@@ -315,13 +315,11 @@ class AbsenController extends BaseController
         } else {
             return redirect()->to(base_url('Monitoring/dataAbsen'))->with('error', 'Invalid file. Please upload an Excel file.');
         }
-        
     }
 
     public function absenReport()
     {
         $data = $this->absenmodel->getdata();
-
         // export data ke excel
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -329,14 +327,15 @@ class AbsenController extends BaseController
         // header
         $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', ' Nama Karyawan');
-        $sheet->setCellValue('C1', 'Periode');
-        $sheet->setCellValue('D1', 'Izin');
-        $sheet->setCellValue('E1', 'Sakit');
-        $sheet->setCellValue('F1', 'Mangkir');
-        $sheet->setCellValue('G1', 'Cuti');
-        $sheet->setCellValue('H1', 'Input By');
-        $sheet->setCellValue('I1', 'Created At');
-        $sheet->setCellValue('J1', 'Updated At');
+        $sheet->setCellValue('C1', ' Kode Kartu');
+        $sheet->setCellValue('D1', 'Periode');
+        $sheet->setCellValue('E1', 'Izin');
+        $sheet->setCellValue('F1', 'Sakit');
+        $sheet->setCellValue('G1', 'Mangkir');
+        $sheet->setCellValue('H1', 'Cuti');
+        $sheet->setCellValue('I1', 'Input By');
+        $sheet->setCellValue('J1', 'Created At');
+        $sheet->setCellValue('K1', 'Updated At');
 
         $no = 1;
         $column = 2;
@@ -352,22 +351,24 @@ class AbsenController extends BaseController
         $sheet->getColumnDimension('H')->setWidth(20);
         $sheet->getColumnDimension('I')->setWidth(20);
         $sheet->getColumnDimension('J')->setWidth(20);
-        
-        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:J1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
-        $sheet->getStyle('A1:J1')->getAlignment()->setHorizontal('center');
+        $sheet->getColumnDimension('K')->setWidth(20);
+
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:K1')->getFill()->setFillType('solid')->getStartColor()->setARGB('FFA0A0A0');
+        $sheet->getStyle('A1:K1')->getAlignment()->setHorizontal('center');
 
         foreach ($data as $row) {
             $sheet->setCellValue('A' . $column, $no++);
             $sheet->setCellValue('B' . $column, $row['nama_karyawan']);
-            $sheet->setCellValue('C' . $column, $row['id_periode']);
-            $sheet->setCellValue('D' . $column, $row['izin']);
-            $sheet->setCellValue('E' . $column, $row['sakit']);
-            $sheet->setCellValue('F' . $column, $row['mangkir']);
-            $sheet->setCellValue('G' . $column, $row['cuti']);
-            $sheet->setCellValue('H' . $column, $row['username']);
-            $sheet->setCellValue('I' . $column, $row['created_at']);
-            $sheet->setCellValue('J' . $column, $row['updated_at']);
+            $sheet->setCellValue('C' . $column, $row['kode_kartu']);
+            $sheet->setCellValue('D' . $column, $row['id_periode']);
+            $sheet->setCellValue('E' . $column, $row['izin']);
+            $sheet->setCellValue('F' . $column, $row['sakit']);
+            $sheet->setCellValue('G' . $column, $row['mangkir']);
+            $sheet->setCellValue('H' . $column, $row['cuti']);
+            $sheet->setCellValue('I' . $column, $row['username']);
+            $sheet->setCellValue('J' . $column, $row['created_at']);
+            $sheet->setCellValue('K' . $column, $row['updated_at']);
 
             $column++;
         }

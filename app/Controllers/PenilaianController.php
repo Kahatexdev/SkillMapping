@@ -1345,10 +1345,28 @@ class PenilaianController extends BaseController
                 $uniqueSheets[] = $key;
             }
         }
-        // dd($uniqueSheets);
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->removeSheetByIndex(0); // Hapus sheet default
+
+        $gradeD = [];
+        $gradeDPerBagian = []; // key = nama_bagian
+
+        function getMainBagian($bagian)
+        {
+            $bagian = strtoupper(trim($bagian));
+
+            if (strpos($bagian, 'OPERATOR') === 0) {
+                return 'OPERATOR';
+            } elseif (strpos($bagian, 'MONTIR') === 0) {
+                return 'MONTIR';
+            } elseif (strpos($bagian, 'ROSSO') === 0) {
+                return 'ROSSO';
+            }
+
+            // fallback: tetap pakai nama bagian aslinya
+            return $bagian;
+        }
 
         foreach ($uniqueSheets as $sheetName) {
             $sheet = $spreadsheet->createSheet();
@@ -1407,6 +1425,7 @@ class PenilaianController extends BaseController
                     }
                 }
             }
+
             // Hilangkan duplikasi dalam setiap keterangan
             foreach ($jobdescGrouped as $keterangan => &$jobs) {
                 $jobs = array_unique($jobs);
@@ -1471,6 +1490,9 @@ class PenilaianController extends BaseController
                 ]);
                 $currentCol++;
             }
+
+
+
             // Tulis Data Karyawan Berdasarkan Shift
             $row = 7;
             foreach ($dataByShift as $shift => $karyawan) {
@@ -1568,6 +1590,129 @@ class PenilaianController extends BaseController
                     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colIndex) . $row, $tracking);
                     // $colIndex++;
 
+                    $keteranganArr = json_decode($p['keterangan'] ?? '[]', true);
+                    if (! is_array($keteranganArr)) {
+                        // wrap single‐value into an array
+                        $keteranganArr = [$keteranganArr];
+                    }
+                    // dd($uniqueSheets, $sheetName);
+                    $jobdescArr = json_decode($p['jobdesc'] ?? '[]', true);
+                    if (!is_array($jobdescArr)) {
+                        $jobdescArr = [$jobdescArr];
+                    }
+                    // dd($jobdescArr);
+                    $nilaiArr = json_decode($p['bobot_nilai'] ?? '[]', true);
+                    if (!is_array($nilaiArr)) {
+                        $nilaiArr = [$nilaiArr];
+                    }
+                    $jobdescArr = array_values($jobdescArr);
+                    $nilaiArr   = array_values($nilaiArr);
+                    // dd($nilaiArr, $jobdescArr);
+
+                    // filter hanya yang nilai ≤ 4
+                    $failJobdesc = [];
+                    $failNilai   = [];
+                    foreach ($nilaiArr as $i => $val) {
+                        if ($val > 0 && $val < 4) {
+                            // Sekarang $jobdescArr[$i] pasti ada
+                            $failJobdesc[] = $jobdescArr[$i] ?? '(tidak ada)';
+                            $failNilai[]   = $val;
+                        }
+                    }
+                    // dd($failJobdesc, $failNilai);
+
+                    if ($grade_akhir !== 'D' || empty($failJobdesc)) {
+                        // no work to do
+                        continue;
+                    }
+                    // function getMainBagianD($bagian)
+                    // {
+                    //     $bagian = strtoupper(trim($bagian));
+
+                    //     if (strpos($bagian, 'OPERATOR') === 0) {
+                    //         return 'OPERATOR';
+                    //     } elseif (strpos($bagian, 'MONTIR') === 0) {
+                    //         return 'MONTIR';
+                    //     } elseif (strpos($bagian, 'ROSSO') === 0) {
+                    //         return 'ROSSO';
+                    //     }
+
+                    //     // fallback: tetap pakai nama bagian aslinya
+                    //     return $bagian;
+                    // }
+                    $bagian = getMainBagian($p['nama_bagian']);
+                    // $bagian = strtoupper(trim($p['nama_bagian']));
+                    // dd($bagian);
+                    if (! isset($gradeDPerBagian[$bagian])) {
+                        $gradeDPerBagian[$bagian] = [];
+                    }
+                    // $gradeDPerBagian[$bagian] ??= [];
+                    $data = [
+                        'no'            => $no,
+                        'kode_kartu'    => $p['kode_kartu'],
+                        'nama_karyawan' => $p['nama_karyawan'],
+                        'izin'          => $izin,
+                        'sakit'         => $sakit,
+                        'mangkir'       => $mangkir,
+                        'accumulasi'    => $accumulasi,
+                        'grade_akhir'   => $grade_akhir,
+                        'failJobdesc'   => $failJobdesc,
+                        'failNilai'     => $failNilai,
+                    ];
+                    switch ($bagian) {
+                        case 'OPERATOR':
+                            $data['prod_op'] = $p['prod_op'] ?? 0;
+                            $data['bs_mc']   = $p['bs_mc']   ?? 0;
+                            break;
+
+                        case 'ROSSO':
+                            $data['prod_rosso'] = $p['prod_rosso'] ?? 0;
+                            $data['perb_rosso'] = $p['perb_rosso'] ?? 0;
+                            break;
+
+                        case 'MONTIR':
+                            $data['used_needle'] = $p['used_needle'] ?? 0;
+                            break;
+                    }
+                    $gradeDPerBagian[$bagian][] = $data;
+                    // dd($gradeDPerBagian);
+                    // if ($grade_akhir === 'D' && count($failJobdesc) > 0) {
+                    //     $bagian = strtoupper(trim($p['nama_bagian']));
+
+                    //     // 1) Inisialisasi kalau belum ada
+                    //     if (!isset($gradeDPerBagian[$bagian])) {
+                    //         $gradeDPerBagian[$bagian] = [];
+                    //     }
+
+                    //     // 2) Siapkan elemen dasar
+                    //     $data = [
+                    //         'no'            => $no,
+                    //         'kode_kartu'    => $p['kode_kartu'],
+                    //         'nama_karyawan' => $p['nama_karyawan'],
+                    //         'izin'          => $izin,
+                    //         'sakit'         => $sakit,
+                    //         'mangkir'       => $mangkir,
+                    //         'accumulasi'    => $accumulasi,
+                    //         'grade_akhir'   => $grade_akhir,
+                    //         'failJobdesc'   => $failJobdesc,
+                    //         'failNilai'     => $failNilai,
+                    //     ];
+
+                    //     // 3) Tambah kolom khusus per bagian
+                    //     if ($bagian === 'OPERATOR') {
+                    //         $data['prod_op'] = $p['prod_op'] ?? 0;
+                    //         $data['bs_mc']       = $p['bs_mc']       ?? 0;
+                    //     } elseif ($bagian === 'ROSSO') {
+                    //         $data['prod_rosso'] = $p['prod_rosso'] ?? 0;
+                    //         $data['perb_rosso'] = $p['perb_rosso'] ?? 0;
+                    //     } elseif ($bagian === 'MONTIR') {
+                    //         $data['used_needle'] = $p['used_needle'] ?? 0;
+                    //     }
+
+                    //     // 4) Push ke grouping
+                    //     $gradeDPerBagian[$bagian][] = $data;
+                    // }
+
                     //style from array
                     $sheet->getStyle('A' . $row . ':' . Coordinate::stringFromColumnIndex($colIndex) . $row)->applyFromArray([
                         'font' => ['name' => 'Times New Roman', 'size' => 10],
@@ -1579,7 +1724,6 @@ class PenilaianController extends BaseController
                     ]);
                     $row++;
                 }
-
                 // Tulis Total Karyawan
                 // $sheet->setCellValue('B' . $row, 'TOTAL' . $shift);
                 $sheet->setCellValue('B' . $row, 'TOTAL');
@@ -1601,7 +1745,7 @@ class PenilaianController extends BaseController
                 $sheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
             }
         }
-
+        // dd($gradeDPerBagian[$bagian]['ROSSO'] = $data);
         // sheet baru untuk report tracking
         $sheet = $spreadsheet->createSheet();
         $sheet->setTitle('TRACKING');
@@ -1796,6 +1940,87 @@ class PenilaianController extends BaseController
 
         // Set wrap text
         $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setWrapText(true);
+
+        //Sheet Grade D
+        // dd($jobdesc);
+        // dd($gradeDPerBagian);
+
+        // Buat sheet “Grade D”
+        foreach ($gradeDPerBagian as $bagian => $dataKaryawan) {
+            // Buat sheet baru
+            $sheet = $spreadsheet->createSheet();
+            $sheet->setTitle(substr($bagian, 0, 31) . ' Grade D'); // Maks 31 karakter
+
+            // Header
+            $headers = ['No', 'Kode Kartu', 'Nama', 'Izin', 'Sakit', 'Mangkir', 'Akumulasi', 'Grade Akhir', 'Jobdesc', 'Nilai', 'Produksi', 'BS', 'Used Needle'];
+            $col = 'A';
+            foreach ($headers as $header) {
+                $sheet->setCellValue($col . '1', $header);
+                $col++;
+            }
+            // Style header 
+            $sheet->getStyle('A1:M1')->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'name' => 'Times New Roman',
+                    'size' => 11, // Sedikit lebih besar untuk header
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    ],
+                ],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Biar header tengah
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+            ]);
+
+            $row = 2; // Mulai dari baris ke-2
+
+            foreach ($dataKaryawan as $karyawan) {
+                $failJobdescs = $karyawan['failJobdesc'];
+                $failNilais = $karyawan['failNilai'];
+
+                $first = true; // Penanda untuk baris pertama karyawan
+
+                foreach ($failJobdescs as $i => $jobdesc) {
+                    if ($first) {
+                        $sheet->setCellValue('A' . $row, $karyawan['no']);
+                        $sheet->setCellValue('B' . $row, $karyawan['kode_kartu']);
+                        $sheet->setCellValue('C' . $row, $karyawan['nama_karyawan']);
+                        $sheet->setCellValue('D' . $row, $karyawan['izin']);
+                        $sheet->setCellValue('E' . $row, $karyawan['sakit']);
+                        $sheet->setCellValue('F' . $row, $karyawan['mangkir']);
+                        $sheet->setCellValue('G' . $row, $karyawan['accumulasi']);
+                        $sheet->setCellValue('H' . $row, $karyawan['grade_akhir']);
+                        $sheet->setCellValue('K' . $row, $karyawan['prod_op'] ?? $karyawan['prod_rosso'] ?? '');
+                        $sheet->setCellValue('L' . $row, $karyawan['bs_mc'] ?? $karyawan['perb_rosso'] ?? '');
+                        $sheet->setCellValue('M' . $row, $karyawan['used_needle'] ?? '');
+
+                        $first = false;
+                    }
+
+                    // Kolom Jobdesc dan Nilai
+                    $sheet->setCellValue('I' . $row, $jobdesc);
+                    $sheet->setCellValue('J' . $row, $failNilais[$i] ?? '-');
+
+                    // Apply style untuk setiap baris
+                    $sheet->getStyle('A' . $row . ':M' . $row)->applyFromArray([
+                        'font' => ['name' => 'Times New Roman', 'size' => 10],
+                        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+                    ]);
+
+                    $row++;
+                }
+            }
+
+            // Setelah semua data karyawan dimasukkan, baru set auto-size untuk semua kolom
+            foreach (range('A', 'M') as $columnID) {
+                $sheet->getColumnDimension($columnID)->setAutoSize(true);
+            }
+        }
+
 
         // Simpan file Excel
         $filename = 'Report_Penilaian-' . $area_utama . '-' . date('m-d-Y') . '.xlsx';

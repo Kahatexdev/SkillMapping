@@ -199,7 +199,6 @@ class SummaryRossoController extends BaseController
             'bagian' => $bagian
         ];
         return view('Rosso/create', $data);
-
     }
 
     public function store()
@@ -238,7 +237,7 @@ class SummaryRossoController extends BaseController
             $days = $start_date->diff($end_date)->days + 1; // Hitung rentang hari (inklusif)
             $days -= $jml_libur; // Kurangi jumlah hari libur
             // dd($days);
-            
+
             // Hitung rata-rata
             $row['avg_qty_prod_rosso'] = $days > 0 ? $row['total_qty_prod_rosso'] / $days : 0;
             $row['avg_qty_bs'] = $days > 0 ? $row['total_qty_bs'] / $days : 0;
@@ -356,7 +355,7 @@ class SummaryRossoController extends BaseController
 
     // public function excelSummaryRosso($area_utama, $id_batch)
     // {
-        
+
     //     $summaryRosso = $this->summaryRosso->getDatabyAreaUtamaAndPeriodeInBatch($area_utama, $id_batch);
     //     $namaBatch = $this->batchModel->where('id_batch', $id_batch)->first();
     //     // $id_batch = $this->request->getPost('id_batch');
@@ -981,7 +980,7 @@ class SummaryRossoController extends BaseController
 
         $spreadsheet->getActiveSheet()->setTitle('REPORT SUMMARY ROSSO');
 
-        $filename = 'REPORT SUMMARY BS DAN PRODUKSI ROSSO ' . date('d-m-Y H:i:s') . '.xlsx';
+        $filename = 'REPORT SUMMARY ROSSO ' . $area . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');

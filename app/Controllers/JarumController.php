@@ -628,7 +628,7 @@ class JarumController extends BaseController
 
         $spreadsheet->getActiveSheet()->setTitle('REPORT SUMMARY JARUM');
 
-        $filename = 'REPORT SUMMARY JARUM ' . date('d-m-Y H:i:s') . '.xlsx';
+        $filename = 'REPORT SUMMARY JARUM ' . $area . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '"');
