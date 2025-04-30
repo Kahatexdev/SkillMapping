@@ -339,11 +339,11 @@ class PenilaianModel extends Model
             periode.nama_periode,
             periode.start_date,
             periode.end_date,
-            SUM(bs_mc.produksi) AS prod_op,
-            SUM(bs_mc.bs_mc) AS bs_mc,
-            SUM(sum_rosso.produksi) AS prod_rosso,
-            SUM(sum_rosso.perbaikan) AS perb_rosso,
-            SUM(sum_jarum.used_needle) AS used_needle,
+            ROUND(SUM(bs_mc.produksi),2)       AS prod_op,
+            ROUND(SUM(bs_mc.bs_mc),2)           AS bs_mc,
+            ROUND(SUM(sum_rosso.produksi),2)    AS prod_rosso,
+            ROUND(SUM(sum_rosso.perbaikan),2)   AS perb_rosso,
+            ROUND(SUM(sum_jarum.used_needle),2) AS used_needle,
             (SELECT grade_akhir 
              FROM penilaian AS prev_penilaian
              JOIN periode AS prev_periode ON prev_penilaian.id_periode = prev_periode.id_periode

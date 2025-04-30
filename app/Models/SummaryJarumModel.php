@@ -88,14 +88,43 @@ class SummaryJarumModel extends Model
             ->get()->getResultArray();
     }
 
+    // public function getSummaryJarum($area, $id_batch)
+    // {
+    //     return $this->select('sum_jarum.id_sj, sum_jarum.id_karyawan, sum_jarum.tgl_input, SUM(sum_jarum.used_needle) AS total_jarum, sum_jarum.created_at, sum_jarum.updated_at, sum_jarum.area, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk,  periode.start_date, periode.end_date, periode.nama_periode, periode.id_batch, periode.jml_libur, bagian.nama_bagian')
+    //         ->join('periode', 'sum_jarum.tgl_input BETWEEN periode.start_date AND periode.end_date', 'inner')
+    //         ->join('karyawan', 'karyawan.id_karyawan = sum_jarum.id_karyawan', 'inner')
+    //         ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'inner')
+    //         ->where('sum_jarum.area', $area)
+    //         ->where('periode.id_batch', $id_batch)
+    //         ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date')
+    //         ->findAll();
+    // }
+
     public function getSummaryJarum($area, $id_batch)
     {
-        return $this->select('sum_jarum.id_sj, sum_jarum.id_karyawan, sum_jarum.tgl_input, SUM(sum_jarum.used_needle) AS total_jarum, sum_jarum.created_at, sum_jarum.updated_at, sum_jarum.area, karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk,  periode.start_date, periode.end_date, periode.nama_periode, periode.id_batch, periode.jml_libur, bagian.nama_bagian')
+        return $this->select('sum_jarum.id_sj, sum_jarum.id_karyawan, sum_jarum.tgl_input, SUM(sum_jarum.used_needle) AS total_jarum, sum_jarum.area,
+            karyawan.kode_kartu, karyawan.nama_karyawan, karyawan.jenis_kelamin, karyawan.tgl_masuk, periode.start_date, periode.end_date, periode.nama_periode, periode.id_batch, periode.jml_libur, bagian.nama_bagian, h.tgl_pindah, h.id_bagian_asal, h.id_bagian_baru')
             ->join('periode', 'sum_jarum.tgl_input BETWEEN periode.start_date AND periode.end_date', 'inner')
             ->join('karyawan', 'karyawan.id_karyawan = sum_jarum.id_karyawan', 'inner')
             ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian', 'inner')
-            ->where('sum_jarum.area', $area)
+            ->join('history_pindah_karyawan h', 'h.id_karyawan = sum_jarum.id_karyawan', 'left')
             ->where('periode.id_batch', $id_batch)
+            // Group kondisi: area saat ini OR data area lama sebelum tanggal pindah
+            ->groupStart()
+            // 1) Data di area target
+            ->where('sum_jarum.area', $area)
+            // 2) OR data dari area asal, tapi hanya yg tgl_input < tanggal_pindah
+            ->orWhere(
+                "sum_jarum.area = (
+                    SELECT area 
+                    FROM bagian 
+                    WHERE id_bagian = h.id_bagian_asal
+                )
+                AND sum_jarum.tgl_input < h.tgl_pindah",
+                null,
+                false
+            )
+            ->groupEnd()
             ->groupBy('karyawan.kode_kartu, periode.start_date, periode.end_date')
             ->findAll();
     }
