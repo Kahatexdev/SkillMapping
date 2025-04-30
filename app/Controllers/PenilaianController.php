@@ -947,8 +947,8 @@ class PenilaianController extends BaseController
             // Ambil nilai per periode untuk tiap karyawan dari model
             $nilaiBulanan = $this->penilaianmodel->getPenilaianGroupByBulan(
                 $data['id_karyawan'],
-                $id_batch,
-                $data['id_jobrole']
+                $id_batch
+                // $data['id_jobrole']
             );
 
             // Inisialisasi array dengan key berupa nama bulan (dari $namaBulan) dengan default '-'

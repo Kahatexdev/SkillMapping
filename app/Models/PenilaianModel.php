@@ -166,7 +166,7 @@ class PenilaianModel extends Model
             ->getResultArray();
     }
 
-    public function getPenilaianGroupByBulan($id_karyawan, $id_batch, $id_jobrole)
+    public function getPenilaianGroupByBulan($id_karyawan, $id_batch)
     {
         return $this->db->table('penilaian')
             ->select('penilaian.id_penilaian, penilaian.karyawan_id, penilaian.id_periode, penilaian.bobot_nilai, penilaian.index_nilai, penilaian.grade_akhir, penilaian.id_user, penilaian.id_jobrole, penilaian.created_at, penilaian.updated_at, karyawan.nama_karyawan, job_role.keterangan, bagian.id_bagian, bagian.nama_bagian, bagian.area, bagian.area_utama, batch.id_batch, batch.nama_batch, periode.nama_periode, periode.start_date, periode.end_date, periode.jml_libur, MONTH(periode.end_date) as bulan')
@@ -177,7 +177,7 @@ class PenilaianModel extends Model
             ->join('batch', 'batch.id_batch=periode.id_batch')
             ->where('penilaian.karyawan_id', $id_karyawan)
             ->where('batch.id_batch', $id_batch)
-            ->where('job_role.id_jobrole', $id_jobrole)
+            // ->where('job_role.id_jobrole', $id_jobrole)
             ->groupBy('periode.end_date')
             ->get()
             ->getResultArray();
