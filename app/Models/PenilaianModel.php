@@ -112,7 +112,7 @@ class PenilaianModel extends Model
             ->join('batch', 'batch.id_batch=periode.id_batch')
             ->where('batch.id_batch', $id_batch)
             ->where('bagian.area_utama', $area_utama)
-
+            ->notLike('karyawan.kode_kartu', 'KKKK%')
             ->groupBy('penilaian.karyawan_id')
             // ->groupBy('batch.id_batch')
             // ->groupBy('bagian.area_utama')
@@ -615,6 +615,7 @@ class PenilaianModel extends Model
             ->join('periode', 'periode.id_periode=penilaian.id_periode')
             ->join('batch', 'batch.id_batch=periode.id_batch')
             ->where('batch.id_batch', $id_batch)
+            ->notLike('karyawan.kode_kartu', 'KKKK%')
             ->groupBy('penilaian.karyawan_id')
             ->get()
             ->getResultArray();
