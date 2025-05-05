@@ -117,6 +117,7 @@
                                 <h5 class="font-weight-bolder mb-0">
                                     Summary Jarum Per Area
                                 </h5>
+                                <a href="<?= base_url($role . '/exportSummaryJarum') ?>" class="btn btn-primary mt-2">Lihat Summary Jarum</a>
                             </div>
                         </div>
                         <div class="col-4 text-end">
@@ -128,6 +129,28 @@
                             </a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW UUPLOAD -->
+    <div class="row my-4">
+        <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <form action="<?= base_url($role . '/uploadJarum') ?>" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">Upload File</label>
+                                <input type="file" name="file" id="file" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <label for="">Aksi</label>
+                                <button type="submit" class="btn bg-gradient-info mt-3 w-100">Upload</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

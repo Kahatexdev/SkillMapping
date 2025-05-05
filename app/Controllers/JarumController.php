@@ -5,9 +5,13 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Week;
+use PhpOffice\PhpSpreadsheet\Style\{Border, Alignment, Fill};
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+
 use App\Models\SummaryJarumModel;
 use App\Models\BatchModel;
 use App\Models\PeriodeModel;
@@ -668,5 +672,173 @@ class JarumController extends BaseController
         ];
 
         return view('jarum/filter-jarum', $data);
+    }
+
+    public function exportSummaryJarum()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set header
+        $sheet->setCellValue('A1', 'Kode Kartu');
+        $sheet->setCellValue('B1', 'Nama Lengkap');
+        $sheet->setCellValue('C1', 'Bagian');
+        $sheet->setCellValue('D1', 'Area');
+        $sheet->setCellValue('E1', 'Area Utama');
+        $sheet->setCellValue('F1', 'Tgl Input');
+        $sheet->setCellValue('G1', 'Used Needle');
+        $sheet->setCellValue('H1', 'Created At');
+        $sheet->setCellValue('I1', 'Updated At');
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:I1')->getFont()->setName('Times New Roman');
+        $sheet->getStyle('A1:I1')->getFont()->setSize(10);
+        $sheet->getStyle('A1:I1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1:I1')->getAlignment()->setVertical('center');
+        $sheet->getStyle('A1:I1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A1:I1')->getAlignment()->setWrapText(true);
+        $sheet->getColumnDimension('A')->setWidth(10);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(20);
+
+        // Get data from database
+        $summaryJarum = $this->summaryJarum->getJarumData();
+        $row = 2;
+
+        foreach ($summaryJarum as $data) {
+            $sheet->setCellValue('A' . $row, $data['kode_kartu']);
+            $sheet->setCellValue('B' . $row, $data['nama_karyawan']);
+            $sheet->setCellValue('C' . $row, $data['nama_bagian']);
+            $sheet->setCellValue('D' . $row, $data['area']);
+            $sheet->setCellValue('E' . $row, $data['area_utama']);
+            $sheet->setCellValue('F' . $row, $data['tgl_input']);
+            $sheet->setCellValue('G' . $row, $data['used_needle']);
+            $sheet->setCellValue('H' . $row, $data['created_at']);
+            $sheet->setCellValue('I' . $row, $data['updated_at']);
+
+            // Set style for each row
+            $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setName('Times New Roman');
+            $sheet->getStyle('A' . $row . ':I' . $row)->getFont()->setSize(10);
+            $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setVertical('center');
+            $sheet->getStyle('A' . $row . ':I' . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+            $sheet->getStyle('A' . $row . ':I' . $row)->getAlignment()->setWrapText(true);
+
+            // Increment row number
+            $row++;
+        }
+        // Set filename and download
+        $filename = 'Summary_Jarum_' . date('d-m-Y') . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+
+    }
+
+    public function uploadJarum()
+    {
+        $file = $this->request->getFile('file');
+
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $fileType = $file->getClientMimeType();
+            if (!in_array($fileType, ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])) {
+                return redirect()->to(base_url('Monitoring/dataJarum'))->with('error', 'File harus berupa Excel (.xlsx)');
+            }
+
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getTempName());
+            $dataSheet = $spreadsheet->getActiveSheet();
+            $startRow = 2;
+
+            $successCount = 0;
+            $errorCount = 0;
+            $errorMessages = [];
+
+            for ($row = $startRow; $row <= $dataSheet->getHighestRow(); $row++) {
+                $kodeKartu = $dataSheet->getCell('A' . $row)->getValue();
+                $namaKaryawan = $dataSheet->getCell('B' . $row)->getValue();
+                $bagian = $dataSheet->getCell('C' . $row)->getValue();
+                $area = $dataSheet->getCell('D' . $row)->getValue();
+                $areaUtama = $dataSheet->getCell('E' . $row)->getValue();
+                $cellValue = $dataSheet->getCell('F' . $row)->getValue();
+
+                if (is_numeric($cellValue)) {
+                    // Excel date serial number
+                    $tglInput = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cellValue)->format('Y-m-d');
+                } else {
+                    // String format (misalnya "31/12/2024" atau "2024-12-31")
+                    $tglInput = date('Y-m-d', strtotime($cellValue));
+                }
+                $usedNeedle = (int)$dataSheet->getCell('G' . $row)->getValue();
+                $createdValue = $dataSheet->getCell('H' . $row)->getValue();
+
+                if (is_numeric($createdValue)) {
+                    // Jika dalam format serial Excel number (misalnya: 45234.58333)
+                    $createdField = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($createdValue)->format('Y-m-d H:i:s');
+                } else {
+                    // Jika dalam format string biasa, contoh: "2024-12-31 13:00"
+                    $createdField = date('Y-m-d H:i:s', strtotime($createdValue));
+                }
+
+                $updatedValue = $dataSheet->getCell('I' . $row)->getValue();
+                if (is_numeric($updatedValue)) {
+                    // Jika dalam format serial Excel number (misalnya: 45234.58333)
+                    $updatedField = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($updatedValue)->format('Y-m-d H:i:s');
+                } else {
+                    // Jika dalam format string biasa, contoh: "2024-12-31 13:00"
+                    $updatedField = date('Y-m-d H:i:s', strtotime($updatedValue));
+                }
+
+                if (empty($kodeKartu) || empty($namaKaryawan) || empty($bagian) || empty($area) || empty($tglInput) || empty($usedNeedle)) {
+                    $errorCount++;
+                    $errorMessages[] = "Baris {$row}: Data tidak lengkap.";
+                    continue;
+                }
+
+                // Validasi data lainnya sesuai kebutuhan
+                if ($usedNeedle < 0) {
+                    $errorCount++;
+                    $errorMessages[] = "Baris {$row}: Used Needle tidak boleh negatif.";
+                    continue;
+                }
+
+                // Siapkan data untuk disimpan
+                $data[] = [
+                    'kode_kartu' => $kodeKartu,
+                    'nama_karyawan' => $namaKaryawan,
+                    'bagian' => $bagian,
+                    'area' => $area,
+                    'tgl_input' => $tglInput,
+                    'used_needle' => $usedNeedle,
+                    'created_at' => $createdField,
+                    'updated_at' => $updatedField,
+                ];
+            }
+            dd ($data);
+            // Simpan data ke database
+            if (count($data) > 0) {
+                $this->summaryJarum->insertBatch($data);
+                $successCount = count($data);
+                $successMessage = "Data berhasil diupload: {$successCount} baris.";
+            } else {
+                $errorMessage = "Tidak ada data yang valid untuk diupload.";
+            }
+            // Tampilkan pesan sukses atau error
+            if ($errorCount > 0) {
+                $errorMessage = implode('<br>', $errorMessages);
+            } else {
+                $errorMessage = "Tidak ada error.";
+            }
+            return redirect()->to(base_url('Monitoring/datakaryawan'))->with('success', $successMessage)->with('error', $errorMessage);
+        } else {
+            return redirect()->to(base_url('Monitoring/datakaryawan'))->with('error', 'File tidak valid atau sudah dipindahkan.');
+        }
     }
 }

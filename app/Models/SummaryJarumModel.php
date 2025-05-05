@@ -190,4 +190,13 @@ class SummaryJarumModel extends Model
 
         return $db->query($sql, [$id_batch, $id_batch, $area, (int)$limit])->getResultArray();
     }
+
+    public function getJarumData()
+    {
+        return $this->db->table('sum_jarum')
+            ->join('karyawan', 'karyawan.id_karyawan = sum_jarum.id_karyawan')
+            ->join('bagian', 'bagian.id_bagian = karyawan.id_bagian')
+            ->join('periode', 'sum_jarum.tgl_input BETWEEN periode.start_date AND periode.end_date')
+            ->get()->getResultArray();
+    }
 }

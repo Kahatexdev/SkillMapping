@@ -119,6 +119,8 @@ $routes->group('/Monitoring', ['filter' => 'Monitoring'], function ($routes) {
     $routes->post('jarumStoreInput', 'JarumController::upload');
     $routes->post('getMontirByArea', 'MonitoringController::getMontirByArea');
     $routes->get('reportSummaryJarum/(:segment)/(:num)', 'JarumController::excelSummaryJarum/$1/$2');
+    $routes->get('exportSummaryJarum', 'JarumController::exportSummaryJarum');
+    $routes->post('uploadJarum', 'JarumController::uploadJarum');
 
     // penilaian
     $routes->get('dataPenilaian', 'MonitoringController::penilaian');

@@ -14,17 +14,6 @@ class UserSeeder extends Seeder
                 'password' => 'monitoring',
                 'role' => 'Monitoring'
             ],
-            // [
-            //     'username' => 'mandor',
-            //     'password' => 'mandor',
-            //     'role' => 'Mandor'
-            // ],
-            // [
-            //     'username' => 'trainingschool',
-            //     'password' => 'trainingschool',
-            //     'role' => 'TrainingSchool'
-            // ],
-
             [
                 'username' => 'Alfa',
                 'password' => 'monitoring',
@@ -106,7 +95,7 @@ class UserSeeder extends Seeder
                 'role' => 'Mandor'
             ],
             [
-                'username' => 'KK11M',
+                'username' => 'KK11',
                 'password' => 'mandor',
                 'role' => 'Mandor'
             ]
